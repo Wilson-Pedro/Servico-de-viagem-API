@@ -3,6 +3,8 @@ package com.wamk.uber.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.wamk.uber.enums.FormaPagamento;
+
 public class SolicitarViagem implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -11,17 +13,18 @@ public class SolicitarViagem implements Serializable{
 	private String destino;
 	private String nomePassageiro;
 	private String valorAPagar;
+	private FormaPagamento formaPagamento;
 	
 	public SolicitarViagem() {
 	}
 
-	public SolicitarViagem(Long id, String origem, String destino, String nomePassageiro, String valorAPagar) {
-		super();
+	public SolicitarViagem(Long id, String origem, String destino, String nomePassageiro, String valorAPagar, FormaPagamento formaPagamento) {
 		this.id = id;
 		this.origem = origem;
 		this.destino = destino;
 		this.nomePassageiro = nomePassageiro;
 		this.valorAPagar = valorAPagar;
+		this.formaPagamento = formaPagamento;
 	}
 
 	public Long getId() {
@@ -62,6 +65,14 @@ public class SolicitarViagem implements Serializable{
 
 	public void setValorAPagar(String valorAPagar) {
 		this.valorAPagar = valorAPagar;
+	}
+
+	public FormaPagamento getFormaPagamento() {
+		return formaPagamento;
+	}
+
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
+		this.formaPagamento = formaPagamento;
 	}
 
 	@Override
