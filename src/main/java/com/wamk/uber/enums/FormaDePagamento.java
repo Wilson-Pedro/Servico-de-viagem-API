@@ -1,6 +1,6 @@
 package com.wamk.uber.enums;
 
-public enum FormaPagamento {
+public enum FormaDePagamento {
 
 	DINHEIRO(1, "Dinherio"),
 	DEBITO(2, "Débito"),
@@ -11,7 +11,7 @@ public enum FormaPagamento {
 	private Integer cod;
 	private String descricao;
 	
-	private FormaPagamento(Integer cod, String descricao) {
+	private FormaDePagamento(Integer cod, String descricao) {
 		this.cod = cod;
 		this.descricao = descricao;
 	}
