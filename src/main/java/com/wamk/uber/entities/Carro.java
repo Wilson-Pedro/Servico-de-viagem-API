@@ -3,10 +3,12 @@ package com.wamk.uber.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,6 +22,9 @@ public class Carro implements Serializable{
 	private String modelo;
 	private Integer ano;
 	private String placa;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "carro")
+	private Motorista motorista;
 	
 	public Carro() {
 	}
