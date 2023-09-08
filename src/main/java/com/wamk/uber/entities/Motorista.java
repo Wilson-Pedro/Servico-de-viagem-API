@@ -1,10 +1,15 @@
 package com.wamk.uber.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -22,6 +27,10 @@ public class Motorista extends Usuario{
 	@JoinColumn(name = "carro_id")
 	@MapsId
 	private Carro carro;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "motorista")
+	private List<Viagem> viagens = new ArrayList<>();
 
 	public Motorista() {
 		super();
