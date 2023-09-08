@@ -2,8 +2,6 @@ package com.wamk.uber.entities;
 
 import java.io.Serializable;
 
-import java.util.Objects;
-
 import com.wamk.uber.enums.FormaDePagamento;
 
 import jakarta.persistence.Entity;
@@ -11,9 +9,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "TB_SOLICITAR_VIAGEM")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of="id")
 public class SolicitarViagem implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -25,81 +33,4 @@ public class SolicitarViagem implements Serializable{
 	private String nomePassageiro;
 	private String valorAPagar;
 	private FormaDePagamento formaDePagamento;
-	
-	public SolicitarViagem() {
-	}
-
-	public SolicitarViagem(Long id, String origem, String destino, String nomePassageiro, String valorAPagar, FormaDePagamento formaDePagamento) {
-		this.id = id;
-		this.origem = origem;
-		this.destino = destino;
-		this.nomePassageiro = nomePassageiro;
-		this.valorAPagar = valorAPagar;
-		this.formaDePagamento = formaDePagamento;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getOrigem() {
-		return origem;
-	}
-
-	public void setOrigem(String origem) {
-		this.origem = origem;
-	}
-
-	public String getDestino() {
-		return destino;
-	}
-
-	public void setDestino(String destino) {
-		this.destino = destino;
-	}
-
-	public String getNomePassageiro() {
-		return nomePassageiro;
-	}
-
-	public void setNomePassageiro(String nomePassageiro) {
-		this.nomePassageiro = nomePassageiro;
-	}
-
-	public String getValorAPagar() {
-		return valorAPagar;
-	}
-
-	public void setValorAPagar(String valorAPagar) {
-		this.valorAPagar = valorAPagar;
-	}
-
-	public FormaDePagamento getFormaPagamento() {
-		return formaDePagamento;
-	}
-
-	public void setFormaPagamento(FormaDePagamento formaDePagamento) {
-		this.formaDePagamento = formaDePagamento;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SolicitarViagem other = (SolicitarViagem) obj;
-		return Objects.equals(id, other.id);
-	}
 }
