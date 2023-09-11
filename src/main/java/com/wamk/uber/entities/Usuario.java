@@ -1,6 +1,9 @@
 package com.wamk.uber.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
+
+import com.wamk.uber.enums.TipoUsuario;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +13,6 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +24,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of="id")
 public class Usuario implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -33,4 +34,23 @@ public class Usuario implements Serializable{
 	private String nome;
 	
 	private String telefone;
+	
+	private TipoUsuario tipoUsuario;
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return Objects.equals(id, other.id);
+	}
 }

@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.wamk.uber.enums.TipoUsuario;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -25,7 +25,6 @@ public class Motorista extends Usuario{
 	
 	@OneToOne
 	@JoinColumn(name = "carro_id")
-	@MapsId
 	private Carro carro;
 	
 	@JsonIgnore
@@ -36,8 +35,10 @@ public class Motorista extends Usuario{
 		super();
 	}
 
-	public Motorista(Long id, String nome, String telefone, Carro carro) {
-		super(id, nome, telefone);
+	public Motorista(Long id, String nome, String telefone, TipoUsuario tipoUsuario, Carro carro) {
+		super(id, nome, telefone, tipoUsuario);
 		this.carro = carro;
 	}
+
+	
 }
