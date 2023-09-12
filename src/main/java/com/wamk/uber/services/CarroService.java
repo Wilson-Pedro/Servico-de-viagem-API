@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.entities.Carro;
+import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.repositories.CarroRepository;
 
 @Service
@@ -25,11 +26,13 @@ public class CarroService {
 	}
 
 	public Carro findById(Long id) {
-		return carroRepository.findById(id).get();
+		return carroRepository.findById(id)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 
 	@Transactional
 	public void deleteById(Long id) {
+		findById(id);
 		carroRepository.deleteById(id);
 	}
 }
