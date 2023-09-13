@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 @RestController
 @RequestMapping("/carros")
+@Validated
 public class CarroController {
 
 	@Autowired
@@ -36,14 +42,15 @@ public class CarroController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Carro> registrarCarro(@RequestBody Carro carro){
+	public ResponseEntity<Carro> registrarCarro(@RequestBody @Valid Carro carro){
+		carroService.validarCarro(carro);
 		carroService.save(carro);
 		return ResponseEntity.ok(carro);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Carro> update(@RequestBody Carro carro, 
-			@PathVariable Long id){
+	public ResponseEntity<Carro> update(@RequestBody @Valid Carro carro, 
+			@PathVariable @NotNull @Positive Long id){
 		carroService.findById(id);
 		carro.setId(id);
 		carroService.save(carro);
@@ -51,7 +58,7 @@ public class CarroController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable Long id){
+	public ResponseEntity<Void> deleteById(@PathVariable @NotNull @Positive Long id){
 		carroService.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}

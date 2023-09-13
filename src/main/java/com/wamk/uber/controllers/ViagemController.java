@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.services.ViagemService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+@Validated
 @RestController
 @RequestMapping("/viagens")
 public class ViagemController {
@@ -34,15 +41,15 @@ public class ViagemController {
 		return viagem;
 	}
 	
-//	@PostMapping
-//	public ResponseEntity<Viagem> registrarViagem(@RequestBody Viagem viagem){
-//		viagemService.save(viagem);
-//		return ResponseEntity.ok(viagem);
-//	}
+	@PostMapping
+	public ResponseEntity<Viagem> registrarViagem(@RequestBody @Valid Viagem viagem){
+		viagemService.save(viagem);
+		return ResponseEntity.ok(viagem);
+	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Viagem> update(@RequestBody Viagem viagem, 
-			@PathVariable Long id){
+	public ResponseEntity<Viagem> update(@RequestBody @Valid Viagem viagem, 
+			@PathVariable @NotNull @Positive Long id){
 		viagemService.findById(id);
 		viagem.setId(id);
 		viagemService.save(viagem);

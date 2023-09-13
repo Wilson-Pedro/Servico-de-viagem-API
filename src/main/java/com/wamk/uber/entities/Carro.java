@@ -3,6 +3,8 @@ package com.wamk.uber.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -12,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +34,17 @@ public class Carro implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotNull
+	@NotBlank
+	@Length(min = 2, max = 100)
 	private String modelo;
 	
+	@NotNull
 	private Integer ano;
 	
+	@NotNull
+	@NotBlank
+	@Length(min = 8, max = 50)
 	private String placa;
 	
 	@JsonIgnore

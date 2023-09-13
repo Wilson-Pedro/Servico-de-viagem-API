@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.repositories.CarroRepository;
 
 @Service
@@ -34,5 +35,11 @@ public class CarroService {
 	public void deleteById(Long id) {
 		findById(id);
 		carroRepository.deleteById(id);
+	}
+
+	public void validarCarro(Carro carro) {
+		if(carroRepository.existsByPlaca(carro.getPlaca())) {
+			throw new PlacaExistenteException("Placa já cadastrada.");
+		}
 	}
 }
