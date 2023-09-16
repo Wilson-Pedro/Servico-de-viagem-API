@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
+import com.wamk.uber.exceptions.TelefoneExistenteException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
@@ -66,6 +67,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		Problema problema = new Problema();
 		problema.setTitulo("Placa já cadastrada.");
+		problema.setStatus(HttpStatus.BAD_REQUEST.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+	}
+	
+	@ExceptionHandler(TelefoneExistenteException.class)
+	public ResponseEntity<Problema> telefoneExistenteException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("Telefone já casdastrado!");
 		problema.setStatus(HttpStatus.BAD_REQUEST.value());
 		problema.setDataHora(OffsetDateTime.now());
 		

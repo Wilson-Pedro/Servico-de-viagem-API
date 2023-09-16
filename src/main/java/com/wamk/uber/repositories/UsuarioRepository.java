@@ -6,4 +6,5 @@ import com.wamk.uber.entities.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
+	boolean existsByTelefone(String telefone);
 }

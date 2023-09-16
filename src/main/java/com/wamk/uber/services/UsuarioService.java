@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.exceptions.TelefoneExistenteException;
 import com.wamk.uber.repositories.UsuarioRepository;
 
 import jakarta.validation.Valid;
@@ -43,6 +44,9 @@ public class UsuarioService {
 
 	@Transactional
 	public UsuarioDTO salvarCadastro(UsuarioDTO usuarioDTO) {
+		if(usuarioRepository.existsByTelefone(usuarioDTO.getTelefone())) {
+			throw new TelefoneExistenteException("Este Telefone já estar cadastrado!");
+		}
 		var usuario = new Usuario();
 		BeanUtils.copyProperties(usuarioDTO, usuario);
 		save(usuario);
