@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.services.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -30,30 +30,29 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 	
 	@GetMapping
-	public List<Usuario> findAll(){
-		List<Usuario> list = usuarioService.findAll();
+	public List<UsuarioDTO> findAll(){
+		List<UsuarioDTO> list = usuarioService.findAll();
 		return list;
 	}
 	
 	@GetMapping("/{id}")
-	public Usuario findById(@PathVariable Long id){
-		Usuario usuario = usuarioService.findById(id);
-		return usuario;
+	public UsuarioDTO findById(@PathVariable Long id){
+		var usuario = usuarioService.findById(id);
+		var usuarioDTO = new UsuarioDTO(usuario);
+		return usuarioDTO;
 	}
 	
 	@PostMapping
-	public ResponseEntity<Usuario> registrarUsuario(@RequestBody @Valid Usuario usuario){
-		usuarioService.save(usuario);
-		return ResponseEntity.ok(usuario);
+	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
+		usuarioDTO = usuarioService.salvarCadastro(usuarioDTO);
+		return ResponseEntity.ok(usuarioDTO);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Usuario> update(@RequestBody @Valid Usuario usuario, 
+	public ResponseEntity<UsuarioDTO> update(@RequestBody @Valid UsuarioDTO usuarioDTO, 
 			@PathVariable @NotNull @Positive Long id){
-		usuarioService.findById(id);
-		usuario.setId(id);
-		usuarioService.save(usuario);
-		return ResponseEntity.ok(usuario);
+		usuarioDTO = usuarioService.atualizarCadastro(usuarioDTO, id);
+		return ResponseEntity.ok(usuarioDTO);
 	}
 	
 	@DeleteMapping("/{id}")
