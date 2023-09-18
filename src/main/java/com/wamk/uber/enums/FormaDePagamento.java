@@ -2,22 +2,16 @@ package com.wamk.uber.enums;
 
 public enum FormaDePagamento {
 
-	DINHEIRO(1, "Dinherio"),
-	DEBITO(2, "Débito"),
-	CREDITO(3, "Crédito"),
-	PIX(4, "Pix"),
-	PAYPAL(5, "PayPal");
+	DINHEIRO("Dinherio"),
+	DEBITO("Débito"),
+	CREDITO("Crédito"),
+	PIX("Pix"),
+	PAYPAL("PayPal");
 	
-	private Integer cod;
 	private String descricao;
 	
-	private FormaDePagamento(Integer cod, String descricao) {
-		this.cod = cod;
+	private FormaDePagamento(String descricao) {
 		this.descricao = descricao;
-	}
-
-	public Integer getCod() {
-		return cod;
 	}
 
 	public String getDescricao() {

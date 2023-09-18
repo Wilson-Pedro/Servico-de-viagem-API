@@ -3,7 +3,7 @@ package com.wamk.uber.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.UsuarioDTO;
@@ -37,27 +38,24 @@ public class UsuarioController {
 	
 	@GetMapping("/{id}")
 	public UsuarioDTO findById(@PathVariable Long id){
-		var usuario = usuarioService.findById(id);
-		var usuarioDTO = new UsuarioDTO(usuario);
-		return usuarioDTO;
+		return usuarioService.findById(id);
 	}
 	
 	@PostMapping
-	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
-		usuarioDTO = usuarioService.salvarCadastro(usuarioDTO);
-		return ResponseEntity.ok(usuarioDTO);
+	public UsuarioDTO registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
+		return usuarioService.save(usuarioDTO);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<UsuarioDTO> update(@RequestBody @Valid UsuarioDTO usuarioDTO, 
+	public UsuarioDTO atualiziar(@RequestBody @Valid UsuarioDTO usuarioDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		usuarioDTO = usuarioService.atualizarCadastro(usuarioDTO, id);
-		return ResponseEntity.ok(usuarioDTO);
+		return usuarioDTO;
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable @NotNull @Positive Long id){
-		usuarioService.deleteById(id);
-		return ResponseEntity.noContent().build();
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteById(@PathVariable @NotNull @Positive Long id){
+		usuarioService.delete(id);
 	}
 }

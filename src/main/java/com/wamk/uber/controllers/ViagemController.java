@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wamk.uber.entities.Viagem;
+import com.wamk.uber.dtos.ViagemDTO;
+import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.services.ViagemService;
 
 import jakarta.validation.Valid;
@@ -30,35 +31,31 @@ public class ViagemController {
 	private ViagemService viagemService;
 	
 	@GetMapping
-	public List<Viagem> findAll(){
-		List<Viagem> list = viagemService.findAll();
+	public List<ViagemDTO> findAll(){
+		List<ViagemDTO> list = viagemService.findAll();
 		return list;
 	}
 	
 	@GetMapping("/{id}")
-	public Viagem findById(@PathVariable Long id){
-		Viagem viagem = viagemService.findById(id);
-		return viagem;
+	public ViagemDTO findById(@PathVariable Long id){
+		return viagemService.findById(id);
 	}
 	
 	@PostMapping
-	public ResponseEntity<Viagem> registrarViagem(@RequestBody @Valid Viagem viagem){
-		viagemService.save(viagem);
-		return ResponseEntity.ok(viagem);
+	public ViagemDTO registrarUsuario(@RequestBody @Valid ViagemInputDTO viagemInputDTO){
+		return viagemService.save(viagemInputDTO);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Viagem> update(@RequestBody @Valid Viagem viagem, 
+	public ViagemDTO atualiziar(@RequestBody @Valid ViagemInputDTO viagemInputDTO, 
 			@PathVariable @NotNull @Positive Long id){
-		viagemService.findById(id);
-		viagem.setId(id);
-		viagemService.save(viagem);
-		return ResponseEntity.ok(viagem);
+		var viagemDTO = viagemService.atualizarCadastro(viagemInputDTO, id);
+		return viagemDTO;
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable Long id){
-		viagemService.deleteById(id);
+	public ResponseEntity<Void> deleteById(@PathVariable @NotNull @Positive Long id){
+		viagemService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 }

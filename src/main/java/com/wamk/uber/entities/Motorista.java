@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.wamk.uber.enums.TipoUsuario;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -28,7 +29,7 @@ public class Motorista extends Usuario{
 	private Carro carro;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "motorista")
+	@OneToMany(mappedBy = "motorista", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<Viagem> viagens = new ArrayList<>();
 
 	public Motorista() {
@@ -39,6 +40,4 @@ public class Motorista extends Usuario{
 		super(id, nome, telefone, tipoUsuario);
 		this.carro = carro;
 	}
-
-	
 }

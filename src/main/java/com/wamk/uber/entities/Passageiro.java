@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.wamk.uber.enums.TipoUsuario;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -22,7 +23,7 @@ public class Passageiro extends Usuario{
 	private static final long serialVersionUID = 1L;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "passageiro")
+	@OneToMany(mappedBy = "passageiro", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<Viagem> viagens = new ArrayList<>();
 
 	public Passageiro() {

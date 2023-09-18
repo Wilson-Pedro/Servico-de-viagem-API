@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,14 +45,14 @@ public class Viagem implements Serializable{
 	
 	@NotNull
 	@NotBlank
-	@Length(min = 2, max = 100)
+	@Length(max = 100)
 	private String tempoDeViagem;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "passageiro_id")
 	private Passageiro passageiro;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "motorista_id")
 	private Motorista motorista;
 

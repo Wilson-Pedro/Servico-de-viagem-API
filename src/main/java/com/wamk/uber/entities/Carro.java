@@ -48,7 +48,7 @@ public class Carro implements Serializable{
 	private String placa;
 	
 	@JsonIgnore
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "carro")
+	@OneToOne(mappedBy = "carro", cascade = CascadeType.ALL)
 	private Motorista motorista;
 
 	public Carro(Long id, String modelo, Integer ano, String placa) {
