@@ -25,19 +25,18 @@ public class CarroService {
 	private CarroMapper carroMapper;
 	
 	@Transactional
-	public CarroDTO save(CarroDTO carroDTO) {
+	public Carro save(CarroDTO carroDTO) {
 		validarSave(carroDTO);
-		return carroMapper.toDTO(carroRepository.save(carroMapper.toEntity(carroDTO)));
+		return carroRepository.save(carroMapper.toEntity(carroDTO));
 	}
 
-	public List<CarroDTO> findAll() {
+	public List<Carro> findAll() {
 		List<Carro> list =  carroRepository.findAll();
-		return list.stream().map(x -> carroMapper.toDTO(x)).toList();
+		return list;
 	}
 
-	public CarroDTO findById(Long id) {
+	public Carro findById(Long id) {
 		return carroRepository.findById(id)
-				.map(carroMapper::toDTO)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 
@@ -47,14 +46,14 @@ public class CarroService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
 	}
 
-	public CarroDTO atualizarCadastro(@Valid CarroDTO carroDTO,Long id) {
+	public Carro atualizarCadastro(@Valid CarroDTO carroDTO,Long id) {
 		validarUpdate(carroDTO, id);
 		return carroRepository.findById(id)
 				.map(carro -> {
 					carro.setAno(carroDTO.getAno());
 					carro.setModelo(carroDTO.getModelo());
 					carro.setPlaca(carroDTO.getPlaca());
-					return carroMapper.toDTO(carroRepository.save(carro));
+					return carroRepository.save(carro);
 				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 	
@@ -64,8 +63,9 @@ public class CarroService {
 		}
 	}
 	
-	public void validarUpdate(CarroDTO carro, Long id) {
-		if(carroRepository.existsByPlaca(carro.getPlaca()) && carro.getId() == id) {
+	public void validarUpdate(CarroDTO carroDTO, Long id) {
+		var carro = carroRepository.findByPlaca(carroDTO.getPlaca());
+		if(carroRepository.existsByPlaca(carroDTO.getPlaca()) && carro.getId() != id) {
 			throw new PlacaExistenteException("Placa já cadastrada.");
 		}
 	}

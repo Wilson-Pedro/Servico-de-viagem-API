@@ -24,33 +24,26 @@ public class UsuarioService {
 	private UsuarioMapper usuarioMapper;
 	
 	@Transactional
-	public UsuarioDTO save(UsuarioDTO usuarioDTO) {
-		return usuarioMapper.toDTO(usuarioRepository.save(usuarioMapper.toEntity(usuarioDTO)));
+	public Usuario save(UsuarioDTO usuarioDTO) {
+		return usuarioRepository.save(usuarioMapper.toEntity(usuarioDTO));
 	}
 
-	public List<UsuarioDTO> findAll() {
-		List<Usuario> list =  usuarioRepository.findAll();
-		return list.stream().map(x -> usuarioMapper.toDTO(x)).toList();
+	public List<Usuario> findAll() {
+		return  usuarioRepository.findAll();
 	}
-	
-	public Usuario findUserById(Long id) {
+
+	public Usuario findById(Long id) {
 		return usuarioRepository.findById(id)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 
-	public UsuarioDTO findById(Long id) {
-		return usuarioRepository.findById(id)
-				.map(usuarioMapper::toDTO)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
-	}
-
-	public UsuarioDTO atualizarCadastro(@Valid UsuarioDTO usuarioDTO,Long id) {
+	public Usuario atualizarCadastro(@Valid UsuarioDTO usuarioDTO,Long id) {
 		return usuarioRepository.findById(id)
 				.map(usuario -> {
 					usuario.setNome(usuarioDTO.getNome());
 					usuario.setTelefone(usuarioDTO.getTelefone());
 					usuario.setTipoUsuario(usuarioDTO.getTipoUsuario());
-					return usuarioMapper.toDTO(usuarioRepository.save(usuario));
+					return usuarioRepository.save(usuario);
 				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 	

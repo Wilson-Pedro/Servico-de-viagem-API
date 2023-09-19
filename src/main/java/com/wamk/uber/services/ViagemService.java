@@ -25,35 +25,32 @@ public class ViagemService {
 	private ViagemMapper viagemMapper;
 	
 	@Transactional
-	public ViagemDTO save(ViagemInputDTO viagemInputDTO) {
-		return viagemMapper.toDTO(viagemRepository.save(viagemMapper.toEntity(viagemInputDTO)));
+	public Viagem save(ViagemInputDTO viagemInputDTO) {
+		return viagemRepository.save(viagemMapper.toEntity(viagemInputDTO));
 	}
 
-	public List<ViagemDTO> findAll() {
-		List<Viagem> list =  viagemRepository.findAll();
-		return list.stream().map(x -> viagemMapper.toDTO(x)).toList();
+	public List<Viagem> findAll() {
+		return  viagemRepository.findAll();
 	}
 
-	public ViagemDTO findById(Long id) {
+	public Viagem findById(Long id) {
 		return viagemRepository.findById(id)
-				.map(viagemMapper::toDTO)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 
-	@Transactional
-	public void delete(Long id) {
-		viagemRepository.delete(viagemRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
-	}
-
-	public ViagemDTO atualizarCadastro(@Valid ViagemInputDTO viagemInputDTO,Long id) {
+	public Viagem atualizarCadastro(@Valid ViagemInputDTO viagemInputDTO,Long id) {
 		return viagemRepository.findById(id)
 				.map(viagem -> {
 					viagem.setOrigem(viagemInputDTO.getOrigem());
 					viagem.setDestino(viagemInputDTO.getDestino());
 					viagem.setTempoDeViagem(viagemInputDTO.getTempoDeViagem());
-					return viagemMapper.toDTO(viagemRepository.save(viagem));
+					return viagemRepository.save(viagem);
 				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 	
+	@Transactional
+	public void delete(Long id) {
+		viagemRepository.delete(viagemRepository.findById(id)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
+	}
 }

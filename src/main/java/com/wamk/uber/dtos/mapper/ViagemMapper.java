@@ -32,8 +32,8 @@ public class ViagemMapper {
 		if(viagemInputDTO.getId() != null) {
 			viagem.setId(viagemInputDTO.getId());
 		}
-		Usuario passageiro = usuarioService.findUserById(viagemInputDTO.getPassageiroId());
-		Usuario motorista = usuarioService.findUserById(viagemInputDTO.getMotoristaId());
+		Usuario passageiro = usuarioService.findById(viagemInputDTO.getPassageiroId());
+		Usuario motorista = usuarioService.findById(viagemInputDTO.getMotoristaId());
 		
 		viagem.setOrigem(viagemInputDTO.getOrigem());
 		viagem.setDestino(viagemInputDTO.getDestino());

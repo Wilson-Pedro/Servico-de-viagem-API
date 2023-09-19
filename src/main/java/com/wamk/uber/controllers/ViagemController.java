@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.ViagemDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
+import com.wamk.uber.dtos.mapper.ViagemMapper;
+import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.services.ViagemService;
 
 import jakarta.validation.Valid;
@@ -30,27 +32,32 @@ public class ViagemController {
 	@Autowired
 	private ViagemService viagemService;
 	
+	@Autowired
+	private ViagemMapper viagemMapper;
+	
 	@GetMapping
 	public List<ViagemDTO> findAll(){
-		List<ViagemDTO> list = viagemService.findAll();
-		return list;
+		List<Viagem> list = viagemService.findAll();
+		return list.stream().map(x -> viagemMapper.toDTO(x)).toList();
 	}
 	
 	@GetMapping("/{id}")
 	public ViagemDTO findById(@PathVariable Long id){
-		return viagemService.findById(id);
+		var viagem = viagemService.findById(id);
+		return viagemMapper.toDTO(viagem);
 	}
 	
 	@PostMapping
 	public ViagemDTO registrarUsuario(@RequestBody @Valid ViagemInputDTO viagemInputDTO){
-		return viagemService.save(viagemInputDTO);
+		var viagem = viagemService.save(viagemInputDTO);
+		return viagemMapper.toDTO(viagem);
 	}
 	
 	@PutMapping("/{id}")
 	public ViagemDTO atualiziar(@RequestBody @Valid ViagemInputDTO viagemInputDTO, 
 			@PathVariable @NotNull @Positive Long id){
-		var viagemDTO = viagemService.atualizarCadastro(viagemInputDTO, id);
-		return viagemDTO;
+		var viagem = viagemService.atualizarCadastro(viagemInputDTO, id);
+		return viagemMapper.toDTO(viagem);
 	}
 	
 	@DeleteMapping("/{id}")

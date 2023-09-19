@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.CarroDTO;
+import com.wamk.uber.dtos.mapper.CarroMapper;
+import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
 
 import jakarta.validation.Valid;
@@ -30,27 +32,33 @@ public class CarroController {
 	@Autowired
 	private CarroService carroService;
 	
+	@Autowired
+	private CarroMapper carroMapper;
+	
 	@GetMapping
 	public List<CarroDTO> findAll(){
-		List<CarroDTO> list = carroService.findAll();
-		return list;
+		List<Carro> list = carroService.findAll();
+		return list.stream().map(x -> carroMapper.toDTO(x)).toList();
 	}
 	
 	@GetMapping("/{id}")
 	public CarroDTO findById(@PathVariable Long id){
-		return carroService.findById(id);
+		Carro carro = carroService.findById(id);
+		return carroMapper.toDTO(carro);
 	}
 	
 	@PostMapping
 	public CarroDTO registrarCarro(@RequestBody @Valid CarroDTO carroDTO){
-		return carroService.save(carroDTO);
+		var carro = carroService.save(carroDTO);
+		return carroMapper.toDTO(carro);
+		
 	}
 	
 	@PutMapping("/{id}")
 	public CarroDTO atualiziar(@RequestBody @Valid CarroDTO carroDTO, 
 			@PathVariable @NotNull @Positive Long id){
-		carroDTO = carroService.atualizarCadastro(carroDTO, id);
-		return carroDTO;
+		var carro = carroService.atualizarCadastro(carroDTO, id);
+		return carroMapper.toDTO(carro);
 	}
 	
 	@DeleteMapping("/{id}")
