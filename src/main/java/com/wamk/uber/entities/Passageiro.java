@@ -11,14 +11,10 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "TB_PASSAGEIRO")
 @JsonTypeName("passageiro")
-@Getter
-@Setter
 public class Passageiro extends Usuario{
 	private static final long serialVersionUID = 1L;
 	
@@ -32,5 +28,9 @@ public class Passageiro extends Usuario{
 
 	public Passageiro(Long id, String nome, String telefone, TipoUsuario tipoUsuario) {
 		super(id, nome, telefone, tipoUsuario);
+	}
+
+	public List<Viagem> getViagens() {
+		return viagens;
 	}
 }

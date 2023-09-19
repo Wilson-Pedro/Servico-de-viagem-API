@@ -9,20 +9,11 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class CarroDTO {
 	
 	private Long id;
 	
-	@NotNull
 	@NotBlank
 	@Length(min = 2, max = 100)
 	private String modelo;
@@ -30,7 +21,6 @@ public class CarroDTO {
 	@NotNull
 	private Integer ano;
 	
-	@NotNull
 	@NotBlank
 	@Length(min = 8, max = 50)
 	private String placa;
@@ -38,4 +28,55 @@ public class CarroDTO {
 	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "carro")
 	private Motorista motorista;
+
+	public CarroDTO() {
+	}
+
+	public CarroDTO(Long id, String modelo, Integer ano, String placa, Motorista motorista) {
+		this.id = id;
+		this.modelo = modelo;
+		this.ano = ano;
+		this.placa = placa;
+		this.motorista = motorista;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+
+	public String getPlaca() {
+		return placa;
+	}
+
+	public void setPlaca(String placa) {
+		this.placa = placa;
+	}
+
+	public Motorista getMotorista() {
+		return motorista;
+	}
+
+	public void setMotorista(Motorista motorista) {
+		this.motorista = motorista;
+	}
 }

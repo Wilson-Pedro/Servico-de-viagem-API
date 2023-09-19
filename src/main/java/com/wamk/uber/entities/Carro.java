@@ -16,17 +16,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "TB_CARRO")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Carro implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -34,7 +26,6 @@ public class Carro implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull
 	@NotBlank
 	@Length(min = 2, max = 100)
 	private String modelo;
@@ -42,7 +33,6 @@ public class Carro implements Serializable{
 	@NotNull
 	private Integer ano;
 	
-	@NotNull
 	@NotBlank
 	@Length(min = 8, max = 50)
 	private String placa;
@@ -50,12 +40,55 @@ public class Carro implements Serializable{
 	@JsonIgnore
 	@OneToOne(mappedBy = "carro", cascade = CascadeType.ALL)
 	private Motorista motorista;
+	
+	public Carro() {
+	}
 
 	public Carro(Long id, String modelo, Integer ano, String placa) {
 		this.id = id;
 		this.modelo = modelo;
 		this.ano = ano;
 		this.placa = placa;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+
+	public String getPlaca() {
+		return placa;
+	}
+
+	public void setPlaca(String placa) {
+		this.placa = placa;
+	}
+
+	public Motorista getMotorista() {
+		return motorista;
+	}
+
+	public void setMotorista(Motorista motorista) {
+		this.motorista = motorista;
 	}
 
 	@Override

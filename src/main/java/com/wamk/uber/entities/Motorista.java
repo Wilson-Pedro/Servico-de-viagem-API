@@ -13,14 +13,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "TB_MOTORISTA")
 @JsonTypeName("motorista")
-@Getter
-@Setter
 public class Motorista extends Usuario{
 	private static final long serialVersionUID = 1L;
 	
@@ -39,5 +35,17 @@ public class Motorista extends Usuario{
 	public Motorista(Long id, String nome, String telefone, TipoUsuario tipoUsuario, Carro carro) {
 		super(id, nome, telefone, tipoUsuario);
 		this.carro = carro;
+	}
+
+	public Carro getCarro() {
+		return carro;
+	}
+
+	public void setCarro(Carro carro) {
+		this.carro = carro;
+	}
+
+	public List<Viagem> getViagens() {
+		return viagens;
 	}
 }

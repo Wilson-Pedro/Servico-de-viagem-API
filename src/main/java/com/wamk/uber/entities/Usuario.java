@@ -16,18 +16,10 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "TB_USUARIO")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Usuario implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -35,18 +27,58 @@ public class Usuario implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull
 	@NotBlank
 	@Length(min = 2, max = 100)
 	private String nome;
-	
-	@NotNull
+
 	@NotBlank
 	@Length(min = 5, max = 100)
 	private String telefone;
 	
 	@NotNull
 	private TipoUsuario tipoUsuario;
+
+	public Usuario() {
+	}
+
+	public Usuario(Long id, String nome, String telefone, TipoUsuario tipoUsuario) {
+		this.id = id;
+		this.nome = nome;
+		this.telefone = telefone;
+		this.tipoUsuario = tipoUsuario;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public TipoUsuario getTipoUsuario() {
+		return tipoUsuario;
+	}
+
+	public void setTipoUsuario(TipoUsuario tipoUsuario) {
+		this.tipoUsuario = tipoUsuario;
+	}
 
 	@Override
 	public int hashCode() {
