@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.wamk.uber.dtos.SolicitarViagemDTO;
+import com.wamk.uber.enums.FormaDePagamento;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "TB_VIAGEM")
@@ -43,17 +47,29 @@ public class Viagem implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "motorista_id")
 	private Motorista motorista;
+	
+	@NotNull
+	private FormaDePagamento formaDePagamento;
 
 	public Viagem() {
 	}
 
-	public Viagem(Long id, String origem, String destino, String tempoDeViagem, Passageiro passageiro, Motorista motorista) {
+	public Viagem(Long id, String origem, String destino, String tempoDeViagem, 
+			Passageiro passageiro, Motorista motorista, FormaDePagamento formaDePagamento) {
 		this.id = id;
 		this.origem = origem;
 		this.destino = destino;
 		this.tempoDeViagem = tempoDeViagem;
 		this.passageiro = passageiro;
 		this.motorista = motorista;
+		this.formaDePagamento = formaDePagamento;
+	}
+	
+	public Viagem(SolicitarViagemDTO solicitacao) {
+		origem = solicitacao.getOrigem();
+		destino = solicitacao.getDestino();
+		tempoDeViagem = solicitacao.getDestino();
+		formaDePagamento = solicitacao.getFormaDePagamento();
 	}
 
 	public Long getId() {
@@ -102,6 +118,14 @@ public class Viagem implements Serializable{
 
 	public void setMotorista(Motorista motorista) {
 		this.motorista = motorista;
+	}
+
+	public FormaDePagamento getFormaDePagamento() {
+		return formaDePagamento;
+	}
+
+	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
+		this.formaDePagamento = formaDePagamento;
 	}
 
 	@Override

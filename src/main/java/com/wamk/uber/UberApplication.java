@@ -54,7 +54,7 @@ public class UberApplication implements CommandLineRunner{
 		
 		Viagem v1 = new Viagem(null, 
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
-				"20min", p1,(Motorista) m1);
+				"20min", p1,(Motorista) m1, FormaDePagamento.PIX);
 		
 		carroRepository.saveAll(Arrays.asList(c1));
 		usuarioRepository.saveAll(Arrays.asList(p1, m1));

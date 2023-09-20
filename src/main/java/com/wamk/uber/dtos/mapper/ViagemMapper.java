@@ -40,6 +40,7 @@ public class ViagemMapper {
 		viagem.setTempoDeViagem(viagemInputDTO.getTempoDeViagem());
 		viagem.setPassageiro((Passageiro) passageiro);
 		viagem.setMotorista((Motorista) motorista);
+		viagem.setFormaDePagamento(viagemInputDTO.getFormaDePagamento());
 		return viagem;
 	}
 }

@@ -1,13 +1,18 @@
 package com.wamk.uber.dtos;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.BeanUtils;
 
 import com.wamk.uber.entities.Viagem;
+import com.wamk.uber.enums.FormaDePagamento;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public class ViagemDTO {
+public class ViagemDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	
@@ -29,6 +34,9 @@ public class ViagemDTO {
 	@NotBlank
 	private String nomeMotorista;
 	
+	@NotNull
+	private FormaDePagamento formaDePagamento;
+	
 	public ViagemDTO() {
 	}
 
@@ -39,13 +47,14 @@ public class ViagemDTO {
 	}
 
 	public ViagemDTO(Long id, String origem,String destino, String tempoDeViagem, String nomePassageiro, 
-			String nomeMotorista) {
+			String nomeMotorista, FormaDePagamento formaDePagamento) {
 		this.id = id;
 		this.origem = origem;
 		this.destino = destino;
 		this.tempoDeViagem = tempoDeViagem;
 		this.nomePassageiro = nomePassageiro;
 		this.nomeMotorista = nomeMotorista;
+		this.formaDePagamento = formaDePagamento;
 	}
 
 	public Long getId() {
@@ -94,5 +103,13 @@ public class ViagemDTO {
 
 	public void setNomeMotorista(String nomeMotorista) {
 		this.nomeMotorista = nomeMotorista;
+	}
+
+	public FormaDePagamento getFormaDePagamento() {
+		return formaDePagamento;
+	}
+
+	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
+		this.formaDePagamento = formaDePagamento;
 	}
 }

@@ -1,5 +1,7 @@
 package com.wamk.uber.dtos;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.Length;
 
 import com.wamk.uber.entities.Usuario;
@@ -8,7 +10,8 @@ import com.wamk.uber.enums.TipoUsuario;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class UsuarioDTO {
+public class UsuarioDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	

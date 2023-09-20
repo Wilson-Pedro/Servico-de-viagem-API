@@ -1,5 +1,7 @@
 package com.wamk.uber.dtos;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,7 +12,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class CarroDTO {
+public class CarroDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	

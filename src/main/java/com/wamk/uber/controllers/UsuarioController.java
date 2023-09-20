@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.mapper.UsuarioMapper;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.services.UsuarioService;
+import com.wamk.uber.services.ViagemService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +33,9 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private ViagemService viagemService;
 	
 	@Autowired
 	private UsuarioMapper usuarioMapper;
@@ -64,5 +69,11 @@ public class UsuarioController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteById(@PathVariable @NotNull @Positive Long id){
 		usuarioService.delete(id);
+	}
+	
+	@PostMapping("/solicitacao")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
+		viagemService.solicitandoViagem(solicitacao);
 	}
 }

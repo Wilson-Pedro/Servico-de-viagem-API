@@ -1,33 +1,27 @@
 package com.wamk.uber.dtos.input;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.Length;
+
+import com.wamk.uber.enums.FormaDePagamento;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ViagemInputDTO {
+public class ViagemInputDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	
-	@NotNull
 	@NotBlank
 	@Length(max = 200)
 	private String origem;
 	
-	@NotNull
 	@NotBlank
 	@Length(max = 200)
 	private String destino;
-	
-	@NotNull
+
 	@NotBlank
 	@Length(max = 100)
 	private String tempoDeViagem;
@@ -37,4 +31,77 @@ public class ViagemInputDTO {
 	
 	@NotNull
 	private Long motoristaId;
+	
+	@NotNull
+	private FormaDePagamento formaDePagamento;
+	
+	public ViagemInputDTO() {
+	}
+
+	public ViagemInputDTO(Long id, String origem, String destino, String tempoDeViagem,
+			Long passageiroId, Long motoristaId, FormaDePagamento formaDePagamento) {
+		this.id = id;
+		this.origem = origem;
+		this.destino = destino;
+		this.tempoDeViagem = tempoDeViagem;
+		this.passageiroId = passageiroId;
+		this.motoristaId = motoristaId;
+		this.formaDePagamento = formaDePagamento;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getOrigem() {
+		return origem;
+	}
+
+	public void setOrigem(String origem) {
+		this.origem = origem;
+	}
+
+	public String getDestino() {
+		return destino;
+	}
+
+	public void setDestino(String destino) {
+		this.destino = destino;
+	}
+
+	public String getTempoDeViagem() {
+		return tempoDeViagem;
+	}
+
+	public void setTempoDeViagem(String tempoDeViagem) {
+		this.tempoDeViagem = tempoDeViagem;
+	}
+
+	public Long getPassageiroId() {
+		return passageiroId;
+	}
+
+	public void setPassageiroId(Long passageiroId) {
+		this.passageiroId = passageiroId;
+	}
+
+	public Long getMotoristaId() {
+		return motoristaId;
+	}
+
+	public void setMotoristaId(Long motoristaId) {
+		this.motoristaId = motoristaId;
+	}
+
+	public FormaDePagamento getFormaDePagamento() {
+		return formaDePagamento;
+	}
+
+	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
+		this.formaDePagamento = formaDePagamento;
+	}
 }
