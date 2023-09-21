@@ -2,6 +2,7 @@ package com.wamk.uber;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -22,18 +23,21 @@ import com.wamk.uber.repositories.ViagemRepository;
 
 @SpringBootApplication
 public class UberApplication implements CommandLineRunner{
+
+	private final UsuarioRepository usuarioRepository;
+
+	private final CarroRepository carroRepository;
+
+	private final SolicitarViagemRepository solicitarViagemRepository;
 	
-	@Autowired
-	private UsuarioRepository usuarioRepository;
-	
-	@Autowired
-	private CarroRepository carroRepository;
-	
-	@Autowired
-	private SolicitarViagemRepository solicitarViagemRepository;
-	
-	@Autowired
-	private ViagemRepository viagemRepository;
+	private final ViagemRepository viagemRepository;
+
+	public UberApplication(UsuarioRepository usuarioRepository, CarroRepository carroRepository, SolicitarViagemRepository solicitarViagemRepository, ViagemRepository viagemRepository) {
+		this.usuarioRepository = usuarioRepository;
+		this.carroRepository = carroRepository;
+		this.solicitarViagemRepository = solicitarViagemRepository;
+		this.viagemRepository = viagemRepository;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(UberApplication.class, args);
@@ -56,10 +60,10 @@ public class UberApplication implements CommandLineRunner{
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
 				"20min", p1,(Motorista) m1, FormaDePagamento.PIX);
 		
-		carroRepository.saveAll(Arrays.asList(c1));
+		carroRepository.saveAll(List.of(c1));
 		usuarioRepository.saveAll(Arrays.asList(p1, m1));
-		solicitarViagemRepository.saveAll(Arrays.asList(sv1));
-		viagemRepository.saveAll(Arrays.asList(v1));
+		solicitarViagemRepository.saveAll(List.of(sv1));
+		viagemRepository.saveAll(List.of(v1));
 		
 	}
 
