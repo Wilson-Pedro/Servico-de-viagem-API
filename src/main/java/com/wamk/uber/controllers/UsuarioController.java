@@ -2,9 +2,8 @@ package com.wamk.uber.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,43 +25,45 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-@Validated
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-	@Autowired
-	private UsuarioService usuarioService;
+	private final UsuarioService usuarioService;
 	
-	@Autowired
-	private ViagemService viagemService;
+	private final ViagemService viagemService;
+
+	private final UsuarioMapper usuarioMapper;
 	
-	@Autowired
-	private UsuarioMapper usuarioMapper;
-	
+	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService, UsuarioMapper usuarioMapper) {
+		this.usuarioService = usuarioService;
+		this.viagemService = viagemService;
+		this.usuarioMapper = usuarioMapper;
+	}
+
 	@GetMapping
-	public List<UsuarioDTO> findAll(){
+	public ResponseEntity<List<UsuarioDTO>> findAll(){
 		List<Usuario> list = usuarioService.findAll();
-		return list.stream().map(x -> usuarioMapper.toDTO(x)).toList();
+		return ResponseEntity.ok(list.stream().map(x -> usuarioMapper.toDTO(x)).toList());
 	}
 	
 	@GetMapping("/{id}")
-	public UsuarioDTO findById(@PathVariable Long id){
+	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id){
 		var usuario = usuarioService.findById(id);
-		return usuarioMapper.toDTO(usuario);
+		return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
 	}
 	
 	@PostMapping
-	public UsuarioDTO registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
+	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
 		var usuario = usuarioService.save(usuarioDTO);
-		return usuarioMapper.toDTO(usuario);
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toDTO(usuario));
 	}
 	
 	@PutMapping("/{id}")
-	public UsuarioDTO atualiziar(@RequestBody @Valid UsuarioDTO usuarioDTO, 
+	public ResponseEntity<UsuarioDTO> atualiziar(@RequestBody @Valid UsuarioDTO usuarioDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var usuario = usuarioService.atualizarCadastro(usuarioDTO, id);
-		return usuarioMapper.toDTO(usuario);
+		return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
 	}
 	
 	@DeleteMapping("/{id}")
@@ -72,8 +73,8 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/solicitacao")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
+	public ResponseEntity<Void> solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
 		viagemService.solicitandoViagem(solicitacao);
+		return ResponseEntity.noContent().build();
 	}
 }

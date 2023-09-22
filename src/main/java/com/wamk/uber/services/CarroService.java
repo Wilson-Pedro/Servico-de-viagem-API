@@ -1,8 +1,8 @@
 package com.wamk.uber.services;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,17 +13,18 @@ import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.repositories.CarroRepository;
 
-import jakarta.validation.Valid;
-
 @Service
 public class CarroService {
 
-	@Autowired
-	private CarroRepository carroRepository;
+	private final CarroRepository carroRepository;
+
+	private final CarroMapper carroMapper;
 	
-	@Autowired
-	private CarroMapper carroMapper;
-	
+	public CarroService(CarroRepository carroRepository, CarroMapper carroMapper) {
+		this.carroRepository = carroRepository;
+		this.carroMapper = carroMapper;
+	}
+
 	@Transactional
 	public Carro save(CarroDTO carroDTO) {
 		validarSave(carroDTO);
@@ -31,8 +32,7 @@ public class CarroService {
 	}
 
 	public List<Carro> findAll() {
-		List<Carro> list =  carroRepository.findAll();
-		return list;
+		return  carroRepository.findAll();
 	}
 
 	public Carro findById(Long id) {
@@ -46,7 +46,7 @@ public class CarroService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
 	}
 
-	public Carro atualizarCadastro(@Valid CarroDTO carroDTO,Long id) {
+	public Carro atualizarCadastro(CarroDTO carroDTO,Long id) {
 		validarUpdate(carroDTO, id);
 		return carroRepository.findById(id)
 				.map(carro -> {
@@ -64,8 +64,9 @@ public class CarroService {
 	}
 	
 	public void validarUpdate(CarroDTO carroDTO, Long id) {
-		var carro = carroRepository.findByPlaca(carroDTO.getPlaca());
-		if(carroRepository.existsByPlaca(carroDTO.getPlaca()) && carro.getId() != id) {
+		//var carro = carroRepository.findByPlaca(carroDTO.getPlaca());
+		if(carroRepository.existsByPlaca(carroDTO.getPlaca()) && 
+				!Objects.equals(carroDTO.getId(), id)) {
 			throw new PlacaExistenteException("Placa já cadastrada.");
 		}
 	}

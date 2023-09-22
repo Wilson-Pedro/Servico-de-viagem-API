@@ -2,9 +2,8 @@ package com.wamk.uber.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,44 +23,46 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-@Validated
 @RestController
 @RequestMapping("/viagens")
 public class ViagemController {
 
-	@Autowired
-	private ViagemService viagemService;
+	private final ViagemService viagemService;
+
+	private final ViagemMapper viagemMapper;
 	
-	@Autowired
-	private ViagemMapper viagemMapper;
-	
+	public ViagemController(ViagemService viagemService, ViagemMapper viagemMapper) {
+		this.viagemService = viagemService;
+		this.viagemMapper = viagemMapper;
+	}
+
 	@GetMapping
-	public List<ViagemDTO> findAll(){
+	public ResponseEntity<List<ViagemDTO>> findAll(){
 		List<Viagem> list = viagemService.findAll();
-		return list.stream().map(x -> viagemMapper.toDTO(x)).toList();
+		return ResponseEntity.ok(list.stream().map(x -> viagemMapper.toDTO(x)).toList());
 	}
 	
 	@GetMapping("/{id}")
-	public ViagemDTO findById(@PathVariable Long id){
+	public ResponseEntity<ViagemDTO> findById(@PathVariable Long id){
 		var viagem = viagemService.findById(id);
-		return viagemMapper.toDTO(viagem);
+		return ResponseEntity.ok(viagemMapper.toDTO(viagem));
 	}
 	
 	@PostMapping
-	public ViagemDTO registrarUsuario(@RequestBody @Valid ViagemInputDTO viagemInputDTO){
+	public ResponseEntity<ViagemDTO> registrarUsuario(@RequestBody @Valid ViagemInputDTO viagemInputDTO){
 		var viagem = viagemService.save(viagemInputDTO);
-		return viagemMapper.toDTO(viagem);
+		return ResponseEntity.status(HttpStatus.CREATED).body(viagemMapper.toDTO(viagem));
 	}
 	
 	@PutMapping("/{id}")
-	public ViagemDTO atualiziar(@RequestBody @Valid ViagemInputDTO viagemInputDTO, 
+	public ResponseEntity<ViagemDTO> atualiziar(@RequestBody @Valid ViagemInputDTO viagemInputDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var viagem = viagemService.atualizarCadastro(viagemInputDTO, id);
-		return viagemMapper.toDTO(viagem);
+		return ResponseEntity.ok(viagemMapper.toDTO(viagem));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable @NotNull @Positive Long id){
+	public ResponseEntity<Void> deleteById(@PathVariable Long id){
 		viagemService.delete(id);
 		return ResponseEntity.noContent().build();
 	}

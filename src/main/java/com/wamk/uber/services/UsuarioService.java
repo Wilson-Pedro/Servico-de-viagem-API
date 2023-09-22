@@ -2,7 +2,6 @@ package com.wamk.uber.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,24 +11,25 @@ import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 
-import jakarta.validation.Valid;
-
 @Service
 public class UsuarioService {
 
-	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private final UsuarioRepository usuarioRepository;
+
+	private final UsuarioMapper usuarioMapper;
 	
-	@Autowired
-	private UsuarioMapper usuarioMapper;
-	
+	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
+		this.usuarioRepository = usuarioRepository;
+		this.usuarioMapper = usuarioMapper;
+	}
+
 	@Transactional
 	public Usuario save(UsuarioDTO usuarioDTO) {
 		return usuarioRepository.save(usuarioMapper.toEntity(usuarioDTO));
 	}
 
 	public List<Usuario> findAll() {
-		return  usuarioRepository.findAll();
+		return usuarioRepository.findAll();
 	}
 
 	public Usuario findById(Long id) {
@@ -37,7 +37,7 @@ public class UsuarioService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 
-	public Usuario atualizarCadastro(@Valid UsuarioDTO usuarioDTO,Long id) {
+	public Usuario atualizarCadastro(UsuarioDTO usuarioDTO,Long id) {
 		return usuarioRepository.findById(id)
 				.map(usuario -> {
 					usuario.setNome(usuarioDTO.getNome());
