@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.hibernate.validator.constraints.Length;
 
 import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,15 +38,19 @@ public class Usuario implements Serializable{
 	
 	@NotNull
 	private TipoUsuario tipoUsuario;
+	
+	@NotNull
+	private UsuarioStatus usuarioStatus;
 
 	public Usuario() {
 	}
 
-	public Usuario(Long id, String nome, String telefone, TipoUsuario tipoUsuario) {
+	public Usuario(Long id, String nome, String telefone, TipoUsuario tipoUsuario, UsuarioStatus usuarioStatus) {
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
 		this.tipoUsuario = tipoUsuario;
+		this.usuarioStatus = usuarioStatus;
 	}
 
 	public Long getId() {
@@ -78,6 +83,14 @@ public class Usuario implements Serializable{
 
 	public void setTipoUsuario(TipoUsuario tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
+	}
+
+	public UsuarioStatus getUsuarioStatus() {
+		return usuarioStatus;
+	}
+
+	public void setUsuarioStatus(UsuarioStatus usuarioStatus) {
+		this.usuarioStatus = usuarioStatus;
 	}
 
 	@Override

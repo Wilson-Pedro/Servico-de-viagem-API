@@ -11,7 +11,9 @@ import com.wamk.uber.dtos.mapper.ViagemMapper;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Viagem;
+import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
 @Service
@@ -23,10 +25,13 @@ public class ViagemService {
 	
 	private final ViagemMapper viagemMapper;
 	
-	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService, ViagemMapper viagemMapper) {
+	private final UsuarioRepository usuarioRepository;
+	
+	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService, ViagemMapper viagemMapper, UsuarioRepository usuarioRepository) {
 		this.viagemRepository = viagemRepository;
 		this.usuarioService = usuarioService;
 		this.viagemMapper = viagemMapper;
+		this.usuarioRepository = usuarioRepository;
 	}
 
 	@Transactional
@@ -63,9 +68,11 @@ public class ViagemService {
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
 		Viagem viagem = new Viagem(solicitacao);
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
-		Motorista motorista = (Motorista) usuarioService.findById(2L);
+		Motorista motorista = (Motorista) usuarioService.findByUsuarioStatus(UsuarioStatus.ATIVO);
+		motorista.setUsuarioStatus(UsuarioStatus.CORRENDO);
+		usuarioRepository.save(motorista);
 		viagem.setPassageiro(passageiro);
-		viagem.setMotorista(motorista);
+		viagem.setMotorista((Motorista)motorista);
 		viagemRepository.save(viagem);
 	}
 }

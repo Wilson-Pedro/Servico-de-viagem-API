@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -32,8 +33,8 @@ public class Motorista extends Usuario{
 		super();
 	}
 
-	public Motorista(Long id, String nome, String telefone, TipoUsuario tipoUsuario, Carro carro) {
-		super(id, nome, telefone, tipoUsuario);
+	public Motorista(Long id, String nome, String telefone, TipoUsuario tipoUsuario, UsuarioStatus usuarioStatus, Carro carro) {
+		super(id, nome, telefone, tipoUsuario, usuarioStatus);
 		this.carro = carro;
 	}
 

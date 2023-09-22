@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.mapper.UsuarioMapper;
+import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 
@@ -35,6 +37,10 @@ public class UsuarioService {
 	public Usuario findById(Long id) {
 		return usuarioRepository.findById(id)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+	}
+	
+	public Motorista findByUsuarioStatus(UsuarioStatus status) {
+		return usuarioRepository.findByUsuarioStatus(status);
 	}
 
 	public Usuario atualizarCadastro(UsuarioDTO usuarioDTO,Long id) {

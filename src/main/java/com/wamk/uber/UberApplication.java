@@ -1,6 +1,7 @@
 package com.wamk.uber;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +15,7 @@ import com.wamk.uber.entities.SolicitarViagem;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.SolicitarViagemRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
@@ -46,10 +48,13 @@ public class UberApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		
 		Carro c1 = new Carro(null, "Fiat", 2022, "JVF-9207");
+		Carro c2 = new Carro(null, "Chevrolet", 2022, "FFG-0460");
 		
-		Passageiro p1 = new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO);
+		Passageiro p1 = new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
+		Passageiro p2 = new Passageiro(null, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		
-		Motorista m1 = new Motorista(null, "Pedro", "982349876", TipoUsuario.MOTORISTA, c1);
+		Motorista m1 = new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, c1);
+		Motorista m2 = new Motorista(null, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, c2);
 		
 		SolicitarViagem sv1 = new SolicitarViagem(null, 
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
@@ -59,8 +64,8 @@ public class UberApplication implements CommandLineRunner{
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
 				"20min", p1,(Motorista) m1, FormaDePagamento.PIX);
 		
-		carroRepository.saveAll(List.of(c1));
-		usuarioRepository.saveAll(List.of(p1, m1));
+		carroRepository.saveAll(List.of(c1, c2));
+		usuarioRepository.saveAll(Arrays.asList(p1, p2, m1, m2));
 		solicitarViagemRepository.saveAll(List.of(sv1));
 		viagemRepository.saveAll(List.of(v1));
 		
