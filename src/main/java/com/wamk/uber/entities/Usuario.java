@@ -7,7 +7,10 @@ import org.hibernate.validator.constraints.Length;
 
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
+import com.wamk.uber.enums.converter.TipoUsuarioConverter;
+import com.wamk.uber.enums.converter.UsuarioStatusConverter;
 
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,9 +40,11 @@ public class Usuario implements Serializable{
 	private String telefone;
 	
 	@NotNull
+	@Convert(converter = TipoUsuarioConverter.class)
 	private TipoUsuario tipoUsuario;
 	
 	@NotNull
+	@Convert(converter = UsuarioStatusConverter.class)
 	private UsuarioStatus usuarioStatus;
 
 	public Usuario() {

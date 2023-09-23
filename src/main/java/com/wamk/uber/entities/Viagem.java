@@ -7,7 +7,9 @@ import org.hibernate.validator.constraints.Length;
 
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.enums.FormaDePagamento;
+import com.wamk.uber.enums.converter.FormaDePagamentoConverter;
 
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -49,6 +51,7 @@ public class Viagem implements Serializable{
 	private Motorista motorista;
 	
 	@NotNull
+	@Convert(converter = FormaDePagamentoConverter.class)
 	private FormaDePagamento formaDePagamento;
 
 	public Viagem() {
