@@ -28,5 +28,4 @@ public class TipoUsuarioConverter implements AttributeConverter<TipoUsuario, Str
 				.findFirst()
 				.orElseThrow(IllegalArgumentException::new);
 	}
-
 }

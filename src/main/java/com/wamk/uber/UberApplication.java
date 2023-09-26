@@ -49,12 +49,15 @@ public class UberApplication implements CommandLineRunner{
 		
 		Carro c1 = new Carro(null, "Fiat", 2022, "JVF-9207");
 		Carro c2 = new Carro(null, "Chevrolet", 2022, "FFG-0460");
+		Carro c3 = new Carro(null, "Forger", 2022, "FTG-0160");
 		
 		Passageiro p1 = new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 		Passageiro p2 = new Passageiro(null, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
+		Passageiro p3 = new Passageiro(null, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		
 		Motorista m1 = new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, c1);
 		Motorista m2 = new Motorista(null, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, c2);
+		Motorista m3 = new Motorista(null, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, c3);
 		
 		SolicitarViagem sv1 = new SolicitarViagem(null, 
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
@@ -64,8 +67,8 @@ public class UberApplication implements CommandLineRunner{
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
 				"20min", p1,(Motorista) m1, FormaDePagamento.PIX);
 		
-		carroRepository.saveAll(List.of(c1, c2));
-		usuarioRepository.saveAll(Arrays.asList(p1, p2, m1, m2));
+		carroRepository.saveAll(List.of(c1, c2, c3));
+		usuarioRepository.saveAll(Arrays.asList(p1, p2, p3, m1, m2, m3));
 		solicitarViagemRepository.saveAll(List.of(sv1));
 		viagemRepository.saveAll(List.of(v1));
 		

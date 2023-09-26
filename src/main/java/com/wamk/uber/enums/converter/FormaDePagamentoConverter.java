@@ -7,7 +7,7 @@ import com.wamk.uber.enums.FormaDePagamento;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-@Converter(autoApply = true)
+@Converter(autoApply = false)
 public class FormaDePagamentoConverter implements AttributeConverter<FormaDePagamento, String>{
 
 	@Override

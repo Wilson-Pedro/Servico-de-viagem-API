@@ -9,6 +9,7 @@ import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.mapper.UsuarioMapper;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.repositories.UsuarioRepository;
@@ -48,7 +49,7 @@ public class UsuarioService {
 				.map(usuario -> {
 					usuario.setNome(usuarioDTO.getNome());
 					usuario.setTelefone(usuarioDTO.getTelefone());
-					usuario.setTipoUsuario(usuarioDTO.getTipoUsuario());
+					usuario.setTipoUsuario(TipoUsuario.toEnum(usuarioDTO.getTipoUsuario()));
 					return usuarioRepository.save(usuario);
 				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}

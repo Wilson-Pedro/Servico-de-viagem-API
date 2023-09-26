@@ -5,10 +5,8 @@ import java.io.Serializable;
 import org.hibernate.validator.constraints.Length;
 
 import com.wamk.uber.entities.Usuario;
-import com.wamk.uber.enums.TipoUsuario;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class UsuarioDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -23,8 +21,8 @@ public class UsuarioDTO implements Serializable{
 	@Length(min = 5, max = 100)
 	private String telefone;
 	
-	@NotNull
-	private TipoUsuario tipoUsuario;
+	@NotBlank
+	private String tipoUsuario;
 	
 	public UsuarioDTO() {
 	}
@@ -33,10 +31,10 @@ public class UsuarioDTO implements Serializable{
 		id = usuario.getId();
 		nome = usuario.getNome();
 		telefone = usuario.getTelefone();
-		tipoUsuario = usuario.getTipoUsuario();
+		tipoUsuario = usuario.getTipoUsuario().getDescricao();
 	}
 
-	public UsuarioDTO(Long id, String nome, String telefone, TipoUsuario tipoUsuario) {
+	public UsuarioDTO(Long id, String nome, String telefone, String tipoUsuario) {
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
@@ -67,11 +65,11 @@ public class UsuarioDTO implements Serializable{
 		this.telefone = telefone;
 	}
 
-	public TipoUsuario getTipoUsuario() {
+	public String getTipoUsuario() {
 		return tipoUsuario;
 	}
 
-	public void setTipoUsuario(TipoUsuario tipoUsuario) {
+	public void setTipoUsuario(String tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
 	}
 }

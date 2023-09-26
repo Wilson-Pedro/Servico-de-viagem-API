@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 
 @Component
 public class UsuarioMapper {
@@ -25,7 +27,8 @@ public class UsuarioMapper {
 		}
 		usuario.setNome(usuarioDTO.getNome());
 		usuario.setTelefone(usuarioDTO.getTelefone());
-		usuario.setTipoUsuario(usuarioDTO.getTipoUsuario());
+		usuario.setTipoUsuario(TipoUsuario.toEnum(usuarioDTO.getTipoUsuario()));
+		usuario.setUsuarioStatus(UsuarioStatus.ATIVO);
 		return usuario;
 	}
 }

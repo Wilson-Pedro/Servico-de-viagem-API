@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.wamk.uber.enums.FormaDePagamento;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -33,13 +31,13 @@ public class ViagemInputDTO implements Serializable{
 	private Long motoristaId;
 	
 	@NotNull
-	private FormaDePagamento formaDePagamento;
+	private String formaDePagamento;
 	
 	public ViagemInputDTO() {
 	}
 
 	public ViagemInputDTO(Long id, String origem, String destino, String tempoDeViagem,
-			Long passageiroId, Long motoristaId, FormaDePagamento formaDePagamento) {
+			Long passageiroId, Long motoristaId, String formaDePagamento) {
 		this.id = id;
 		this.origem = origem;
 		this.destino = destino;
@@ -97,11 +95,11 @@ public class ViagemInputDTO implements Serializable{
 		this.motoristaId = motoristaId;
 	}
 
-	public FormaDePagamento getFormaDePagamento() {
+	public String getFormaDePagamento() {
 		return formaDePagamento;
 	}
 
-	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
+	public void setFormaDePagamento(String formaDePagamento) {
 		this.formaDePagamento = formaDePagamento;
 	}
 }

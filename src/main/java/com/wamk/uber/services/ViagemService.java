@@ -11,6 +11,7 @@ import com.wamk.uber.dtos.mapper.ViagemMapper;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Viagem;
+import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.repositories.UsuarioRepository;
@@ -54,7 +55,7 @@ public class ViagemService {
 					viagem.setOrigem(viagemInputDTO.getOrigem());
 					viagem.setDestino(viagemInputDTO.getDestino());
 					viagem.setTempoDeViagem(viagemInputDTO.getTempoDeViagem());
-					viagem.setFormaDePagamento(viagemInputDTO.getFormaDePagamento());
+					viagem.setFormaDePagamento(FormaDePagamento.toEnum(viagemInputDTO.getFormaDePagamento()));
 					return viagemRepository.save(viagem);
 				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
