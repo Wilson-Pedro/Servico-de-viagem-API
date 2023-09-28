@@ -14,6 +14,7 @@ import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
@@ -69,6 +70,7 @@ public class ViagemService {
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
 		Viagem viagem = new Viagem(solicitacao);
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
+		validarSolicitagem(passageiro);
 		Motorista motorista = (Motorista) usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
 		motorista.setUsuarioStatus(UsuarioStatus.CORRENDO);
 		passageiro.setUsuarioStatus(UsuarioStatus.CORRENDO);
@@ -76,5 +78,11 @@ public class ViagemService {
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista((Motorista)motorista);
 		viagemRepository.save(viagem);
+	}
+	
+	public void validarSolicitagem(Passageiro passageiro) {
+		if(passageiro.getUsuarioStatus().equals(UsuarioStatus.CORRENDO)) {
+			throw new PassageiroCorrendoException("");
+		}
 	}
 }

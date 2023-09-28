@@ -20,6 +20,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
+import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
 
@@ -82,5 +84,28 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		problema.setDataHora(OffsetDateTime.now());
 		
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+	}
+	
+	@ExceptionHandler(PassageiroCorrendoException.class)
+	public ResponseEntity<Problema> passageiroCorrendoException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("Você precisa esperar que sua corrida acabe para solicitar outra viagem!");
+		problema.setStatus(HttpStatus.BAD_REQUEST.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+	}
+	
+	@ExceptionHandler(MotoristaNaoEncontradoException.class)
+	public ResponseEntity<Problema> motoristaNaoEncontradoException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("Desculpe, mas não encotramos nenhum motorista que esteja ativo agora, "
+				+ "por favor solicite uma nova viagem depois de um tempo.");
+		problema.setStatus(HttpStatus.NOT_FOUND.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
 	}
 }
