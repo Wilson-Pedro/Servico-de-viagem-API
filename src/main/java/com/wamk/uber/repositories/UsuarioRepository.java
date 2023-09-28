@@ -1,5 +1,7 @@
 package com.wamk.uber.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.wamk.uber.entities.Motorista;
@@ -11,4 +13,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 	boolean existsByTelefone(String telefone);
 	
 	Motorista findByUsuarioStatus(UsuarioStatus status);
+	
+	List<Motorista> findAllByUsuarioStatus(UsuarioStatus status);
 }

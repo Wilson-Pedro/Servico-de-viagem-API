@@ -43,8 +43,12 @@ public class UsuarioService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
 	}
 	
-	public Motorista findByUsuarioStatus(UsuarioStatus status) {
-		return usuarioRepository.findByUsuarioStatus(status);
+	public Motorista findByMotoristaStatus(UsuarioStatus status) {
+		List<Motorista> list = usuarioRepository.findAllByUsuarioStatus(status);
+		return list.stream()
+				.filter(x -> x.getUsuarioStatus().equals(status))
+				.findFirst()
+				.orElseThrow(IllegalArgumentException::new);
 	}
 
 	public Usuario atualizarCadastro(UsuarioDTO usuarioDTO, Long id) {

@@ -69,9 +69,10 @@ public class ViagemService {
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
 		Viagem viagem = new Viagem(solicitacao);
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
-		Motorista motorista = (Motorista) usuarioService.findByUsuarioStatus(UsuarioStatus.ATIVO);
+		Motorista motorista = (Motorista) usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
 		motorista.setUsuarioStatus(UsuarioStatus.CORRENDO);
-		usuarioRepository.save(motorista);
+		passageiro.setUsuarioStatus(UsuarioStatus.CORRENDO);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista((Motorista)motorista);
 		viagemRepository.save(viagem);
