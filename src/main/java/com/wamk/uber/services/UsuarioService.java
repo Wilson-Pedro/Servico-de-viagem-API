@@ -1,6 +1,7 @@
 package com.wamk.uber.services;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.exceptions.TelefoneExistenteException;
 import com.wamk.uber.repositories.UsuarioRepository;
 
 @Service
@@ -28,6 +30,7 @@ public class UsuarioService {
 
 	@Transactional
 	public Usuario save(UsuarioDTO usuarioDTO) {
+		validarCadastroUsuario(usuarioDTO);
 		return usuarioRepository.save(usuarioMapper.toEntity(usuarioDTO));
 	}
 
@@ -44,7 +47,8 @@ public class UsuarioService {
 		return usuarioRepository.findByUsuarioStatus(status);
 	}
 
-	public Usuario atualizarCadastro(UsuarioDTO usuarioDTO,Long id) {
+	public Usuario atualizarCadastro(UsuarioDTO usuarioDTO, Long id) {
+		validarUpdateUsuario(usuarioDTO, id);
 		return usuarioRepository.findById(id)
 				.map(usuario -> {
 					usuario.setNome(usuarioDTO.getNome());
@@ -60,4 +64,16 @@ public class UsuarioService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
 	}
 	
+	public void validarCadastroUsuario(UsuarioDTO usuarioDTO) {
+		if(usuarioRepository.existsByTelefone(usuarioDTO.getTelefone())) {
+			throw new TelefoneExistenteException("");
+		}
+	}
+	
+	public void validarUpdateUsuario(UsuarioDTO usuarioDTO, Long id) {
+		if(usuarioRepository.existsByTelefone(usuarioDTO.getTelefone()) 
+				&& !Objects.equals(usuarioDTO.getId(), id)) {
+			throw new TelefoneExistenteException("");
+		}
+	}
 }

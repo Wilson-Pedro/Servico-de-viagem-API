@@ -64,7 +64,6 @@ public class CarroService {
 	}
 	
 	public void validarUpdate(CarroDTO carroDTO, Long id) {
-		//var carro = carroRepository.findByPlaca(carroDTO.getPlaca());
 		if(carroRepository.existsByPlaca(carroDTO.getPlaca()) && 
 				!Objects.equals(carroDTO.getId(), id)) {
 			throw new PlacaExistenteException("Placa já cadastrada.");
