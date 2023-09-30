@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 
 import jakarta.persistence.CascadeType;
@@ -41,6 +42,14 @@ public class CarroDTO implements Serializable{
 		this.ano = ano;
 		this.placa = placa;
 		this.motorista = motorista;
+	}
+	
+	public CarroDTO(Carro carro) {
+		id = carro.getId();
+		modelo = carro.getModelo();
+		ano = carro.getAno();
+		placa = carro.getPlaca();
+		motorista = carro.getMotorista();
 	}
 
 	public Long getId() {

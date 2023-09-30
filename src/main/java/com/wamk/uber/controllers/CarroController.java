@@ -2,6 +2,8 @@ package com.wamk.uber.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,6 +47,12 @@ public class CarroController {
 	public ResponseEntity<CarroDTO> findById(@PathVariable Long id){
 		Carro carro = carroService.findById(id);
 		return ResponseEntity.ok(carroMapper.toDTO(carro));
+	}
+	
+	@GetMapping("/pages")
+	public ResponseEntity<Page<CarroDTO>> paginar(Pageable pageable){
+		Page<Carro> pages = carroService.findAll(pageable);
+		return ResponseEntity.ok(pages.map(CarroDTO::new));
 	}
 	
 	@PostMapping

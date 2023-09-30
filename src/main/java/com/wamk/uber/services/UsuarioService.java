@@ -3,6 +3,8 @@ package com.wamk.uber.services;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,10 @@ public class UsuarioService {
 
 	public List<Usuario> findAll() {
 		return usuarioRepository.findAll();
+	}
+	
+	public Page<Usuario> findAll(Pageable pageable) {
+		return usuarioRepository.findAll(pageable);
 	}
 
 	public Usuario findById(Long id) {

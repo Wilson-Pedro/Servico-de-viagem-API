@@ -1,7 +1,10 @@
 package com.wamk.uber.controllers;
 
+
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -64,6 +67,12 @@ public class UsuarioController {
 			@PathVariable @NotNull @Positive Long id){
 		var usuario = usuarioService.atualizarCadastro(usuarioDTO, id);
 		return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
+	}
+	
+	@GetMapping("/pages")
+	public ResponseEntity<Page<UsuarioDTO>> paginar(Pageable pageable){
+		Page<Usuario> pages = usuarioService.findAll(pageable);
+		return ResponseEntity.ok(pages.map(UsuarioDTO::new));
 	}
 	
 	@DeleteMapping("/{id}")

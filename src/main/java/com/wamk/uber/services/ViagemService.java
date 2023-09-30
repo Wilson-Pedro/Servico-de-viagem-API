@@ -2,6 +2,8 @@ package com.wamk.uber.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +50,10 @@ public class ViagemService {
 	public Viagem findById(Long id) {
 		return viagemRepository.findById(id)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+	}
+	
+	public Page<Viagem> findAll(Pageable pageable) {
+		return viagemRepository.findAll(pageable);
 	}
 
 	public Viagem atualizarCadastro(ViagemInputDTO viagemInputDTO,Long id) {
