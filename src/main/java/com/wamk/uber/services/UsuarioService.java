@@ -11,23 +11,29 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.mapper.UsuarioMapper;
 import com.wamk.uber.entities.Motorista;
+import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
 import com.wamk.uber.repositories.UsuarioRepository;
+import com.wamk.uber.repositories.ViagemRepository;
 
 @Service
 public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
+	
+	private final ViagemRepository viagemRepository;
 
 	private final UsuarioMapper usuarioMapper;
 	
-	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
+	public UsuarioService(UsuarioRepository usuarioRepository, ViagemRepository viagemRepository, UsuarioMapper usuarioMapper) {
 		this.usuarioRepository = usuarioRepository;
+		this.viagemRepository = viagemRepository;
 		this.usuarioMapper = usuarioMapper;
 	}
 
@@ -86,5 +92,25 @@ public class UsuarioService {
 				&& !Objects.equals(usuarioDTO.getId(), id)) {
 			throw new TelefoneExistenteException("");
 		}
+	}
+	
+	public void updateUsuarioStatus(Long id) {
+		Viagem viagem = viagemRepository.findById(id).get();
+		Passageiro passageiro = (Passageiro) findById(viagem.getPassageiro().getId());
+		Motorista motorista = (Motorista) findById(viagem.getMotorista().getId());
+		passageiro.setUsuarioStatus(UsuarioStatus.ATIVO);
+		motorista.setUsuarioStatus(UsuarioStatus.ATIVO);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
+	}
+
+	public void finishTrip(Long id) {
+		Usuario usuario = findById(id);
+		Viagem viagem = new Viagem();
+		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
+			viagem = viagemRepository.findByPassageiro((Passageiro) usuario);
+		} else {
+			viagem = viagemRepository.findByMotorista((Motorista) usuario);
+		}
+		updateUsuarioStatus(viagem.getId());
 	}
 }

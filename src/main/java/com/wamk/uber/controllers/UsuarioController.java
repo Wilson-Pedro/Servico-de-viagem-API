@@ -86,4 +86,10 @@ public class UsuarioController {
 		viagemService.solicitandoViagem(solicitacao);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PutMapping("/{id}/finalizacao")
+	public ResponseEntity<Void> finishTrip(@PathVariable Long id){
+		usuarioService.finishTrip(id);
+		return ResponseEntity.noContent().build();
+	}
 }
