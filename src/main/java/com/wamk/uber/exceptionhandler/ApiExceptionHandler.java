@@ -57,7 +57,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	public ResponseEntity<Problema> entidadeNaoEncontrada(){
 		
 		Problema problema = new Problema();
-		problema.setTitulo("Entidade não Encontrada.");
+		problema.setTitulo("Id não encontrado.");
 		problema.setStatus(HttpStatus.NOT_FOUND.value());
 		problema.setDataHora(OffsetDateTime.now());
 		

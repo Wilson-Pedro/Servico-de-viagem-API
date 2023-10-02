@@ -69,8 +69,18 @@ public class ViagemService {
 	
 	@Transactional
 	public void delete(Long id) {
+		updateUsuarioStatus(id);
 		viagemRepository.delete(viagemRepository.findById(id)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
+	}
+
+	private void updateUsuarioStatus(Long id) {
+		Viagem viagem = findById(id);
+		Passageiro passageiro = (Passageiro) usuarioService.findById(viagem.getPassageiro().getId());
+		Motorista motorista = (Motorista) usuarioService.findById(viagem.getMotorista().getId());
+		passageiro.setUsuarioStatus(UsuarioStatus.ATIVO);
+		motorista.setUsuarioStatus(UsuarioStatus.ATIVO);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
 	}
 
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
