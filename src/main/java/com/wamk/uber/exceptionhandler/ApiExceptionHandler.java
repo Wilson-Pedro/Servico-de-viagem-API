@@ -24,6 +24,7 @@ import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
+import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
@@ -107,5 +108,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		problema.setDataHora(OffsetDateTime.now());
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
+	}
+	
+	@ExceptionHandler(ViagemJaFinalizadaException.class)
+	public ResponseEntity<Problema> viagemJaFinalizadaException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("Você precisa está em uma corrida se quiser finalizá-la.");
+		problema.setStatus(HttpStatus.BAD_REQUEST.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
 	}
 }

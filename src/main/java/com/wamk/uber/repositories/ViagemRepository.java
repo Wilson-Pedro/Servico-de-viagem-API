@@ -11,4 +11,6 @@ public interface ViagemRepository extends JpaRepository<Viagem, Long>{
 	Viagem findByPassageiro(Passageiro passageiro);
 	
 	Viagem findByMotorista(Motorista motorista);
+	
+	boolean existsById(Long id);
 }

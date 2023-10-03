@@ -36,7 +36,7 @@ public class UberApplication implements CommandLineRunner{
 	public static void main(String[] args) {
 		SpringApplication.run(UberApplication.class, args);
 	}
-	//SolicitarViagem
+	
 	@Override
 	public void run(String... args) throws Exception {
 		

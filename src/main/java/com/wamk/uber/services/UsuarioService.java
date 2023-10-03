@@ -19,6 +19,7 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
+import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
@@ -111,6 +112,10 @@ public class UsuarioService {
 		} else {
 			viagem = viagemRepository.findByMotorista((Motorista) usuario);
 		}
+		if(viagem == null) {
+			throw new ViagemJaFinalizadaException("");
+		}
 		updateUsuarioStatus(viagem.getId());
+		viagemRepository.delete(viagem);
 	}
 }
