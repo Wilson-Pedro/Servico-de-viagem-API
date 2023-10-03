@@ -1,6 +1,6 @@
-# UBER-API
+# Servico-de-viagem-API
 
-A API do Uber é uma interface de programação de aplicativos que oferece funcionalidades como solicitações de corridas, acesso a dados de motoristas e veículos, e gestão de pagamentos. A API tem por objetivo facilitar a criação de aplicativos que ampliam as funcionalidades da empresa de transporte, tornando-a acessível a uma variedade de desenvolvedores e casos de uso. 
+O Servico-de-viagem-API é uma interface de programação de aplicativos que oferece funcionalidades como solicitações de corridas, acesso a dados de motoristas e veículos, e gestão de pagamentos. A API tem por objetivo facilitar a criação de aplicativos que ampliam as funcionalidades da empresa de transporte, tornando-a acessível a uma variedade de desenvolvedores e casos de uso. 
 
 # Tecnologias utilizadas
 ## Back end
