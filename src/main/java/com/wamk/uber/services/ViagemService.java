@@ -110,6 +110,9 @@ public class ViagemService {
 	@Transactional
 	public void cancelTrip(Long id) {
 		Viagem viagem = findByUserId(id);
+		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
+			throw new ViagemJaFinalizadaException("");
+		}
 		usuarioService.updateUsuarioStatus(viagem.getId());
 		viagemRepository.delete(viagem);
 	}

@@ -114,7 +114,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	public ResponseEntity<Problema> viagemJaFinalizadaException(){
 		
 		Problema problema = new Problema();
-		problema.setTitulo("Você precisa está em uma corrida se quiser finalizá-la.");
+		problema.setTitulo("Você não pode terminar uma viagem que já foi finalizada ou cancelada!");
 		problema.setStatus(HttpStatus.BAD_REQUEST.value());
 		problema.setDataHora(OffsetDateTime.now());
 		
