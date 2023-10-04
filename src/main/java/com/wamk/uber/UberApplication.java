@@ -14,6 +14,7 @@ import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
+import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
@@ -54,7 +55,7 @@ public class UberApplication implements CommandLineRunner{
 		
 		Viagem v1 = new Viagem(null, 
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
-				"20min", p1,(Motorista) m1, FormaDePagamento.PIX);
+				"20min", p1,(Motorista) m1, FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA);
 		
 		carroRepository.saveAll(List.of(c1, c2, c3));
 		usuarioRepository.saveAll(Arrays.asList(p1, p2, p3, m1, m2, m3));

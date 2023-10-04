@@ -10,6 +10,7 @@ import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
+import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.services.UsuarioService;
 
 @Component
@@ -42,6 +43,7 @@ public class ViagemMapper {
 		viagem.setPassageiro((Passageiro) passageiro);
 		viagem.setMotorista((Motorista) motorista);
 		viagem.setFormaDePagamento(FormaDePagamento.toEnum(viagemInputDTO.getFormaDePagamento()));
+		viagem.setViagemStatus(ViagemStatus.NAO_FINALIZADA);
 		return viagem;
 	}
 }

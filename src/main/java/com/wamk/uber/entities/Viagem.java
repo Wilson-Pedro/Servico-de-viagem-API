@@ -7,7 +7,9 @@ import org.hibernate.validator.constraints.Length;
 
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.enums.FormaDePagamento;
+import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.enums.converter.FormaDePagamentoConverter;
+import com.wamk.uber.enums.converter.ViagemStatusConverter;
 
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -53,12 +55,16 @@ public class Viagem implements Serializable{
 	@NotNull
 	@Convert(converter = FormaDePagamentoConverter.class)
 	private FormaDePagamento formaDePagamento;
+	
+	@NotNull
+	@Convert(converter = ViagemStatusConverter.class)
+	private ViagemStatus viagemStatus;
 
 	public Viagem() {
 	}
 
 	public Viagem(Long id, String origem, String destino, String tempoDeViagem, 
-			Passageiro passageiro, Motorista motorista, FormaDePagamento formaDePagamento) {
+			Passageiro passageiro, Motorista motorista, FormaDePagamento formaDePagamento, ViagemStatus viagemStatus) {
 		this.id = id;
 		this.origem = origem;
 		this.destino = destino;
@@ -66,6 +72,7 @@ public class Viagem implements Serializable{
 		this.passageiro = passageiro;
 		this.motorista = motorista;
 		this.formaDePagamento = formaDePagamento;
+		this.viagemStatus = viagemStatus;
 	}
 	
 	public Viagem(SolicitarViagemDTO solicitacao) {
@@ -129,6 +136,14 @@ public class Viagem implements Serializable{
 
 	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
 		this.formaDePagamento = formaDePagamento;
+	}
+
+	public ViagemStatus getViagemStatus() {
+		return viagemStatus;
+	}
+
+	public void setViagemStatus(ViagemStatus viagemStatus) {
+		this.viagemStatus = viagemStatus;
 	}
 
 	@Override

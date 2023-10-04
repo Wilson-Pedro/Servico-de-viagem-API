@@ -36,6 +36,9 @@ public class ViagemDTO implements Serializable{
 	@NotNull
 	private String formaDePagamento;
 	
+	@NotNull
+	private String viagemStatus;
+	
 	public ViagemDTO() {
 	}
 
@@ -44,10 +47,11 @@ public class ViagemDTO implements Serializable{
 		nomePassageiro = viagem.getPassageiro().getNome();
 		nomeMotorista = viagem.getMotorista().getNome();
 		formaDePagamento = viagem.getFormaDePagamento().getDescricao();
+		viagemStatus = viagem.getViagemStatus().getDescricao();
 	}
 
 	public ViagemDTO(Long id, String origem,String destino, String tempoDeViagem, String nomePassageiro, 
-			String nomeMotorista, String formaDePagamento) {
+			String nomeMotorista, String formaDePagamento, String viagemStatus) {
 		this.id = id;
 		this.origem = origem;
 		this.destino = destino;
@@ -55,6 +59,7 @@ public class ViagemDTO implements Serializable{
 		this.nomePassageiro = nomePassageiro;
 		this.nomeMotorista = nomeMotorista;
 		this.formaDePagamento = formaDePagamento;
+		this.viagemStatus = viagemStatus;
 	}
 
 	public Long getId() {
@@ -111,5 +116,13 @@ public class ViagemDTO implements Serializable{
 
 	public void setFormaDePagamento(String formaDePagamento) {
 		this.formaDePagamento = formaDePagamento;
+	}
+
+	public String getViagemStatus() {
+		return viagemStatus;
+	}
+
+	public void setViagemStatus(String viagemStatus) {
+		this.viagemStatus = viagemStatus;
 	}
 }
