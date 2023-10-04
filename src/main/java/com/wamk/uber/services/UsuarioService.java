@@ -19,7 +19,6 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
-import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
@@ -102,20 +101,5 @@ public class UsuarioService {
 		passageiro.setUsuarioStatus(UsuarioStatus.ATIVO);
 		motorista.setUsuarioStatus(UsuarioStatus.ATIVO);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
-	}
-
-	public void finishTrip(Long id) {
-		Usuario usuario = findById(id);
-		Viagem viagem = new Viagem();
-		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
-			viagem = viagemRepository.findByPassageiro((Passageiro) usuario);
-		} else {
-			viagem = viagemRepository.findByMotorista((Motorista) usuario);
-		}
-		if(viagem == null) {
-			throw new ViagemJaFinalizadaException("");
-		}
-		updateUsuarioStatus(viagem.getId());
-		viagemRepository.delete(viagem);
 	}
 }

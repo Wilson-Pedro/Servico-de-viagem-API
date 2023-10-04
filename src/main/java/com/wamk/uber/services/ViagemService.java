@@ -12,11 +12,15 @@ import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.dtos.mapper.ViagemMapper;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
+import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
+import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
+import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
+import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
@@ -84,6 +88,7 @@ public class ViagemService {
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista((Motorista)motorista);
+		viagem.setViagemStatus(ViagemStatus.NAO_FINALIZADA);
 		viagemRepository.save(viagem);
 	}
 	
@@ -91,5 +96,26 @@ public class ViagemService {
 		if(passageiro.getUsuarioStatus().equals(UsuarioStatus.CORRENDO)) {
 			throw new PassageiroCorrendoException("");
 		}
+	}
+	
+	public void finishTrip(Long id) {
+		Viagem viagem = findByUserId(id);
+		usuarioService.updateUsuarioStatus(viagem.getId());
+		viagem.setViagemStatus(ViagemStatus.FINALIZADA);
+		viagemRepository.save(viagem);
+	}
+	
+	public Viagem findByUserId(Long id) {
+		Usuario usuario = usuarioService.findById(id);
+		Viagem viagem = new Viagem();
+		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
+			viagem = viagemRepository.findByPassageiro((Passageiro) usuario);
+		} else {
+			viagem = viagemRepository.findByMotorista((Motorista) usuario);
+		}
+		if(viagem == null) {
+			throw new ViagemJaFinalizadaException("");
+		}
+		return viagem;
 	}
 }
