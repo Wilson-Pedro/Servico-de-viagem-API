@@ -78,6 +78,7 @@ public class ViagemService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
 	}
 
+	@Transactional
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
 		Viagem viagem = new Viagem(solicitacao);
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
@@ -98,11 +99,19 @@ public class ViagemService {
 		}
 	}
 	
+	@Transactional
 	public void finishTrip(Long id) {
 		Viagem viagem = findByUserId(id);
 		usuarioService.updateUsuarioStatus(viagem.getId());
 		viagem.setViagemStatus(ViagemStatus.FINALIZADA);
 		viagemRepository.save(viagem);
+	}
+	
+	@Transactional
+	public void cancelTrip(Long id) {
+		Viagem viagem = findByUserId(id);
+		usuarioService.updateUsuarioStatus(viagem.getId());
+		viagemRepository.delete(viagem);
 	}
 	
 	public Viagem findByUserId(Long id) {

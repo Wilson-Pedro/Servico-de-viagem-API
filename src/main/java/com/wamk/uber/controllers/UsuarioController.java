@@ -92,4 +92,10 @@ public class UsuarioController {
 		viagemService.finishTrip(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PutMapping("/{id}/cancelamento")
+	public ResponseEntity<Void> cancelTrip(@PathVariable Long id){
+		viagemService.cancelTrip(id);
+		return ResponseEntity.noContent().build();
+	}
 }
