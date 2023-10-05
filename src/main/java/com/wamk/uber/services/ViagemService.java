@@ -80,19 +80,23 @@ public class ViagemService {
 
 	@Transactional
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
-		Viagem viagem = new Viagem(solicitacao);
+		Viagem viagem = new Viagem();
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
 		Motorista motorista = (Motorista) usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
 		motorista.setUsuarioStatus(UsuarioStatus.CORRENDO);
 		passageiro.setUsuarioStatus(UsuarioStatus.CORRENDO);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		viagem.setOrigem(solicitacao.getOrigem());
+		viagem.setDestino(solicitacao.getDestino());
+		viagem.setTempoDeViagem("10 minuutos");
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista((Motorista)motorista);
+		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
 		viagem.setViagemStatus(ViagemStatus.NAO_FINALIZADA);
 		viagemRepository.save(viagem);
 	}
-	
+
 	public void validarSolicitagem(Passageiro passageiro) {
 		if(passageiro.getUsuarioStatus().equals(UsuarioStatus.CORRENDO)) {
 			throw new PassageiroCorrendoException("");
@@ -101,7 +105,7 @@ public class ViagemService {
 	
 	@Transactional
 	public void finishTrip(Long id) {
-		Viagem viagem = findByUserId(id);
+		Viagem viagem = findByUser(id);
 		usuarioService.updateUsuarioStatus(viagem.getId());
 		viagem.setViagemStatus(ViagemStatus.FINALIZADA);
 		viagemRepository.save(viagem);
@@ -109,7 +113,7 @@ public class ViagemService {
 	
 	@Transactional
 	public void cancelTrip(Long id) {
-		Viagem viagem = findByUserId(id);
+		Viagem viagem = findByUser(id);
 		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
 			throw new ViagemJaFinalizadaException("");
 		}
@@ -117,7 +121,7 @@ public class ViagemService {
 		viagemRepository.delete(viagem);
 	}
 	
-	public Viagem findByUserId(Long id) {
+	public Viagem findByUser(Long id) {
 		Usuario usuario = usuarioService.findById(id);
 		Viagem viagem = new Viagem();
 		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
