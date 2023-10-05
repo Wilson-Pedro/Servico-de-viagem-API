@@ -121,7 +121,7 @@ public class ViagemService {
 		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
 			throw new ViagemJaFinalizadaException("");
 		}
-		usuarioService.updateUsuarioStatus(viagem.getId());
+		//usuarioService.updateUsuarioStatus(viagem.getId());
 		viagemRepository.delete(viagem);
 	}
 	
