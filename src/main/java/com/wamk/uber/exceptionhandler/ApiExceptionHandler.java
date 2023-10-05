@@ -24,6 +24,7 @@ import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
+import com.wamk.uber.exceptions.UsuarioDesativadoException;
 import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 
 @ControllerAdvice
@@ -115,6 +116,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		Problema problema = new Problema();
 		problema.setTitulo("Você não pode terminar uma viagem que já foi finalizada ou cancelada!");
+		problema.setStatus(HttpStatus.BAD_REQUEST.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+	}
+	
+	@ExceptionHandler(UsuarioDesativadoException.class)
+	public ResponseEntity<Problema> usuarioDesativadoException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("O usuario precisa está ativo para realizar essa função.");
 		problema.setStatus(HttpStatus.BAD_REQUEST.value());
 		problema.setDataHora(OffsetDateTime.now());
 		

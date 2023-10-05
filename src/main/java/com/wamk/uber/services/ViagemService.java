@@ -20,6 +20,7 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
+import com.wamk.uber.exceptions.UsuarioDesativadoException;
 import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
@@ -104,6 +105,8 @@ public class ViagemService {
 	public void validarSolicitagem(Passageiro passageiro) {
 		if(passageiro.getUsuarioStatus().equals(UsuarioStatus.CORRENDO)) {
 			throw new PassageiroCorrendoException("");
+		} else if (passageiro.getUsuarioStatus().equals(UsuarioStatus.DESATIVADO)) {
+			throw new UsuarioDesativadoException("");
 		}
 	}
 	
