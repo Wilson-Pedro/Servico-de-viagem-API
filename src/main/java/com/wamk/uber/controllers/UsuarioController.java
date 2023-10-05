@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -90,6 +91,18 @@ public class UsuarioController {
 	@DeleteMapping("/{usuarioId}/cancelamento")
 	public ResponseEntity<Void> cancelTrip(@PathVariable Long usuarioId){
 		viagemService.cancelTrip(usuarioId);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PatchMapping("/{id}/ativar")
+	public ResponseEntity<Void> ativarUsuario(@PathVariable Long id){
+		usuarioService.ativarUsuario(id);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PatchMapping("/{id}/desativar")
+	public ResponseEntity<Void> desativarUsuario(@PathVariable Long id){
+		usuarioService.desativarUsuario(id);
 		return ResponseEntity.noContent().build();
 	}
 }

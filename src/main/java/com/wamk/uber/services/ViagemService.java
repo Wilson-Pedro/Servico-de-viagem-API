@@ -73,7 +73,7 @@ public class ViagemService {
 	
 	@Transactional
 	public void delete(Long id) {
-		usuarioService.updateUsuarioStatus(id);
+		usuarioService.activateUserByViagemId(id);
 		viagemRepository.delete(viagemRepository.findById(id)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
 	}
@@ -110,7 +110,7 @@ public class ViagemService {
 	@Transactional
 	public void finishTrip(Long id) {
 		Viagem viagem = findById(id);
-		usuarioService.updateUsuarioStatus(viagem.getId());
+		usuarioService.activateUserByViagemId(viagem.getId());
 		viagem.setViagemStatus(ViagemStatus.FINALIZADA);
 		viagemRepository.save(viagem);
 	}
@@ -121,7 +121,7 @@ public class ViagemService {
 		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
 			throw new ViagemJaFinalizadaException("");
 		}
-		//usuarioService.updateUsuarioStatus(viagem.getId());
+		usuarioService.activateUserByViagemId(viagem.getId());
 		viagemRepository.delete(viagem);
 	}
 	

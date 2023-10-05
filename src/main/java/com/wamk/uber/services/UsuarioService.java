@@ -94,12 +94,25 @@ public class UsuarioService {
 		}
 	}
 	
-	public void updateUsuarioStatus(Long id) {
+	public void activateUserByViagemId(Long id) {
 		Viagem viagem = viagemRepository.findById(id).get();
 		Passageiro passageiro = (Passageiro) findById(viagem.getPassageiro().getId());
 		Motorista motorista = (Motorista) findById(viagem.getMotorista().getId());
 		passageiro.setUsuarioStatus(UsuarioStatus.ATIVO);
 		motorista.setUsuarioStatus(UsuarioStatus.ATIVO);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+	}
+
+	public void desativarUsuario(Long id) {
+		var usuario = findById(id);
+		usuario.setUsuarioStatus(UsuarioStatus.DESATIVADO);
+		usuarioRepository.save(usuario);
+	}
+
+	public void ativarUsuario(Long id) {
+		var usuario = findById(id);
+		usuario.setUsuarioStatus(UsuarioStatus.ATIVO);
+		usuarioRepository.save(usuario);
+		
 	}
 }
