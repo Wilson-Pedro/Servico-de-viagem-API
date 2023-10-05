@@ -80,13 +80,16 @@ public class ViagemService {
 
 	@Transactional
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
+		viagemRepository.save(buildTrip(solicitacao));
+	}
+	
+	private Viagem buildTrip(SolicitarViagemDTO solicitacao) {
 		Viagem viagem = new Viagem();
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
 		Motorista motorista = (Motorista) usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
 		motorista.setUsuarioStatus(UsuarioStatus.CORRENDO);
 		passageiro.setUsuarioStatus(UsuarioStatus.CORRENDO);
-		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		viagem.setOrigem(solicitacao.getOrigem());
 		viagem.setDestino(solicitacao.getDestino());
 		viagem.setTempoDeViagem("10 minuutos");
@@ -94,7 +97,8 @@ public class ViagemService {
 		viagem.setMotorista((Motorista)motorista);
 		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
 		viagem.setViagemStatus(ViagemStatus.NAO_FINALIZADA);
-		viagemRepository.save(viagem);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		return viagem;
 	}
 
 	public void validarSolicitagem(Passageiro passageiro) {
