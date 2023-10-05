@@ -109,7 +109,7 @@ public class ViagemService {
 	
 	@Transactional
 	public void finishTrip(Long id) {
-		Viagem viagem = findByUser(id);
+		Viagem viagem = findById(id);
 		usuarioService.updateUsuarioStatus(viagem.getId());
 		viagem.setViagemStatus(ViagemStatus.FINALIZADA);
 		viagemRepository.save(viagem);
