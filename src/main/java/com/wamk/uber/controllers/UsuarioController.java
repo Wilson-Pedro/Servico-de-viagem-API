@@ -90,7 +90,7 @@ public class UsuarioController {
 	
 	@DeleteMapping("/{usuarioId}/cancelarViagem")
 	public ResponseEntity<Void> cancelTrip(@PathVariable Long usuarioId){
-		viagemService.cancelTrip(usuarioId);
+		viagemService.cancelTripByUserId(usuarioId);
 		return ResponseEntity.noContent().build();
 	}
 	

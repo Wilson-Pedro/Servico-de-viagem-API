@@ -119,8 +119,18 @@ public class ViagemService {
 	}
 	
 	@Transactional
-	public void cancelTrip(Long id) {
-		Viagem viagem = findByUser(id);
+	public void cancelTripByUserId(Long Userid) {
+		Viagem viagem = findByUser(Userid);
+		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
+			throw new ViagemJaFinalizadaException("");
+		}
+		usuarioService.activateUserByViagemId(viagem.getId());
+		viagemRepository.delete(viagem);
+	}
+	
+	@Transactional
+	public void cancelTripById(Long id) {
+		Viagem viagem = findById(id);
 		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
 			throw new ViagemJaFinalizadaException("");
 		}
