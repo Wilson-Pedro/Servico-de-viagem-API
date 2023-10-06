@@ -51,7 +51,7 @@ public class UberApplication implements CommandLineRunner{
 		
 		Motorista m1 = new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, c1);
 		Motorista m2 = new Motorista(null, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, c2);
-		Motorista m3 = new Motorista(null, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, c3);
+		Motorista m3 = new Motorista(null, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, c3);
 		
 		Viagem v1 = new Viagem(null, 
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 

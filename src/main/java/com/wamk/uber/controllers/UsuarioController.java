@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.UsuarioDTO;
+import com.wamk.uber.dtos.ViagemDTO;
 import com.wamk.uber.dtos.mapper.UsuarioMapper;
+import com.wamk.uber.dtos.mapper.ViagemMapper;
 import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
 
@@ -39,10 +42,14 @@ public class UsuarioController {
 
 	private final UsuarioMapper usuarioMapper;
 	
-	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService, UsuarioMapper usuarioMapper) {
+	private final ViagemMapper viagemMapper;
+
+	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService, UsuarioMapper usuarioMapper,
+			ViagemMapper viagemMapper) {
 		this.usuarioService = usuarioService;
 		this.viagemService = viagemService;
 		this.usuarioMapper = usuarioMapper;
+		this.viagemMapper = viagemMapper;
 	}
 
 	@GetMapping
@@ -55,6 +62,12 @@ public class UsuarioController {
 	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id){
 		var usuario = usuarioService.findById(id);
 		return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
+	}
+	
+	@GetMapping("/{id}/viagens")
+	public ResponseEntity<List<ViagemDTO>> findAllTripsByUserId(@PathVariable Long id){
+		List<Viagem> list = viagemService.getAllTripsByUserId(id);
+		return ResponseEntity.ok(list.stream().map(x -> viagemMapper.toDTO(x)).toList());
 	}
 	
 	@PostMapping

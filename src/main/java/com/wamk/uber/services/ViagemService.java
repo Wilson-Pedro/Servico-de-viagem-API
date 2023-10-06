@@ -151,4 +151,23 @@ public class ViagemService {
 		}
 		return viagem;
 	}
+
+	public List<Viagem> getAllTripsByUserId(Long id) {
+		List<Viagem> list = findAllTripsByUserId(id);
+		return list;
+	}
+	
+	public List<Viagem> findAllTripsByUserId(Long id) {
+		var usuario = usuarioService.findById(id);
+		List<Viagem> list;
+		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
+			list = viagemRepository.findAllByPassageiro((Passageiro) usuario);
+		} else {
+			list = viagemRepository.findAllByMotorista((Motorista) usuario);
+		}
+		if(list == null) {
+			throw new IllegalArgumentException("");
+		}
+		return list;
+	}
 }
