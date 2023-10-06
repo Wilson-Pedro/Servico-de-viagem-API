@@ -24,7 +24,10 @@ import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
+import com.wamk.uber.exceptions.UsuarioCorrendoException;
 import com.wamk.uber.exceptions.UsuarioDesativadoException;
+import com.wamk.uber.exceptions.UsuarioJaAtivoException;
+import com.wamk.uber.exceptions.UsuarioJaDesativadoException;
 import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 
 @ControllerAdvice
@@ -92,7 +95,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	public ResponseEntity<Problema> passageiroCorrendoException(){
 		
 		Problema problema = new Problema();
-		problema.setTitulo("Você precisa esperar que sua corrida acabe para solicitar outra viagem!");
+		problema.setTitulo("Você precisa esperar que sua corrida acabe antes de solicitar outra viagem!");
 		problema.setStatus(HttpStatus.BAD_REQUEST.value());
 		problema.setDataHora(OffsetDateTime.now());
 		
@@ -127,6 +130,39 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		Problema problema = new Problema();
 		problema.setTitulo("O usuario precisa está ativo para realizar essa função.");
+		problema.setStatus(HttpStatus.BAD_REQUEST.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+	}
+	
+	@ExceptionHandler(UsuarioJaDesativadoException.class)
+	public ResponseEntity<Problema> usuarioJaDesativadoException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("O usuario já está desativado");
+		problema.setStatus(HttpStatus.BAD_REQUEST.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+	}
+	
+	@ExceptionHandler(UsuarioJaAtivoException.class)
+	public ResponseEntity<Problema> usuarioJaAtivoException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("O usuario já está ativo");
+		problema.setStatus(HttpStatus.BAD_REQUEST.value());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+	}
+	
+	@ExceptionHandler(UsuarioCorrendoException.class)
+	public ResponseEntity<Problema> usuarioCorrendoException(){
+		
+		Problema problema = new Problema();
+		problema.setTitulo("O usuario não pode ser desativado caso esteja em uma corrida.");
 		problema.setStatus(HttpStatus.BAD_REQUEST.value());
 		problema.setDataHora(OffsetDateTime.now());
 		

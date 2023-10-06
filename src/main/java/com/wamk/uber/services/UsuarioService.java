@@ -19,6 +19,9 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.TelefoneExistenteException;
+import com.wamk.uber.exceptions.UsuarioCorrendoException;
+import com.wamk.uber.exceptions.UsuarioJaAtivoException;
+import com.wamk.uber.exceptions.UsuarioJaDesativadoException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
@@ -105,12 +108,20 @@ public class UsuarioService {
 
 	public void desativarUsuario(Long id) {
 		var usuario = findById(id);
+		if(usuario.getUsuarioStatus().equals(UsuarioStatus.DESATIVADO)) {
+			throw new UsuarioJaDesativadoException("");
+		} else if (usuario.getUsuarioStatus().equals(UsuarioStatus.CORRENDO)) {
+			throw new UsuarioCorrendoException("");
+		}
 		usuario.setUsuarioStatus(UsuarioStatus.DESATIVADO);
 		usuarioRepository.save(usuario);
 	}
 
 	public void ativarUsuario(Long id) {
 		var usuario = findById(id);
+		if(usuario.getUsuarioStatus().equals(UsuarioStatus.ATIVO)) {
+			throw new UsuarioJaAtivoException("");
+		}
 		usuario.setUsuarioStatus(UsuarioStatus.ATIVO);
 		usuarioRepository.save(usuario);
 		
