@@ -82,13 +82,13 @@ public class UsuarioController {
 		usuarioService.delete(id);
 	}
 	
-	@PostMapping("/solicitacao")
+	@PostMapping("/solicitacarViagem")
 	public ResponseEntity<Void> solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
 		viagemService.solicitandoViagem(solicitacao);
 		return ResponseEntity.noContent().build();
 	}
 	
-	@DeleteMapping("/{usuarioId}/cancelamento")
+	@DeleteMapping("/{usuarioId}/cancelarViagem")
 	public ResponseEntity<Void> cancelTrip(@PathVariable Long usuarioId){
 		viagemService.cancelTrip(usuarioId);
 		return ResponseEntity.noContent().build();
