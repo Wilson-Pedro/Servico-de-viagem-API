@@ -14,9 +14,54 @@ O Servico-de-viagem-API é uma interface de programação de aplicativos que ofe
 
 
 ## Modelo conceitual
-![Modelo Conceitual](https://github.com/Wilson-Pedro/images/blob/main/uber/Uber.png)
+![Modelo Conceitual](https://github.com/Wilson-Pedro/images/blob/main/servico-de-viagem/Uber%20(2).png)
 
 
+# EndPoints:
+## Usuario
+### GET
+```
+http://localhost:8080/usuarios
+```
+```
+http://localhost:8080/usuarios/1
+```
+```
+http://localhost:8080/usuarios/1/viagens
+```
+```
+http://localhost:8080/usuarios/pages
+```
+
+
+### POST
+```
+http://localhost:8080/usuarios
+```
+```
+http://localhost:8080/usuarios/solicitacarViagem
+```
+
+### DELETE
+```
+http://localhost:8080/usuarios/1
+```
+```
+http://localhost:8080/usuarios/1/cancelarViagem
+```
+
+### PATCH
+```
+http://localhost:8080/usuarios/1/desativar
+```
+```
+http://localhost:8080/usuarios/1/ativar
+```
+
+### PUT
+```
+http://localhost:8080/usuarios/1
+```
 
 ## Status do Projeto
 - Em Desenvolvimento...
