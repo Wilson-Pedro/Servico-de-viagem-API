@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.dtos.CarroDTO;
-import com.wamk.uber.dtos.mapper.CarroMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
@@ -20,17 +19,16 @@ public class CarroService {
 
 	private final CarroRepository carroRepository;
 
-	private final CarroMapper carroMapper;
+	//private final CarroMapper carroMapper;
 	
-	public CarroService(CarroRepository carroRepository, CarroMapper carroMapper) {
+	public CarroService(CarroRepository carroRepository) {
 		this.carroRepository = carroRepository;
-		this.carroMapper = carroMapper;
 	}
 
 	@Transactional
 	public Carro save(CarroDTO carroDTO) {
 		validarSave(carroDTO);
-		return carroRepository.save(carroMapper.toEntity(carroDTO));
+		return carroRepository.save(new Carro(carroDTO));
 	}
 
 	public List<Carro> findAll() {
