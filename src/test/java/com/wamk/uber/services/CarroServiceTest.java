@@ -1,6 +1,7 @@
 package com.wamk.uber.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -57,5 +58,11 @@ class CarroServiceTest {
 		.thenReturn(Optional.of(carros.get(0)));
 		Carro car = carroService.findById(carros.get(0).getId());
 		assertEquals(carros.get(0), car);
+	}
+	
+	@Test
+	void deveDeletarCarroComSucesso() {
+		carroRepository.delete(carros.get(0));
+		verify(carroRepository).delete(carros.get(0));
 	}
 }
