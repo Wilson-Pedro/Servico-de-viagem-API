@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.CarroDTO;
+import com.wamk.uber.dtos.mapper.CarroMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.repositories.CarroRepository;
 
@@ -28,21 +29,33 @@ class CarroServiceTest {
 	@Mock
 	CarroRepository carroRepository;
 	
+	CarroMapper carroMapper;
+	
+	Carro car1;
+	Carro car2;
+	Carro car3;
+	
 	List<Carro> carros = new ArrayList<>();
 	
 	@BeforeEach
 	public void setUp() {
-		carros.add(new Carro(1L, "Fiat", 2022, "JVF-9207"));
-		carros.add(new Carro(2L, "Chevrolet", 2022, "FFG-0460"));
-		carros.add(new Carro(3L, "Forger", 2022, "FTG-0160"));
+		car1 = new Carro(1L, "Fiat", 2022, "JVF-9207");
+		car2 = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
+		car3 = new Carro(3L, "Forger", 2022, "FTG-0160");
+		
+		carros.add(car1);
+		carros.add(car2);
+		carros.add(car3);
+		
+		carroMapper = new CarroMapper();
 	}
 	
 	@Test
 	void deveSalvarCarroComSucesso() {
-		CarroDTO carroDTO = new CarroDTO(carros.get(0));
-		when(carroRepository.save(carros.get(0))).thenReturn(carros.get(0));
+		CarroDTO carroDTO = new CarroDTO(car1);
+		when(carroRepository.save(car1)).thenReturn(car1);
 		Carro carroSalvo = carroService.save(carroDTO);
-		assertEquals(carros.get(0), carroSalvo);
+		assertEquals(car1, carroSalvo);
 	}
 	
 	@Test
@@ -54,11 +67,20 @@ class CarroServiceTest {
 	
 	@Test
 	void deveBuscarCarroPorIdComSucesso() {
-		when(carroRepository.findById(carros.get(0).getId()))
-		.thenReturn(Optional.of(carros.get(0)));
-		Carro car = carroService.findById(carros.get(0).getId());
-		assertEquals(carros.get(0), car);
+		when(carroRepository.findById(car1.getId()))
+		.thenReturn(Optional.of(car1));
+		Carro car = carroService.findById(car1.getId());
+		assertEquals(car1, car);
 	}
+	
+//	@Test
+//	void deveAtualizarCarroComSucesso() {
+//		CarroDTO carroDTO = new CarroDTO(1L, "Fiat", 2023, "FTG-0160", carros.get(0).getMotorista());
+//		when(carroRepository.save(carros.get(0))).thenReturn(carros.get(0));
+//		carroDTO.setModelo("Toyata");
+//		Carro carroAtualizado = carroService.save(carroDTO);
+//		assertEquals("Toyata", carroAtualizado.getModelo());
+//	}
 	
 	@Test
 	void deveDeletarCarroComSucesso() {
