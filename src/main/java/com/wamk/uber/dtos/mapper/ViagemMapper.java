@@ -17,16 +17,16 @@ import com.wamk.uber.services.UsuarioService;
 public class ViagemMapper {
 	
 	@Autowired
-	private UsuarioService usuarioService;
+	private static UsuarioService usuarioService;
 
-	public ViagemDTO toDTO(Viagem viagem) {
+	public static ViagemDTO toDTO(Viagem viagem) {
 		if(viagem == null) {
 			return null;
 		}
 		return new ViagemDTO(viagem);
 	}
 	
-	public Viagem toEntity(ViagemInputDTO viagemInputDTO) {
+	public static Viagem toEntity(ViagemInputDTO viagemInputDTO) {
 		if(viagemInputDTO == null) {
 			return null;
 		}

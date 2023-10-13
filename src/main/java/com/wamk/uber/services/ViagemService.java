@@ -32,20 +32,17 @@ public class ViagemService {
 	
 	private final UsuarioService usuarioService;
 	
-	private final ViagemMapper viagemMapper;
-	
 	private final UsuarioRepository usuarioRepository;
 	
-	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService, ViagemMapper viagemMapper, UsuarioRepository usuarioRepository) {
+	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService, UsuarioRepository usuarioRepository) {
 		this.viagemRepository = viagemRepository;
 		this.usuarioService = usuarioService;
-		this.viagemMapper = viagemMapper;
 		this.usuarioRepository = usuarioRepository;
 	}
 
 	@Transactional
 	public Viagem save(ViagemInputDTO viagemInputDTO) {
-		return viagemRepository.save(viagemMapper.toEntity(viagemInputDTO));
+		return viagemRepository.save(ViagemMapper.toEntity(viagemInputDTO));
 	}
 
 	public List<Viagem> findAll() {

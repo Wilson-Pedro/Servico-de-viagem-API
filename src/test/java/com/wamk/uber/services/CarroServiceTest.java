@@ -13,11 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.CarroDTO;
-import com.wamk.uber.dtos.mapper.CarroMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.repositories.CarroRepository;
 
@@ -34,9 +32,6 @@ class CarroServiceTest {
 	Carro car2;
 	Carro car3;
 	
-	@Spy
-	CarroMapper carroMapper;
-	
 	List<Carro> carros = new ArrayList<>();
 	
 	@BeforeEach
@@ -48,8 +43,6 @@ class CarroServiceTest {
 		carros.add(car1);
 		carros.add(car2);
 		carros.add(car3);
-		
-		carroMapper = new CarroMapper();
 	}
 	
 	@Test

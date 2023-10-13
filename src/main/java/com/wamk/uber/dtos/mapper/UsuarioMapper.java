@@ -13,14 +13,14 @@ import com.wamk.uber.enums.UsuarioStatus;
 @Component
 public class UsuarioMapper {
 
-	public UsuarioDTO toDTO(Usuario usuario) {
+	public static UsuarioDTO toDTO(Usuario usuario) {
 		if(usuario == null) {
 			return null;
 		}
 		return new UsuarioDTO(usuario);
 	}
 	
-	public Usuario toEntity(UsuarioDTO usuarioDTO) {
+	public static Usuario toEntity(UsuarioDTO usuarioDTO) {
 		if(usuarioDTO == null) {
 			return null;
 		}
@@ -36,7 +36,7 @@ public class UsuarioMapper {
 		return user;
 	}
 
-	private Usuario passageiroOuMotorista(Usuario usuario) {
+	private static Usuario passageiroOuMotorista(Usuario usuario) {
 		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
 			Passageiro user = new Passageiro();
 			BeanUtils.copyProperties(usuario, user);

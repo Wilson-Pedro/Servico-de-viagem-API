@@ -19,18 +19,15 @@ import com.wamk.uber.repositories.CarroRepository;
 public class CarroService {
 
 	private final CarroRepository carroRepository;
-
-	private final CarroMapper carroMapper;
 	
-	public CarroService(CarroRepository carroRepository, CarroMapper carroMapper) {
+	public CarroService(CarroRepository carroRepository) {
 		this.carroRepository = carroRepository;
-		this.carroMapper = carroMapper;
 	}
 
 	@Transactional
 	public Carro save(CarroDTO carroDTO) {
 		validarSave(carroDTO);
-		return carroRepository.save(carroMapper.toEntity(carroDTO));
+		return carroRepository.save(CarroMapper.toEntity(carroDTO));
 	}
 
 	public List<Carro> findAll() {

@@ -40,47 +40,40 @@ public class UsuarioController {
 	
 	private final ViagemService viagemService;
 
-	private final UsuarioMapper usuarioMapper;
-	
-	private final ViagemMapper viagemMapper;
-
-	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService, UsuarioMapper usuarioMapper,
-			ViagemMapper viagemMapper) {
+	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService) {
 		this.usuarioService = usuarioService;
 		this.viagemService = viagemService;
-		this.usuarioMapper = usuarioMapper;
-		this.viagemMapper = viagemMapper;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<UsuarioDTO>> findAll(){
 		List<Usuario> list = usuarioService.findAll();
-		return ResponseEntity.ok(list.stream().map(x -> usuarioMapper.toDTO(x)).toList());
+		return ResponseEntity.ok(list.stream().map(x -> UsuarioMapper.toDTO(x)).toList());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id){
 		var usuario = usuarioService.findById(id);
-		return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
+		return ResponseEntity.ok(UsuarioMapper.toDTO(usuario));
 	}
 	
 	@GetMapping("/{id}/viagens")
 	public ResponseEntity<List<ViagemDTO>> findAllTripsByUserId(@PathVariable Long id){
 		List<Viagem> list = viagemService.getAllTripsByUserId(id);
-		return ResponseEntity.ok(list.stream().map(x -> viagemMapper.toDTO(x)).toList());
+		return ResponseEntity.ok(list.stream().map(x -> ViagemMapper.toDTO(x)).toList());
 	}
 	
 	@PostMapping
 	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
 		var usuario = usuarioService.save(usuarioDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toDTO(usuario));
+		return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDTO(usuario));
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> atualiziar(@RequestBody @Valid UsuarioDTO usuarioDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var usuario = usuarioService.atualizarCadastro(usuarioDTO, id);
-		return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
+		return ResponseEntity.ok(UsuarioMapper.toDTO(usuario));
 	}
 	
 	@GetMapping("/pages")

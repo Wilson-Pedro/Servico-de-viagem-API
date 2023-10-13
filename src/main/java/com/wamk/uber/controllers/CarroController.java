@@ -30,23 +30,20 @@ public class CarroController {
 	
 	private final CarroService carroService;
 	
-	private final CarroMapper carroMapper;
-	
-	public CarroController(CarroService carroService, CarroMapper carroMapper) {
+	public CarroController(CarroService carroService) {
 		this.carroService = carroService;
-		this.carroMapper = carroMapper;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<CarroDTO>> findAll(){
 		List<Carro> list = carroService.findAll();
-		return ResponseEntity.ok(list.stream().map(x -> carroMapper.toDTO(x)).toList());
+		return ResponseEntity.ok(list.stream().map(x -> CarroMapper.toDTO(x)).toList());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<CarroDTO> findById(@PathVariable Long id){
 		Carro carro = carroService.findById(id);
-		return ResponseEntity.ok(carroMapper.toDTO(carro));
+		return ResponseEntity.ok(CarroMapper.toDTO(carro));
 	}
 	
 	@GetMapping("/pages")
@@ -58,7 +55,7 @@ public class CarroController {
 	@PostMapping
 	public ResponseEntity<CarroDTO> registrarCarro(@RequestBody @Valid CarroDTO carroDTO){
 		var carro = carroService.save(carroDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(carroMapper.toDTO(carro));
+		return ResponseEntity.status(HttpStatus.CREATED).body(CarroMapper.toDTO(carro));
 		
 	}
 	
@@ -66,7 +63,7 @@ public class CarroController {
 	public ResponseEntity<CarroDTO> atualiziar(@RequestBody @Valid CarroDTO carroDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var carro = carroService.atualizarCadastro(carroDTO, id);
-		return ResponseEntity.ok(carroMapper.toDTO(carro));
+		return ResponseEntity.ok(CarroMapper.toDTO(carro));
 	}
 	
 	@DeleteMapping("/{id}")	

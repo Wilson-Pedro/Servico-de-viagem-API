@@ -31,19 +31,16 @@ public class UsuarioService {
 	private final UsuarioRepository usuarioRepository;
 	
 	private final ViagemRepository viagemRepository;
-
-	private final UsuarioMapper usuarioMapper;
 	
-	public UsuarioService(UsuarioRepository usuarioRepository, ViagemRepository viagemRepository, UsuarioMapper usuarioMapper) {
+	public UsuarioService(UsuarioRepository usuarioRepository, ViagemRepository viagemRepository) {
 		this.usuarioRepository = usuarioRepository;
 		this.viagemRepository = viagemRepository;
-		this.usuarioMapper = usuarioMapper;
 	}
 
 	@Transactional
 	public Usuario save(UsuarioDTO usuarioDTO) {
 		validarCadastroUsuario(usuarioDTO);
-		return usuarioRepository.save(usuarioMapper.toEntity(usuarioDTO));
+		return usuarioRepository.save(UsuarioMapper.toEntity(usuarioDTO));
 	}
 
 	public List<Usuario> findAll() {

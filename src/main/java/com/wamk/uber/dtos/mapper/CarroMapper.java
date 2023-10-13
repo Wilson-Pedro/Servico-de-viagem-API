@@ -5,7 +5,7 @@ import com.wamk.uber.entities.Carro;
 
 public class CarroMapper {
 
-	public CarroDTO toDTO(Carro carro) {
+	public static CarroDTO toDTO(Carro carro) {
 		if(carro == null) {
 			return null;
 		}
@@ -17,7 +17,7 @@ public class CarroMapper {
 		return carroDTO;
 	}
 	
-	public Carro toEntity(CarroDTO carroDTO) {
+	public static Carro toEntity(CarroDTO carroDTO) {
 		if(carroDTO == null) {
 			return null;
 		}
