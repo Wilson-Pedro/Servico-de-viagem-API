@@ -76,6 +76,15 @@ class CarroServiceTest {
 	}
 	
 	@Test
+	void deveAtualizarCarroComSucesso() {
+		when(carroRepository.save(car1)).thenReturn(car1);
+		car1.setModelo("Toyota");
+		CarroDTO carroDTO = new CarroDTO(car1);
+		Carro carroAtualizado = carroService.save(carroDTO);
+		assertEquals("Toyota", carroAtualizado.getModelo());
+	}
+	
+	@Test
 	void deveDeletarCarroComSucesso() {
 		carroRepository.delete(carros.get(0));
 		verify(carroRepository).delete(carros.get(0));
