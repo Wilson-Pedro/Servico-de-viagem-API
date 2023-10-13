@@ -1,11 +1,8 @@
 package com.wamk.uber.dtos.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
 
-@Component
 public class CarroMapper {
 
 	public CarroDTO toDTO(Carro carro) {
