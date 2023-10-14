@@ -79,7 +79,7 @@ class CarroServiceTest {
 	
 	@Test
 	void deveDeletarCarroComSucesso() {
-		carroRepository.delete(carros.get(0));
-		verify(carroRepository).delete(carros.get(0));
+		carroRepository.delete(car1);
+		verify(carroRepository).delete(car1);
 	}
 }

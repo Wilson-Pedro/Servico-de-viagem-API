@@ -1,6 +1,7 @@
 package com.wamk.uber.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.UsuarioDTO;
@@ -32,17 +34,22 @@ class UsuarioServiceTest {
 	@Mock
 	UsuarioRepository usuarioRepository;
 	
+	@Spy
 	Carro carro;
+	
+	@Spy
 	Usuario passageiro;
+	
+	@Spy
 	Usuario motorista;
 	
 	List<Usuario> usuarios = new ArrayList<>();
 	
 	@BeforeEach
 	public void setUp() {
-		carro = new Carro(null, "Fiat", 2022, "JVF-9207");
-		passageiro = new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
-		motorista = new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+		carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
+		passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
+		motorista = new Motorista(2L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
 	
 		usuarios.add(passageiro);
 		usuarios.add(motorista);
@@ -78,5 +85,11 @@ class UsuarioServiceTest {
 		UsuarioDTO userDTO = new UsuarioDTO(passageiro);
 		Usuario userUpdated = this.usuarioService.save(userDTO);
 		assertEquals("Luffy", userUpdated.getNome());
+	}
+	
+	@Test
+	void deveDeletarUsuarioComSucesso() {
+		this.usuarioRepository.delete(motorista);
+		verify(this.usuarioRepository).delete(motorista);
 	}
 }
