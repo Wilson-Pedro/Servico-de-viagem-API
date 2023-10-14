@@ -71,4 +71,12 @@ class UsuarioServiceTest {
 		assertEquals(motorista, user);
 	}
 
+	@Test
+	void deveAtualizarUsuarioComSucesso() {
+		when(this.usuarioRepository.save(passageiro)).thenReturn(passageiro);
+		passageiro.setNome("Luffy");
+		UsuarioDTO userDTO = new UsuarioDTO(passageiro);
+		Usuario userUpdated = this.usuarioService.save(userDTO);
+		assertEquals("Luffy", userUpdated.getNome());
+	}
 }
