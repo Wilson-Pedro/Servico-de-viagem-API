@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ class UsuarioServiceTest {
 	@Test
 	void deveSalvarUsuarioComSucesso() {
 		UsuarioDTO usuarioDTO = new UsuarioDTO(passageiro);
-		when(usuarioRepository.save(passageiro)).thenReturn(passageiro);
+		when(this.usuarioRepository.save(passageiro)).thenReturn(passageiro);
 		Usuario user = usuarioService.save(usuarioDTO);
 		assertEquals(passageiro, user);
 	}
@@ -60,6 +61,14 @@ class UsuarioServiceTest {
 		when(this.usuarioRepository.findAll()).thenReturn(usuarios);
 		List<Usuario> list = this.usuarioService.findAll();
 		assertEquals(usuarios, list);
+	}
+	
+	@Test
+	void deveBuscarUsuarioPorId() {
+		when(this.usuarioRepository.findById(motorista.getId()))
+		.thenReturn(Optional.of(motorista));
+		Usuario user = this.usuarioService.findById(motorista.getId());
+		assertEquals(motorista, user);
 	}
 
 }
