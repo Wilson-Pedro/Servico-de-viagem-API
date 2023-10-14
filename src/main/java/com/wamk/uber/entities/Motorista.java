@@ -13,10 +13,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "TB_MOTORISTA")
+@Entity(name = "TB_MOTORISTA")
 @JsonTypeName("motorista")
 public class Motorista extends Usuario{
 	private static final long serialVersionUID = 1L;

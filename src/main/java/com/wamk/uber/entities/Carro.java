@@ -14,12 +14,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "TB_CARRO")
+@Entity(name = "TB_CARRO")
 public class Carro implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

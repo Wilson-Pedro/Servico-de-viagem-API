@@ -14,12 +14,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "TB_USUARIO")
+@Entity(name = "TB_USUARIO")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario implements Serializable{
 	private static final long serialVersionUID = 1L;

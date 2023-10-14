@@ -11,10 +11,8 @@ import com.wamk.uber.enums.UsuarioStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "TB_PASSAGEIRO")
+@Entity(name = "TB_PASSAGEIRO")
 @JsonTypeName("passageiro")
 public class Passageiro extends Usuario{
 	private static final long serialVersionUID = 1L;

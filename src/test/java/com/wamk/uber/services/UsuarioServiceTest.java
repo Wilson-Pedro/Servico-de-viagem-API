@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.UsuarioDTO;
+import com.wamk.uber.entities.Carro;
+import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.enums.TipoUsuario;
@@ -29,29 +31,35 @@ class UsuarioServiceTest {
 	@Mock
 	UsuarioRepository usuarioRepository;
 	
-	Passageiro p1;
-	Passageiro p2;
-	Passageiro p3;
+	Carro carro;
+	Usuario passageiro;
+	Usuario motorista;
 	
 	List<Usuario> usuarios = new ArrayList<>();
 	
 	@BeforeEach
 	public void setUp() {
-		p1 = new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
-		p2 = new Passageiro(null, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
-		p3 = new Passageiro(null, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
+		carro = new Carro(null, "Fiat", 2022, "JVF-9207");
+		passageiro = new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
+		motorista = new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
 	
-		usuarios.add(p1);
-		usuarios.add(p2);
-		usuarios.add(p3);
+		usuarios.add(passageiro);
+		usuarios.add(motorista);
 	}
 	
 	@Test
 	void deveSalvarUsuarioComSucesso() {
-		UsuarioDTO usuarioDTO = new UsuarioDTO(p1);
-		when(usuarioRepository.save(p1)).thenReturn(p1);
+		UsuarioDTO usuarioDTO = new UsuarioDTO(passageiro);
+		when(usuarioRepository.save(passageiro)).thenReturn(passageiro);
 		Usuario user = usuarioService.save(usuarioDTO);
-		assertEquals(p1, user);
+		assertEquals(passageiro, user);
+	}
+	
+	@Test
+	void deveBuscarTodosOsUsuariosComSucesso() {
+		when(this.usuarioRepository.findAll()).thenReturn(usuarios);
+		List<Usuario> list = this.usuarioService.findAll();
+		assertEquals(usuarios, list);
 	}
 
 }
