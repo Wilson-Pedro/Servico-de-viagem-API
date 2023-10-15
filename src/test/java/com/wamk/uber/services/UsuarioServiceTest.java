@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.UsuarioDTO;
@@ -34,13 +33,10 @@ class UsuarioServiceTest {
 	@Mock
 	UsuarioRepository usuarioRepository;
 	
-	@Spy
 	Carro carro;
 	
-	@Spy
 	Usuario passageiro;
 	
-	@Spy
 	Usuario motorista;
 	
 	List<Usuario> usuarios = new ArrayList<>();

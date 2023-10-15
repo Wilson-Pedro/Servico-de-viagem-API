@@ -31,7 +31,7 @@ public class UsuarioService {
 	private final UsuarioRepository usuarioRepository;
 	
 	private final ViagemRepository viagemRepository;
-	
+
 	public UsuarioService(UsuarioRepository usuarioRepository, ViagemRepository viagemRepository) {
 		this.usuarioRepository = usuarioRepository;
 		this.viagemRepository = viagemRepository;

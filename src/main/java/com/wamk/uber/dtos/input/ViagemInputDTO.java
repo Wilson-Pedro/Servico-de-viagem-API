@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.wamk.uber.entities.Viagem;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -45,6 +47,16 @@ public class ViagemInputDTO implements Serializable{
 		this.passageiroId = passageiroId;
 		this.motoristaId = motoristaId;
 		this.formaDePagamento = formaDePagamento;
+	}
+	
+	public ViagemInputDTO(Viagem viagem) {
+		id = viagem.getId();
+		origem = viagem.getOrigem();
+		destino = viagem.getDestino();
+		tempoDeViagem = viagem.getTempoDeViagem();
+		passageiroId = viagem.getPassageiro().getId();
+		motoristaId = viagem.getMotorista().getId();
+		formaDePagamento = viagem.getFormaDePagamento().getDescricao();
 	}
 
 	public Long getId() {

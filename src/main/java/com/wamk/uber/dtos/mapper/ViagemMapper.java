@@ -15,18 +15,15 @@ import com.wamk.uber.services.UsuarioService;
 
 @Component
 public class ViagemMapper {
-	
-	@Autowired
-	private static UsuarioService usuarioService;
 
-	public static ViagemDTO toDTO(Viagem viagem) {
+	public ViagemDTO toDTO(Viagem viagem) {
 		if(viagem == null) {
 			return null;
 		}
 		return new ViagemDTO(viagem);
 	}
 	
-	public static Viagem toEntity(ViagemInputDTO viagemInputDTO) {
+	public Viagem toEntity(ViagemInputDTO viagemInputDTO, Passageiro passageiro, Motorista motorista) {
 		if(viagemInputDTO == null) {
 			return null;
 		}
@@ -34,8 +31,6 @@ public class ViagemMapper {
 		if(viagemInputDTO.getId() != null) {
 			viagem.setId(viagemInputDTO.getId());
 		}
-		Usuario passageiro = usuarioService.findById(viagemInputDTO.getPassageiroId());
-		Usuario motorista = usuarioService.findById(viagemInputDTO.getMotoristaId());
 		
 		viagem.setOrigem(viagemInputDTO.getOrigem());
 		viagem.setDestino(viagemInputDTO.getDestino());

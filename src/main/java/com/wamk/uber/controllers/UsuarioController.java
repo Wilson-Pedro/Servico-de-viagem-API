@@ -39,10 +39,13 @@ public class UsuarioController {
 	private final UsuarioService usuarioService;
 	
 	private final ViagemService viagemService;
+	
+	private final ViagemMapper viagemMapper;
 
-	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService) {
+	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService, ViagemMapper viagemMapper) {
 		this.usuarioService = usuarioService;
 		this.viagemService = viagemService;
+		this.viagemMapper = viagemMapper;
 	}
 
 	@GetMapping
@@ -60,7 +63,7 @@ public class UsuarioController {
 	@GetMapping("/{id}/viagens")
 	public ResponseEntity<List<ViagemDTO>> findAllTripsByUserId(@PathVariable Long id){
 		List<Viagem> list = viagemService.getAllTripsByUserId(id);
-		return ResponseEntity.ok(list.stream().map(x -> ViagemMapper.toDTO(x)).toList());
+		return ResponseEntity.ok(list.stream().map(x -> viagemMapper.toDTO(x)).toList());
 	}
 	
 	@PostMapping
