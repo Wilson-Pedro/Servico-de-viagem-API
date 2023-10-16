@@ -1,10 +1,8 @@
 package com.wamk.uber.exceptions;
 
 public class TelefoneExistenteException extends RuntimeException{
-	
-	private static final long serialVersionUID = 1L;
-	
-	public TelefoneExistenteException(String msg) {
-		super(msg);
+
+	public TelefoneExistenteException(final String telefone) {
+		super(String.format("Telefone [%s] não encontrado.", telefone));
 	}
 }

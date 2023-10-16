@@ -42,7 +42,7 @@ public class UsuarioController {
 	
 	private final ViagemMapper viagemMapper;
 
-	public UsuarioController(UsuarioService usuarioService, ViagemService viagemService, ViagemMapper viagemMapper) {
+	UsuarioController(UsuarioService usuarioService, ViagemService viagemService, ViagemMapper viagemMapper) {
 		this.usuarioService = usuarioService;
 		this.viagemService = viagemService;
 		this.viagemMapper = viagemMapper;

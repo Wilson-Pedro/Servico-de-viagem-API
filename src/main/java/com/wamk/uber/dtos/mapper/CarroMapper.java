@@ -3,7 +3,10 @@ package com.wamk.uber.dtos.mapper;
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
 
-public class CarroMapper {
+public final class CarroMapper {
+
+	private CarroMapper() {
+	}
 
 	public static CarroDTO toDTO(Carro carro) {
 		if(carro == null) {

@@ -34,7 +34,7 @@ public class ViagemController {
 	
 	private final ViagemMapper viagemMapper;
 	
-	public ViagemController(ViagemService viagemService, ViagemMapper viagemMapper) {
+	ViagemController(ViagemService viagemService, ViagemMapper viagemMapper) {
 		this.viagemService = viagemService;
 		this.viagemMapper = viagemMapper;
 	}

@@ -30,14 +30,13 @@ public class CarroController {
 	
 	private final CarroService carroService;
 	
-	public CarroController(CarroService carroService) {
+	CarroController(CarroService carroService) {
 		this.carroService = carroService;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<CarroDTO>> findAll(){
-		List<Carro> list = carroService.findAll();
-		return ResponseEntity.ok(list.stream().map(x -> CarroMapper.toDTO(x)).toList());
+		return ResponseEntity.ok(carroService.findAll().stream().map(CarroMapper::toDTO).toList());
 	}
 	
 	@GetMapping("/{id}")

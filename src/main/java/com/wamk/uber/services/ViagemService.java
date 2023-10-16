@@ -36,7 +36,7 @@ public class ViagemService {
 	
 	private final ViagemMapper viagemMapper;
 
-	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
+	ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
 			UsuarioRepository usuarioRepository, ViagemMapper viagemMapper) {
 		this.viagemRepository = viagemRepository;
 		this.usuarioService = usuarioService;
@@ -58,14 +58,14 @@ public class ViagemService {
 
 	public Viagem findById(Long id) {
 		return viagemRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
 	public Page<Viagem> findAll(Pageable pageable) {
 		return viagemRepository.findAll(pageable);
 	}
 
-	public Viagem atualizarCadastro(ViagemInputDTO viagemInputDTO,Long id) {
+	public Viagem atualizarCadastro(ViagemInputDTO viagemInputDTO, Long id) {
 		return viagemRepository.findById(id)
 				.map(viagem -> {
 					viagem.setOrigem(viagemInputDTO.getOrigem());
@@ -73,14 +73,14 @@ public class ViagemService {
 					viagem.setTempoDeViagem(viagemInputDTO.getTempoDeViagem());
 					viagem.setFormaDePagamento(FormaDePagamento.toEnum(viagemInputDTO.getFormaDePagamento()));
 					return viagemRepository.save(viagem);
-				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				}).orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
 	@Transactional
 	public void delete(Long id) {
 		usuarioService.activateUserByViagemId(id);
 		viagemRepository.delete(viagemRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id)));
 	}
 
 	@Transactional
@@ -92,14 +92,14 @@ public class ViagemService {
 		Viagem viagem = new Viagem();
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
-		Motorista motorista = (Motorista) usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
-		motorista.setUsuarioStatus(UsuarioStatus.CORRENDO);
-		passageiro.setUsuarioStatus(UsuarioStatus.CORRENDO);
+		Motorista motorista = usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
+		motorista.correr();
+		passageiro.correr();
 		viagem.setOrigem(solicitacao.getOrigem());
 		viagem.setDestino(solicitacao.getDestino());
 		viagem.setTempoDeViagem("10 minuutos");
 		viagem.setPassageiro(passageiro);
-		viagem.setMotorista((Motorista)motorista);
+		viagem.setMotorista(motorista);
 		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
 		viagem.setViagemStatus(ViagemStatus.NAO_FINALIZADA);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
