@@ -31,7 +31,7 @@ public class UsuarioMapper {
 		usuario.setNome(usuarioDTO.getNome());
 		usuario.setTelefone(usuarioDTO.getTelefone());
 		usuario.setTipoUsuario(TipoUsuario.toEnum(usuarioDTO.getTipoUsuario()));
-		usuario.setUsuarioStatus(UsuarioStatus.ATIVO);
+		usuario.ativar();
 		var user = passageiroOuMotorista(usuario);
 		return user;
 	}

@@ -29,10 +29,10 @@ import com.wamk.uber.repositories.ViagemRepository;
 public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
-	
+
 	private final ViagemRepository viagemRepository;
 
-	public UsuarioService(UsuarioRepository usuarioRepository, ViagemRepository viagemRepository) {
+	UsuarioService(UsuarioRepository usuarioRepository, ViagemRepository viagemRepository) {
 		this.usuarioRepository = usuarioRepository;
 		this.viagemRepository = viagemRepository;
 	}
@@ -46,22 +46,21 @@ public class UsuarioService {
 	public List<Usuario> findAll() {
 		return usuarioRepository.findAll();
 	}
-	
+
 	public Page<Usuario> findAll(Pageable pageable) {
 		return usuarioRepository.findAll(pageable);
 	}
 
 	public Usuario findById(Long id) {
 		return usuarioRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
-	
+
 	public Motorista findByMotoristaStatus(UsuarioStatus status) {
-		List<Motorista> list = usuarioRepository.findAllByUsuarioStatus(status);
-		return list.stream()
-				.filter(x -> x.getUsuarioStatus().equals(status))
+		return usuarioRepository.findAllByUsuarioStatus(status).stream()
+				.filter(x -> x.getUsuarioStatus() == status)
 				.findFirst()
-				.orElseThrow(() -> new MotoristaNaoEncontradoException(""));
+				.orElseThrow(() -> new MotoristaNaoEncontradoException(status));
 	}
 
 	public Usuario atualizarCadastro(UsuarioDTO usuarioDTO, Long id) {
@@ -72,55 +71,64 @@ public class UsuarioService {
 					usuario.setTelefone(usuarioDTO.getTelefone());
 					usuario.setTipoUsuario(TipoUsuario.toEnum(usuarioDTO.getTipoUsuario()));
 					return usuarioRepository.save(usuario);
-				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				}).orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
-	
+
 	@Transactional
 	public void delete(Long id) {
 		usuarioRepository.delete(usuarioRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id)));
 	}
-	
+
 	public void validarCadastroUsuario(UsuarioDTO usuarioDTO) {
-		if(usuarioRepository.existsByTelefone(usuarioDTO.getTelefone())) {
-			throw new TelefoneExistenteException("");
+		final var telefone = usuarioDTO.getTelefone();
+
+		if(usuarioRepository.existsByTelefone(telefone)) {
+			throw new TelefoneExistenteException(telefone);
 		}
 	}
-	
+
 	public void validarUpdateUsuario(UsuarioDTO usuarioDTO, Long id) {
-		if(usuarioRepository.existsByTelefone(usuarioDTO.getTelefone()) 
+		final var telefone = usuarioDTO.getTelefone();
+
+		if(usuarioRepository.existsByTelefone(telefone)
 				&& !Objects.equals(usuarioDTO.getId(), id)) {
-			throw new TelefoneExistenteException("");
+			throw new TelefoneExistenteException(telefone);
 		}
 	}
-	
+
 	public void activateUserByViagemId(Long id) {
 		Viagem viagem = viagemRepository.findById(id).get();
 		Passageiro passageiro = (Passageiro) findById(viagem.getPassageiro().getId());
 		Motorista motorista = (Motorista) findById(viagem.getMotorista().getId());
-		passageiro.setUsuarioStatus(UsuarioStatus.ATIVO);
-		motorista.setUsuarioStatus(UsuarioStatus.ATIVO);
+		passageiro.ativar();
+		motorista.ativar();
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
 	}
 
 	public void desativarUsuario(Long id) {
 		var usuario = findById(id);
-		if(usuario.getUsuarioStatus().equals(UsuarioStatus.DESATIVADO)) {
-			throw new UsuarioJaDesativadoException("");
-		} else if (usuario.getUsuarioStatus().equals(UsuarioStatus.CORRENDO)) {
-			throw new UsuarioCorrendoException("");
+		if(usuario.estaDesativado()) {
+			throw new UsuarioJaDesativadoException(id);
+		} else if (usuario.estaCorrendo()) {
+			throw new UsuarioCorrendoException(id);
 		}
-		usuario.setUsuarioStatus(UsuarioStatus.DESATIVADO);
-		usuarioRepository.save(usuario);
+		usuario.desativar();
+		inserirNaBase(usuario);
 	}
 
 	public void ativarUsuario(Long id) {
 		var usuario = findById(id);
-		if(usuario.getUsuarioStatus().equals(UsuarioStatus.ATIVO)) {
-			throw new UsuarioJaAtivoException("");
+		if(usuario.estaAtivo()) {
+			throw new UsuarioJaAtivoException(id);
 		}
-		usuario.setUsuarioStatus(UsuarioStatus.ATIVO);
+		usuario.ativar();
+
+		inserirNaBase(usuario);
+
+	}
+
+	private void inserirNaBase(Usuario usuario) {
 		usuarioRepository.save(usuario);
-		
 	}
 }
