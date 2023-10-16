@@ -48,7 +48,7 @@ public class ViagemService {
 	public Viagem save(ViagemInputDTO viagemInputDTO) {
 		Passageiro passageiro = (Passageiro) usuarioService.findById(viagemInputDTO.getPassageiroId());
 		Motorista motorista = (Motorista) usuarioService.findById(viagemInputDTO.getMotoristaId());
-		validarSolicitagem(passageiro);
+		//validarSolicitagem(passageiro);
 		return viagemRepository.save(viagemMapper.toEntity(viagemInputDTO, passageiro, motorista));
 	}
 

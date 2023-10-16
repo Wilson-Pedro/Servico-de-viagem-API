@@ -1,10 +1,12 @@
 package com.wamk.uber.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,6 @@ import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
-import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
@@ -77,10 +78,39 @@ class ViagemServiceTest {
 	}
 	
 	@Test
-	void deveSalvarViagemComSucesso() {
+	void deveSalvarViagemComSucesso() { 
 		ViagemInputDTO viagemDTO = new ViagemInputDTO(viagem);
 		when(this.viagemRepository.save(viagem)).thenReturn(viagem);
 		Viagem trip = viagemService.save(viagemDTO);
 		assertEquals(viagem, trip);
+	}
+	
+	@Test
+	void deveBuscarTodasAsViagensComSucesso() {
+		when(this.viagemRepository.findAll()).thenReturn(viagens);
+		List<Viagem> list = this.viagemService.findAll();
+		assertEquals(viagens, list);
+	}
+	
+	@Test
+	void deveBuscarViagemPorIdComSucesso() {
+		when(this.viagemRepository.findById(viagem.getId())).thenReturn(Optional.of(viagem));
+		Viagem trip = this.viagemService.findById(viagem.getId());
+		assertEquals(viagem, trip);
+	}
+	
+	@Test
+	void deveAtualizarViagemComSucesso() {
+		when(this.viagemRepository.save(viagem)).thenReturn(viagem);
+		viagem.setFormaDePagamento(FormaDePagamento.DEBITO);
+		ViagemInputDTO viagemDTO = new ViagemInputDTO(viagem);
+		Viagem viagemAtualizada = this.viagemService.save(viagemDTO);
+		assertEquals(FormaDePagamento.DEBITO, viagemAtualizada.getFormaDePagamento());
+	}
+	
+	@Test
+	void deveDeletarViagemComSucesso() {
+		this.viagemRepository.delete(viagem);
+		verify(viagemRepository).delete(viagem);
 	}
 }
