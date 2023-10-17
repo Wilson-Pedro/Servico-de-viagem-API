@@ -20,7 +20,7 @@ public class CarroService {
 
 	private final CarroRepository carroRepository;
 	
-	public CarroService(CarroRepository carroRepository) {
+	CarroService(CarroRepository carroRepository) {
 		this.carroRepository = carroRepository;
 	}
 
@@ -40,13 +40,13 @@ public class CarroService {
 
 	public Carro findById(Long id) {
 		return carroRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 
 	@Transactional
 	public void delete(Long id) {
 		carroRepository.delete(carroRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id)));
 	}
 
 	public Carro atualizarCadastro(CarroDTO carroDTO,Long id) {
@@ -57,7 +57,7 @@ public class CarroService {
 					carro.setModelo(carroDTO.getModelo());
 					carro.setPlaca(carroDTO.getPlaca());
 					return carroRepository.save(carro);
-				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				}).orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
 	public void validarSave(CarroDTO carro) {

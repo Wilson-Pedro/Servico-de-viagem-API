@@ -23,7 +23,7 @@ import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
-import com.wamk.uber.exceptions.TelefoneExistenteException;
+import com.wamk.uber.exceptions.TelefoneJaExisteException;
 import com.wamk.uber.exceptions.UsuarioCorrendoException;
 import com.wamk.uber.exceptions.UsuarioDesativadoException;
 import com.wamk.uber.exceptions.UsuarioJaAtivoException;
@@ -80,7 +80,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
 	}
 	
-	@ExceptionHandler(TelefoneExistenteException.class)
+	@ExceptionHandler(TelefoneJaExisteException.class)
 	public ResponseEntity<Problema> telefoneExistenteException(){
 		
 		Problema problema = new Problema();

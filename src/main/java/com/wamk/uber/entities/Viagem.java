@@ -139,6 +139,22 @@ public class Viagem implements Serializable{
 	public ViagemStatus getViagemStatus() {
 		return viagemStatus;
 	}
+	
+	public boolean estaFinalizada() {
+		return viagemStatus == ViagemStatus.FINALIZADA;
+	}
+	
+	public boolean naoEstaFinalizada() {
+		return viagemStatus == ViagemStatus.NAO_FINALIZADA;
+	}
+	
+	public void finalizar() {
+		setViagemStatus(ViagemStatus.FINALIZADA);
+	}
+	
+	public void naoFinalizar() {
+		setViagemStatus(ViagemStatus.NAO_FINALIZADA);
+	}
 
 	public void setViagemStatus(ViagemStatus viagemStatus) {
 		this.viagemStatus = viagemStatus;

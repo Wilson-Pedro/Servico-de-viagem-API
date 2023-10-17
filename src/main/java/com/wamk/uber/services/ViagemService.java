@@ -17,7 +17,6 @@ import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
-import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.exceptions.UsuarioDesativadoException;
@@ -36,7 +35,7 @@ public class ViagemService {
 	
 	private final ViagemMapper viagemMapper;
 
-	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
+	ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
 			UsuarioRepository usuarioRepository, ViagemMapper viagemMapper) {
 		this.viagemRepository = viagemRepository;
 		this.usuarioService = usuarioService;
@@ -58,7 +57,7 @@ public class ViagemService {
 
 	public Viagem findById(Long id) {
 		return viagemRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
 	public Page<Viagem> findAll(Pageable pageable) {
@@ -73,14 +72,14 @@ public class ViagemService {
 					viagem.setTempoDeViagem(viagemInputDTO.getTempoDeViagem());
 					viagem.setFormaDePagamento(FormaDePagamento.toEnum(viagemInputDTO.getFormaDePagamento()));
 					return viagemRepository.save(viagem);
-				}).orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada."));
+				}).orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
 	@Transactional
 	public void delete(Long id) {
 		usuarioService.activateUserByViagemId(id);
 		viagemRepository.delete(viagemRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException("Entidade não encontrada.")));
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id)));
 	}
 
 	@Transactional
@@ -93,23 +92,23 @@ public class ViagemService {
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
 		Motorista motorista = (Motorista) usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
-		motorista.setUsuarioStatus(UsuarioStatus.CORRENDO);
-		passageiro.setUsuarioStatus(UsuarioStatus.CORRENDO);
+		motorista.correr();;
+		passageiro.correr();;
 		viagem.setOrigem(solicitacao.getOrigem());
 		viagem.setDestino(solicitacao.getDestino());
 		viagem.setTempoDeViagem("10 minuutos");
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista((Motorista)motorista);
 		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
-		viagem.setViagemStatus(ViagemStatus.NAO_FINALIZADA);
+		viagem.naoFinalizar();
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		return viagem;
 	}
 
 	public void validarSolicitagem(Passageiro passageiro) {
-		if(passageiro.getUsuarioStatus().equals(UsuarioStatus.CORRENDO)) {
+		if(passageiro.estaCorrendo()) {
 			throw new PassageiroCorrendoException("");
-		} else if (passageiro.getUsuarioStatus().equals(UsuarioStatus.DESATIVADO)) {
+		} else if (passageiro.estaDesativado()) {
 			throw new UsuarioDesativadoException("");
 		}
 	}
@@ -118,14 +117,16 @@ public class ViagemService {
 	public void finishTrip(Long id) {
 		Viagem viagem = findById(id);
 		usuarioService.activateUserByViagemId(viagem.getId());
-		viagem.setViagemStatus(ViagemStatus.FINALIZADA);
+		viagem.finalizar();
 		viagemRepository.save(viagem);
 	}
 	
 	@Transactional
 	public void cancelTripByUserId(Long Userid) {
+		
 		Viagem viagem = findByUser(Userid);
-		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
+		
+		if(viagem.estaFinalizada()) {
 			throw new ViagemJaFinalizadaException("");
 		}
 		usuarioService.activateUserByViagemId(viagem.getId());
@@ -134,8 +135,10 @@ public class ViagemService {
 	
 	@Transactional
 	public void cancelTripById(Long id) {
+		
 		Viagem viagem = findById(id);
-		if(viagem.getViagemStatus().equals(ViagemStatus.FINALIZADA)) {
+		
+		if(viagem.estaFinalizada()) {
 			throw new ViagemJaFinalizadaException("");
 		}
 		usuarioService.activateUserByViagemId(viagem.getId());
@@ -143,8 +146,10 @@ public class ViagemService {
 	}
 	
 	public Viagem findByUser(Long id) {
+		
 		Usuario usuario = usuarioService.findById(id);
 		Viagem viagem = new Viagem();
+		
 		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
 			viagem = viagemRepository.findByPassageiro((Passageiro) usuario);
 		} else {
@@ -162,8 +167,10 @@ public class ViagemService {
 	}
 	
 	public List<Viagem> findAllTripsByUserId(Long id) {
+		
 		var usuario = usuarioService.findById(id);
 		List<Viagem> list;
+		
 		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
 			list = viagemRepository.findAllByPassageiro((Passageiro) usuario);
 		} else {

@@ -86,6 +86,30 @@ public class Usuario implements Serializable{
 	public UsuarioStatus getUsuarioStatus() {
 		return usuarioStatus;
 	}
+	
+	public boolean estaAtivo() {
+		return usuarioStatus == UsuarioStatus.ATIVO;
+	}
+	
+	public boolean estaDesativado() {
+		return usuarioStatus == UsuarioStatus.DESATIVADO;
+	}
+	
+	public boolean estaCorrendo() {
+		return usuarioStatus == UsuarioStatus.CORRENDO;
+	}
+	
+	public void ativar() {
+		setUsuarioStatus(UsuarioStatus.ATIVO);
+	}
+	
+	public void desativar() {
+		setUsuarioStatus(UsuarioStatus.DESATIVADO);
+	}
+	
+	public void correr() {
+		setUsuarioStatus(UsuarioStatus.CORRENDO);
+	}
 
 	public void setUsuarioStatus(UsuarioStatus usuarioStatus) {
 		this.usuarioStatus = usuarioStatus;
