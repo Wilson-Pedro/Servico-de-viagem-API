@@ -1,85 +1,127 @@
 package com.wamk.uber.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
+import com.wamk.uber.provider.CarroEntityAndCarroDtoProviderTest;
+import com.wamk.uber.provider.CarrosProviderTest;
 import com.wamk.uber.repositories.CarroRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CarroServiceTest {
 	
-	@InjectMocks
-	CarroService carroService;
+	private final CarroRepository carroRepository = mock(CarroRepository.class);
 	
-	@Mock
-	CarroRepository carroRepository;
+	private final CarroService carroService = new CarroService(carroRepository);
 	
-	Carro car1;
-	Carro car2;
-	Carro car3;
+	private final List<Carro> carros = List.of(
+			new Carro(1L, "Fiat", 2022, "JVF-9207"),
+			new Carro(2L, "Chevrolet", 2022, "FFG-0460"),
+			new Carro(3L, "Forger", 2022, "FTG-0160")
+	);
 	
-	List<Carro> carros = new ArrayList<>();
-	
-	@BeforeEach
-	public void setUp() {
-		car1 = new Carro(1L, "Fiat", 2022, "JVF-9207");
-		car2 = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
-		car3 = new Carro(3L, "Forger", 2022, "FTG-0160");
+	@Test
+	void deveSalvarCarroComSucesso_usando_variavel_de_classe() {
 		
-		carros.add(car1);
-		carros.add(car2);
-		carros.add(car3);
+		final var carroEsperado = carros.get(0);
+		final var carroDTO = new CarroDTO(carros.get(0));
+		
+		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
+		
+		final var carroSalvo = carroService.save(carroDTO);
+		
+		assertThat(carroSalvo).usingRecursiveComparison().isEqualTo(carroEsperado);
+	}
+	
+	@ParameterizedTest
+	@ArgumentsSource(CarroEntityAndCarroDtoProviderTest.class)
+	void deveSalvarCarroComSucesso_usando_teste_com_parametros(final CarroDTO carroDTO, 
+			final Carro carroEsperado) {
+		
+		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
+		
+		final var carroSalvo = carroService.save(carroDTO);
+		
+		assertThat(carroSalvo).usingRecursiveComparison().isEqualTo(carroEsperado);
 	}
 	
 	@Test
-	void deveSalvarCarroComSucesso() {
-		CarroDTO carroDTO = new CarroDTO(car1);
-		when(carroRepository.save(car1)).thenReturn(car1);
-		Carro carroSalvo = carroService.save(carroDTO);
-		assertEquals(car1, carroSalvo);
-	}
-	
-	@Test
-	void deveBuscarTodosOsCarrosComSucesso() {
+	void deveBuscarTodosOsCarrosComSucesso_usando_variavel_de_classe() {
 		when(carroRepository.findAll()).thenReturn(carros);
-		List<Carro> cars = carroService.findAll();
-		assertEquals(carros, cars);
+		
+		final var cars = carroService.findAll();
+		
+		assertThat(carros).usingRecursiveComparison().isEqualTo(cars);
+	}
+
+	@ParameterizedTest
+	@ArgumentsSource(CarrosProviderTest.class)
+	void deveBuscarTodosOsCarrosComSucesso_usando_teste_com_parametros(
+			List<Carro> carrosEsperados) {
+
+		when(carroRepository.findAll()).thenReturn(carrosEsperados);
+		
+		final var cars = carroService.findAll();
+		
+		assertThat(cars).usingRecursiveComparison().isEqualTo(carrosEsperados);
 	}
 	
 	@Test
 	void deveBuscarCarroPorIdComSucesso() {
-		when(carroRepository.findById(car1.getId()))
-		.thenReturn(Optional.of(car1));
-		Carro car = carroService.findById(car1.getId());
-		assertEquals(car1, car);
+		
+		final var carroEsperado = carros.get(0);
+		
+		when(carroRepository.findById(carroEsperado.getId())).thenReturn(Optional.of(carroEsperado));
+		
+		final var car = carroService.findById(carroEsperado.getId());
+		
+		assertThat(car).usingRecursiveAssertion().isEqualTo(carroEsperado);
 	}
 	
 	@Test
 	void deveAtualizarCarroComSucesso() {
-		when(carroRepository.save(car1)).thenReturn(car1);
-		car1.setModelo("Toyota");
-		CarroDTO carroDTO = new CarroDTO(car1);
-		Carro carroAtualizado = carroService.save(carroDTO);
+		
+		final var carroEsperado = carros.get(0);
+		
+		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
+		
+		assertNotEquals("Toyota", carroEsperado.getModelo());
+		
+		carroEsperado.setModelo("Toyota");
+		CarroDTO carroDTO = new CarroDTO(carroEsperado);
+		final var carroAtualizado = carroService.save(carroDTO);
+		
 		assertEquals("Toyota", carroAtualizado.getModelo());
 	}
-	
+
 	@Test
 	void deveDeletarCarroComSucesso() {
-		this.carroRepository.delete(car1);
-		verify(carroRepository).delete(car1);
+		
+		final var carroEsperado = carros.get(0);
+		
+		when(carroRepository.findById(carroEsperado.getId())).thenReturn(Optional.of(carroEsperado));
+		
+		doNothing().when(carroRepository).delete(carroEsperado);
+		
+		carroRepository.delete(carroEsperado);
+		
+		verify(carroRepository, times(1)).delete(carroEsperado);
 	}
 }
