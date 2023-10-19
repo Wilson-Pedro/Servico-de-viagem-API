@@ -32,15 +32,12 @@ public class ViagemService {
 	private final UsuarioService usuarioService;
 	
 	private final UsuarioRepository usuarioRepository;
-	
-	private final ViagemMapper viagemMapper;
 
 	ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
-			UsuarioRepository usuarioRepository, ViagemMapper viagemMapper) {
+			UsuarioRepository usuarioRepository) {
 		this.viagemRepository = viagemRepository;
 		this.usuarioService = usuarioService;
 		this.usuarioRepository = usuarioRepository;
-		this.viagemMapper = viagemMapper;
 	}
 
 	@Transactional
@@ -48,7 +45,7 @@ public class ViagemService {
 		Passageiro passageiro = (Passageiro) usuarioService.findById(viagemInputDTO.getPassageiroId());
 		Motorista motorista = (Motorista) usuarioService.findById(viagemInputDTO.getMotoristaId());
 		//validarSolicitagem(passageiro);
-		return viagemRepository.save(viagemMapper.toEntity(viagemInputDTO, passageiro, motorista));
+		return viagemRepository.save(ViagemMapper.toEntity(viagemInputDTO, passageiro, motorista));
 	}
 
 	public List<Viagem> findAll() {

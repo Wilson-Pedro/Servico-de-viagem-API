@@ -85,9 +85,9 @@ class UsuarioServiceTest {
 		
 		when(usuarioRepository.findAll()).thenReturn(usuariosEsperados);
 		
-		final var users = usuarioRepository.findAll();
+		final var users = usuarioService.findAll();
 		
-		assertThat(users).usingRecursiveComparison().isEqualTo(usuarios);
+		assertThat(users).usingRecursiveComparison().isEqualTo(usuariosEsperados);
 	}
 
 	@Test

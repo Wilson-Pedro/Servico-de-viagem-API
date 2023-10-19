@@ -32,23 +32,20 @@ public class ViagemController {
 
 	private final ViagemService viagemService;
 	
-	private final ViagemMapper viagemMapper;
-	
-	ViagemController(ViagemService viagemService, ViagemMapper viagemMapper) {
+	ViagemController(ViagemService viagemService) {
 		this.viagemService = viagemService;
-		this.viagemMapper = viagemMapper;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<ViagemDTO>> findAll(){
 		List<Viagem> list = viagemService.findAll();
-		return ResponseEntity.ok(list.stream().map(x -> viagemMapper.toDTO(x)).toList());
+		return ResponseEntity.ok(list.stream().map(x -> ViagemMapper.toDTO(x)).toList());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ViagemDTO> findById(@PathVariable Long id){
 		var viagem = viagemService.findById(id);
-		return ResponseEntity.ok(viagemMapper.toDTO(viagem));
+		return ResponseEntity.ok(ViagemMapper.toDTO(viagem));
 	}
 	
 	@GetMapping("/pages")
@@ -60,14 +57,14 @@ public class ViagemController {
 	@PostMapping
 	public ResponseEntity<ViagemDTO> registrarUsuario(@RequestBody @Valid ViagemInputDTO viagemInputDTO){
 		var viagem = viagemService.save(viagemInputDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(viagemMapper.toDTO(viagem));
+		return ResponseEntity.status(HttpStatus.CREATED).body(ViagemMapper.toDTO(viagem));
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<ViagemDTO> atualiziar(@RequestBody @Valid ViagemInputDTO viagemInputDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var viagem = viagemService.atualizarCadastro(viagemInputDTO, id);
-		return ResponseEntity.ok(viagemMapper.toDTO(viagem));
+		return ResponseEntity.ok(ViagemMapper.toDTO(viagem));
 	}
 	
 	@DeleteMapping("/{id}")
