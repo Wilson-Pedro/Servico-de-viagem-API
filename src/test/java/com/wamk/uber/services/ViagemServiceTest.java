@@ -57,7 +57,7 @@ class ViagemServiceTest {
 	);
 	
 	@Test
-	void deveSalvarViagemComSucesso_com_variavel_de_classe() {
+	void deveSalvarViagemComSucesso_usandoVariavelDeClasse() {
 		
 		final var viagemEsperada = viagens.get(0);
 		final var viagemInputDTO = new ViagemInputDTO(viagemEsperada);
@@ -71,7 +71,7 @@ class ViagemServiceTest {
 	
 	@ParameterizedTest
 	@ArgumentsSource(ViagemEntityAndViagemDtoProviderTets.class)
-	void deveSalvarViagemComSucesso_usando_teste_como_parametro(ViagemInputDTO viagemInputDTO, 
+	void deveSalvarViagemComSucesso_usandoTesteComParametros(ViagemInputDTO viagemInputDTO, 
 			Viagem viagemEsperada) {
 		
 		when(viagemRepository.save(viagemEsperada)).thenReturn(viagemEsperada);
@@ -82,7 +82,7 @@ class ViagemServiceTest {
 	}
 
 	@Test
-	void deveBuscarTodasAsViagensComSucesso_usando_variavel_de_ambiente() {
+	void deveBuscarTodasAsViagensComSucesso_usandoVariavelDeClasse() {
 		when(viagemRepository.findAll()).thenReturn(viagens);
 		
 		final var trips = viagemService.findAll();
@@ -92,7 +92,7 @@ class ViagemServiceTest {
 	
 	@ParameterizedTest
 	@ArgumentsSource(ViagemProviderTest.class)
-	void deveBuscarTodasAsViagensComSucesso_usando_teste_como_parametro(List<Viagem> viagensEsperadas) {
+	void deveBuscarTodasAsViagensComSucesso_usandoTesteComParametros(List<Viagem> viagensEsperadas) {
 		
 		when(viagemRepository.findAll()).thenReturn(viagensEsperadas);
 		

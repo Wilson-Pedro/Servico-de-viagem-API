@@ -38,10 +38,10 @@ class CarroServiceTest {
 	);
 	
 	@Test
-	void deveSalvarCarroComSucesso_usando_variavel_de_classe() {
+	void deveSalvarCarroComSucesso_usandoVariavelDeClasse() {
 		
 		final var carroEsperado = carros.get(0);
-		final var carroDTO = new CarroDTO(carros.get(0));
+		final var carroDTO = new CarroDTO(carroEsperado);
 		
 		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
 		
@@ -52,7 +52,7 @@ class CarroServiceTest {
 	
 	@ParameterizedTest
 	@ArgumentsSource(CarroEntityAndCarroDtoProviderTest.class)
-	void deveSalvarCarroComSucesso_usando_teste_com_parametros(final CarroDTO carroDTO, 
+	void deveSalvarCarroComSucesso_usandoTesteComParametros(final CarroDTO carroDTO, 
 			final Carro carroEsperado) {
 		
 		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
@@ -63,7 +63,7 @@ class CarroServiceTest {
 	}
 	
 	@Test
-	void deveBuscarTodosOsCarrosComSucesso_usando_variavel_de_classe() {
+	void deveBuscarTodosOsCarrosComSucesso_usandoVariavelDeClasse() {
 		when(carroRepository.findAll()).thenReturn(carros);
 		
 		final var cars = carroService.findAll();
@@ -73,7 +73,7 @@ class CarroServiceTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(CarrosProviderTest.class)
-	void deveBuscarTodosOsCarrosComSucesso_usando_teste_com_parametros(
+	void deveBuscarTodosOsCarrosComSucesso_usandoTesteComParametros(
 			List<Carro> carrosEsperados) {
 
 		when(carroRepository.findAll()).thenReturn(carrosEsperados);
@@ -124,4 +124,20 @@ class CarroServiceTest {
 		
 		verify(carroRepository, times(1)).delete(carroEsperado);
 	}
+	
+//	@Test
+//	void deveSalvarCampoModeloComAsLetrasMaiusculas() {
+//		
+//		final var carroEsperado = carros.get(0);
+//		
+//		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
+//		
+//		assertNotEquals("Toyota", carroEsperado.getModelo());
+//		
+//		carroEsperado.setModelo("FIAT");
+//		CarroDTO carroDTO = new CarroDTO(carroEsperado);
+//		final var carroAtualizado = carroService.save(carroDTO);
+//		
+//		assertEquals("FIAT", carroAtualizado.getModelo());
+//	}
 }

@@ -44,7 +44,7 @@ class UsuarioServiceTest {
 	);
 	
 	@Test
-	void deveSalvarUsuarioComSucesso_usando_variavel_de_classe() {
+	void deveSalvarUsuarioComSucesso_usandoVariavelDeClasse() {
 		
 		final var usuarioEsperado = usuarios.get(0);
 		final var usuarioDTO = new UsuarioDTO(usuarioEsperado);
@@ -58,7 +58,7 @@ class UsuarioServiceTest {
 	
 	@ParameterizedTest
 	@ArgumentsSource(UsuarioEntityAndUsuarioDtoProviderTest.class)
-	void deveSalvarUsuarioComSucesso_usando_teste_como_parametro(final UsuarioDTO usuarioDTO, 
+	void deveSalvarUsuarioComSucesso_usandoTesteComParametros(final UsuarioDTO usuarioDTO, 
 			final Usuario usuarioEsperado) {
 		
 		when(usuarioRepository.save(usuarioEsperado)).thenReturn(usuarioEsperado);
@@ -69,7 +69,7 @@ class UsuarioServiceTest {
 	}
 	
 	@Test
-	void deveBuscarTodosOsUsuariosComSucesso_usando_variavel_de_ambiente() {
+	void deveBuscarTodosOsUsuariosComSucesso_usandoVariavelDeClasse() {
 		
 		when(usuarioRepository.findAll()).thenReturn(usuarios);
 		
@@ -80,7 +80,7 @@ class UsuarioServiceTest {
 	
 	@ParameterizedTest
 	@ArgumentsSource(UsuarioProviderTest.class)
-	void deveBuscarTodosOsUsuariosComSucesso_usando_teste_como_parametro(
+	void deveBuscarTodosOsUsuariosComSucesso_usandoTesteComParametros(
 			List<Usuario> usuariosEsperados) {
 		
 		when(usuarioRepository.findAll()).thenReturn(usuariosEsperados);
@@ -133,5 +133,37 @@ class UsuarioServiceTest {
 		usuarioRepository.delete(usuarioEsperado);
 		
 		verify(usuarioRepository, times(1)).delete(usuarioEsperado);
+	}
+	
+	@Test
+	void deveAtivarUsuarioComSucesso() {
+		
+		final var usuarioEsperado = usuarios.get(0);
+		UsuarioStatus ativo = UsuarioStatus.ATIVO;
+		
+		when(usuarioRepository.save(usuarioEsperado)).thenReturn(usuarioEsperado);
+		
+		usuarioEsperado.ativar();
+		usuarioRepository.save(usuarioEsperado);
+		
+		verify(usuarioRepository, times(1)).save(usuarioEsperado);
+		
+		assertEquals(ativo, usuarioEsperado.getUsuarioStatus());
+	}
+	
+	@Test
+	void deveDesativarUsuarioComSucesso() {
+		
+		final var usuarioEsperado = usuarios.get(0);
+		UsuarioStatus desativado = UsuarioStatus.DESATIVADO;
+		
+		when(usuarioRepository.save(usuarioEsperado)).thenReturn(usuarioEsperado);
+		
+		usuarioEsperado.setUsuarioStatus(desativado);
+		usuarioRepository.save(usuarioEsperado);
+		
+		verify(usuarioRepository, times(1)).save(usuarioEsperado);
+		
+		assertEquals(desativado, usuarioEsperado.getUsuarioStatus());
 	}
 }
