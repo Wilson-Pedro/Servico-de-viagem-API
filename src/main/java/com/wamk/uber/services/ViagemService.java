@@ -89,8 +89,8 @@ public class ViagemService {
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
 		Motorista motorista = (Motorista) usuarioService.findMotoristaByStatus(UsuarioStatus.ATIVO);
-		motorista.correr();;
-		passageiro.correr();;
+		motorista.correr();
+		passageiro.correr();
 		viagem.setOrigem(solicitacao.getOrigem());
 		viagem.setDestino(solicitacao.getDestino());
 		viagem.setTempoDeViagem("10 minuutos");

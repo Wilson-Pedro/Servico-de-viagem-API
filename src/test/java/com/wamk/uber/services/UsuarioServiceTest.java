@@ -24,8 +24,11 @@ import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.entities.Viagem;
+import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
+import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.provider.UsuarioEntityAndUsuarioDtoProviderTest;
 import com.wamk.uber.provider.UsuarioProviderTest;
 import com.wamk.uber.repositories.UsuarioRepository;
@@ -48,6 +51,11 @@ class UsuarioServiceTest {
 			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, null),
 			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, null)
 	);
+	
+	final Viagem viagem = new Viagem(1L, "Novo Castelo - Rua das Goiabas 1010", 
+			"Pará - Rua das Maçãs", "20min", 
+			(Passageiro)usuarios.get(0), (Motorista) usuarios.get(3), 
+			FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA);
 	
 	@Test
 	void deveSalvarUsuarioComSucesso_usandoVariavelDeClasse() {
@@ -192,5 +200,22 @@ class UsuarioServiceTest {
 		Motorista motorista = usuarioService.findMotoristaByStatus(ativo);
 		
 		assertThat(motorista).usingRecursiveComparison().isEqualTo(motoristaEsperado);
+	}
+	
+	@Test
+	void deveAtivarUsuarioPorViagemId() {
+		
+		final var trip = viagem;
+		final var passageiro = viagem.getPassageiro();
+		
+		UsuarioStatus ativo = UsuarioStatus.ATIVO;
+		
+		when(viagemRepository.findById(trip.getId())).thenReturn(Optional.of(trip));
+		when(usuarioRepository.save(passageiro)).thenReturn(passageiro);
+		
+		passageiro.ativar();
+		usuarioRepository.save(passageiro);
+		
+		assertEquals(ativo, passageiro.getUsuarioStatus());
 	}
 }
