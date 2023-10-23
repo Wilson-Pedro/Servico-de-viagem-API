@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
 
 import jakarta.validation.constraints.NotBlank;
@@ -39,6 +40,14 @@ public class SolicitarViagemDTO implements Serializable{
 		this.destino = destino;
 		this.distancia = distancia;
 		this.formaDePagamento = formaDePagamento;
+	}
+	
+	public SolicitarViagemDTO(Viagem viagem) {
+		passageiroId = viagem.getPassageiro().getId();
+		origem = viagem.getOrigem();
+		destino = viagem.getDestino();
+		distancia = "5630 metros";
+		formaDePagamento = viagem.getFormaDePagamento();
 	}
 
 	public Long getPassageiroId() {

@@ -97,7 +97,7 @@ public class ViagemService {
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista((Motorista)motorista);
 		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
-		viagem.naoFinalizar();
+		viagem.naoFinalizada();
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		return viagem;
 	}

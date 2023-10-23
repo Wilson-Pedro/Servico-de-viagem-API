@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
@@ -52,7 +53,7 @@ class ViagemServiceTest {
 			new Viagem(1L, 
 					"Novo Castelo - Rua das Goiabas 1010", 
 					"Pará - Rua das Maçãs", 
-					"20min", passageiro, motorista, 
+					"10 minutos", passageiro, motorista, 
 					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA)
 	);
 	
@@ -143,5 +144,41 @@ class ViagemServiceTest {
 		viagemRepository.delete(viagemEsperada);
 		
 		verify(viagemRepository, times(1)).delete(viagemEsperada);
+	}
+	
+	@Test
+	void deveMontarUmaViagem_ApartirDeUmaSolicitacao() {
+		
+		final var viagemEsperada = viagens.get(0);
+		final var viagem = new Viagem();
+		final var solicitacao = new SolicitarViagemDTO(viagemEsperada);
+		final var passageiro = viagens.get(0).getPassageiro();
+		final var motorista = viagens.get(0).getMotorista();
+		
+		when(usuarioRepository.findById(passageiro.getId()))
+				.thenReturn(Optional.of(passageiro));
+		
+		when(usuarioRepository.save(passageiro)).thenReturn(passageiro);
+		when(usuarioRepository.save(motorista)).thenReturn(motorista);
+		
+		passageiro.correr();
+		motorista.correr();
+		
+		viagem.setId(1L);
+		viagem.setOrigem(solicitacao.getOrigem());
+		viagem.setDestino(solicitacao.getDestino());
+		viagem.setTempoDeViagem("10 minutos");
+		viagem.setPassageiro(passageiro);
+		viagem.setMotorista(motorista);
+		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
+		viagem.naoFinalizada();
+		
+		usuarioRepository.save(passageiro);
+		usuarioRepository.save(motorista);
+		
+		verify(usuarioRepository, times(1)).save(passageiro);
+		verify(usuarioRepository, times(1)).save(motorista);
+		
+		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
 }
