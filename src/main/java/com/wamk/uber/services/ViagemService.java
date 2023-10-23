@@ -88,7 +88,7 @@ public class ViagemService {
 		Viagem viagem = new Viagem();
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
-		Motorista motorista = (Motorista) usuarioService.findByMotoristaStatus(UsuarioStatus.ATIVO);
+		Motorista motorista = (Motorista) usuarioService.findMotoristaByStatus(UsuarioStatus.ATIVO);
 		motorista.correr();;
 		passageiro.correr();;
 		viagem.setOrigem(solicitacao.getOrigem());

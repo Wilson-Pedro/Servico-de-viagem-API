@@ -12,7 +12,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
 	boolean existsByTelefone(String telefone);
 	
-	Motorista findByUsuarioStatus(UsuarioStatus status);
+	Usuario findByUsuarioStatus(UsuarioStatus status);
 	
 	List<Motorista> findAllByUsuarioStatus(UsuarioStatus status);
 }

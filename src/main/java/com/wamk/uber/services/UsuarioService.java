@@ -56,7 +56,7 @@ public class UsuarioService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
-	public Motorista findByMotoristaStatus(UsuarioStatus status) {
+	public Motorista findMotoristaByStatus(UsuarioStatus status) {
 		return usuarioRepository.findAllByUsuarioStatus(status)
 				.stream()
 				.filter(x -> x.getUsuarioStatus().equals(status))

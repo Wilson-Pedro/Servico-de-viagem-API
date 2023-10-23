@@ -9,9 +9,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +21,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.UsuarioDTO;
+import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.enums.TipoUsuario;
@@ -40,7 +43,10 @@ class UsuarioServiceTest {
 	private final List<Usuario> usuarios = List.of(
 			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),
 			new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
-			new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO)
+			new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
+			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, null),
+			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, null),
+			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, null)
 	);
 	
 	@Test
@@ -165,5 +171,26 @@ class UsuarioServiceTest {
 		verify(usuarioRepository, times(1)).save(usuarioEsperado);
 		
 		assertEquals(desativado, usuarioEsperado.getUsuarioStatus());
+	}
+	
+	@Test
+	@DisplayName("Deve buscar o primeiro motorista que estiver com o status ATIVO")
+	void deveBuscarMotoristaPorUsuarioStatus() {
+		
+		List<Motorista> motoristas = new ArrayList<>();
+		
+		motoristas.add((Motorista) usuarios.get(3));
+		motoristas.add((Motorista) usuarios.get(4));
+		motoristas.add((Motorista) usuarios.get(5));
+		
+		UsuarioStatus ativo = UsuarioStatus.ATIVO;
+		
+		Motorista motoristaEsperado = (Motorista) usuarios.get(4);
+		
+		when(usuarioRepository.findAllByUsuarioStatus(ativo)).thenReturn(motoristas);
+		
+		Motorista motorista = usuarioService.findMotoristaByStatus(ativo);
+		
+		assertThat(motorista).usingRecursiveComparison().isEqualTo(motoristaEsperado);
 	}
 }
