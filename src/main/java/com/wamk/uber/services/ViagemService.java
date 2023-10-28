@@ -121,7 +121,7 @@ public class ViagemService {
 	@Transactional
 	public void cancelTripByUserId(Long Userid) {
 		
-		Viagem viagem = findByUser(Userid);
+		Viagem viagem = findViagemByUserId(Userid);
 		
 		if(viagem.estaFinalizada()) {
 			throw new ViagemJaFinalizadaException("");
@@ -142,7 +142,7 @@ public class ViagemService {
 		viagemRepository.delete(viagem);
 	}
 	
-	public Viagem findByUser(Long id) {
+	public Viagem findViagemByUserId(Long id) {
 		
 		Usuario usuario = usuarioService.findById(id);
 		Viagem viagem = new Viagem();

@@ -147,7 +147,7 @@ class ViagemServiceTest {
 	}
 	
 	@Test
-	void deveMontarUmaViagem_ApartirDeUmaSolicitacao() {
+	void deveMontarUmaViagem_apartirDeUmaSolicitacao() {
 		
 		final var viagemEsperada = viagens.get(0);
 		final var viagem = new Viagem();
@@ -180,5 +180,46 @@ class ViagemServiceTest {
 		verify(usuarioRepository, times(1)).save(motorista);
 		
 		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
+	}
+	
+	@Test
+	void deveFinalizarViagemComSucesso() {
+		
+		ViagemStatus finalizada = ViagemStatus.FINALIZADA;
+		
+		final var viagemEsperado = viagens.get(0);
+		
+		when(viagemRepository.save(viagemEsperado)).thenReturn(viagemEsperado);
+		
+		viagemEsperado.finalizar();
+		
+		viagemRepository.save(viagemEsperado);
+		
+		assertEquals(finalizada, viagemEsperado.getViagemStatus());
+	}
+	
+	@Test
+	void deveBuscarTodasAsViagens_apartirDoPassageiro() {
+		
+		final var viagensEsperadas = viagens;
+		
+		when(viagemRepository.findAllByPassageiro(passageiro))
+		.thenReturn(viagensEsperadas);
+		
+		List<Viagem> trips = viagemRepository.findAllByPassageiro(passageiro);
+		
+		assertThat(trips).usingRecursiveComparison().isEqualTo(viagensEsperadas);
+	}
+	
+	@Test
+	void deveBuscarTodasAsViagens_apartitDoMotorista() {
+		
+		final var viagensEsperadas = viagens;
+		
+		when(viagemRepository.findAllByMotorista(motorista)).thenReturn(viagens);
+		
+		List<Viagem> trips = viagemRepository.findAllByMotorista(motorista);
+		
+		assertThat(trips).usingRecursiveComparison().isEqualTo(viagensEsperadas);
 	}
 }
