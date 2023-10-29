@@ -222,4 +222,26 @@ class ViagemServiceTest {
 		
 		assertThat(trips).usingRecursiveComparison().isEqualTo(viagensEsperadas);
 	}
+	
+	@Test
+	void deveBuscarViagemPorPassageiro() {
+		final var viagemEsperada = viagens.get(0);
+		
+		when(viagemRepository.findByPassageiro(passageiro)).thenReturn(viagemEsperada);
+		
+		final var viagem = viagemService.findViagemByPassageiro(passageiro);
+		
+		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
+	}
+	
+	@Test
+	void deveBuscarViagemPorMotorista() {
+		final var viagemEsperada = viagens.get(0);
+		
+		when(viagemRepository.findByMotorista(motorista)).thenReturn(viagemEsperada);
+		
+		final var viagem = viagemService.findViagemByMotorista(motorista);
+		
+		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
+	}
 }

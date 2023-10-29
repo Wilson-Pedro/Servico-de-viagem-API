@@ -142,30 +142,41 @@ public class ViagemService {
 		viagemRepository.delete(viagem);
 	}
 	
-	public Viagem findViagemByUserId(Long id) {
+	public Viagem findViagemByUserId(Long UserId) {
 		
-		Usuario usuario = usuarioService.findById(id);
+		Usuario usuario = usuarioService.findById(UserId);
 		Viagem viagem = new Viagem();
 		
 		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
-			viagem = viagemRepository.findByPassageiro((Passageiro) usuario);
+			viagem = findViagemByPassageiro((Passageiro) usuario);
 		} else {
-			viagem = viagemRepository.findByMotorista((Motorista) usuario);
+			viagem = findViagemByMotorista((Motorista) usuario);
 		}
 		if(viagem == null) {
-			throw new ViagemJaFinalizadaException("");
+			throw new EntidadeNaoEncontradaException(UserId);
 		}
+//		if(viagem == null) {
+//			throw new ViagemJaFinalizadaException("");
+//		}
 		return viagem;
 	}
+	
+	public Viagem findViagemByPassageiro(Passageiro passageiro) {
+		return viagemRepository.findByPassageiro(passageiro);
+	}
+	
+	public Viagem findViagemByMotorista(Motorista motorista) {
+		return viagemRepository.findByMotorista(motorista);
+	}
 
-	public List<Viagem> getAllTripsByUserId(Long id) {
-		List<Viagem> list = findAllTripsByUserId(id);
+	public List<Viagem> getAllTripsByUserId(Long UserId) {
+		List<Viagem> list = findAllTripsByUserId(UserId);
 		return list;
 	}
 	
-	public List<Viagem> findAllTripsByUserId(Long id) {
+	public List<Viagem> findAllTripsByUserId(Long UserId) {
 		
-		var usuario = usuarioService.findById(id);
+		var usuario = usuarioService.findById(UserId);
 		List<Viagem> list;
 		
 		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
