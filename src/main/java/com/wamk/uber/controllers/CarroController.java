@@ -53,7 +53,7 @@ public class CarroController {
 		return ResponseEntity.ok(pages.map(CarroDTO::new));
 	}
 	
-	@PostMapping
+	@PostMapping("/")
 	public ResponseEntity<CarroDTO> registrarCarro(@RequestBody @Valid CarroDTO carroDTO){
 		var carro = carroService.save(carroDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(CarroMapper.toDTO(carro));

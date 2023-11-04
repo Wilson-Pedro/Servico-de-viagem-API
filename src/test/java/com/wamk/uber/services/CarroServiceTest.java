@@ -112,7 +112,7 @@ class CarroServiceTest {
 	}
 
 	@Test
-	void deveDeletarCarroComSucesso() {
+	void deveDeletarCarroComApartirDoIdSucesso() {
 		
 		final var carroEsperado = carros.get(0);
 		
@@ -124,20 +124,4 @@ class CarroServiceTest {
 		
 		verify(carroRepository, times(1)).delete(carroEsperado);
 	}
-	
-//	@Test
-//	void deveSalvarCampoModeloComAsLetrasMaiusculas() {
-//		
-//		final var carroEsperado = carros.get(0);
-//		
-//		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
-//		
-//		assertNotEquals("Toyota", carroEsperado.getModelo());
-//		
-//		carroEsperado.setModelo("FIAT");
-//		CarroDTO carroDTO = new CarroDTO(carroEsperado);
-//		final var carroAtualizado = carroService.save(carroDTO);
-//		
-//		assertEquals("FIAT", carroAtualizado.getModelo());
-//	}
 }

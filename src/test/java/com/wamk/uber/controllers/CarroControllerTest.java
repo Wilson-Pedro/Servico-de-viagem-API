@@ -1,15 +1,21 @@
 package com.wamk.uber.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +25,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
 
@@ -32,6 +40,9 @@ class CarroControllerTest {
 	@Autowired
 	MockMvc mockMvc;
 	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	CarroService carroService = mock(CarroService.class);
 	
 	private final List<Carro> carros = List.of(
@@ -43,17 +54,112 @@ class CarroControllerTest {
 	@Test
 	void deveBuscarTodosOsCarrosComSucesso() throws Exception {
 		
-		when(carroService.findAll()).thenReturn(carros);
+		final var carsExpected = carros;
 		
-		final var cars = carroService.findAll();
+		when(carroService.findAll()).thenReturn(carsExpected);
 		
 		mockMvc.perform(get("/carros")
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andReturn();
+				.andExpect(status().isOk())
+				.andReturn();
 		
-		assertThat(cars).usingRecursiveComparison().isEqualTo(carros);
+		final var cars= carroService.findAll();
+		
+		assertThat(cars).usingRecursiveComparison().isEqualTo(carsExpected);
 		verify(carroService, times(1)).findAll();
 	}
-
+	
+	@Test
+	void deveBuscarCarroPorIdComSucesso() throws Exception {
+		
+		final var carExpected = carros.get(0);
+		Long id = carExpected.getId();
+		
+		when(this.carroService.findById(id)).thenReturn(carExpected);
+		
+		mockMvc.perform(get("/carros/{id}", 1L)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andReturn();
+		
+		final var car = carroService.findById(id);
+		
+		assertThat(car).usingRecursiveComparison().isEqualTo(carExpected);
+		verify(carroService, times(1)).findById(id);
+	}
+	
+	@Test
+	void deveSalvarCarroComSucesso() throws Exception {
+		
+		final var carExpected = new Carro(4L, "Uno", 2022, "JVF-9297");
+		final var carroDto = new CarroDTO(carExpected);
+		
+		when(this.carroService.save(carroDto)).thenReturn(carExpected);
+		
+		String jsonRequest = objectMapper.writeValueAsString(carroDto);
+		
+		mockMvc.perform(post("/carros/")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest))
+				.andExpect(status().isCreated())
+				.andReturn();
+		
+		final var carSaved = this.carroService.save(carroDto);
+		
+		assertThat(carSaved).usingRecursiveComparison().isEqualTo(carExpected);
+		verify(carroService, times(1)).save(carroDto);
+	}
+	
+	@Test
+	void deveAtualizarCarroComSucesso() throws Exception {
+		
+		final var carExpected = carros.get(0);
+		CarroDTO carDto = new CarroDTO(carExpected);
+		
+		Long id = carExpected.getId();
+		
+		when(this.carroService.save(carDto)).thenReturn(carExpected);
+		
+		assertNotEquals("Toyota", carExpected.getModelo());
+		
+		carExpected.setModelo("Toyota");
+		
+		CarroDTO carDtoUpdated = new CarroDTO(carExpected);
+		
+		String jsonRequest = this.objectMapper.writeValueAsString(carDtoUpdated);
+		
+		mockMvc.perform(put("/carros/{id}", id)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest))
+				.andExpect(status().isOk())
+				.andReturn();
+		
+		when(this.carroService.save(carDtoUpdated)).thenReturn(carExpected);
+		
+		final var carUpdated = this.carroService.save(carDtoUpdated);
+		
+		assertEquals("Toyota", carUpdated.getModelo());
+		verify(this.carroService, times(1)).save(carDtoUpdated);
+	}
+	
+//	@Test
+//	void deveDeletarCarroComApartirDoIdSucesso() throws Exception {
+//		
+//		final var carExpected = carros.get(0);
+//		Long id = carExpected.getId();
+//		
+//		when(this.carroService.findById(id)).thenReturn(carExpected);
+//		
+//		doNothing().when(this.carroService).delete(id);
+//		
+//		mockMvc.perform(delete("/carros/{id}", 1L))
+//			.andExpect(status().isNoContent())
+//			.andReturn();
+//		
+//		final var car = carroService.findById(id);
+//		
+//		this.carroService.delete(car.getId());
+//		
+//		verify(carroService, times(1)).delete(id);
+//	}
 }
