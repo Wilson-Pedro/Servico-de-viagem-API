@@ -3,6 +3,7 @@ package com.wamk.uber.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -29,6 +30,9 @@ import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
+import com.wamk.uber.exceptions.TelefoneJaExisteException;
+import com.wamk.uber.exceptions.UsuarioJaAtivoException;
+import com.wamk.uber.exceptions.UsuarioJaDesativadoException;
 import com.wamk.uber.provider.UsuarioEntityAndUsuarioDtoProviderTest;
 import com.wamk.uber.provider.UsuarioProviderTest;
 import com.wamk.uber.repositories.UsuarioRepository;
@@ -217,5 +221,47 @@ class UsuarioServiceTest {
 		usuarioRepository.save(passageiro);
 		
 		assertEquals(ativo, passageiro.getUsuarioStatus());
+	}
+	
+	@Test
+	void deveLancarExcecaoTelefoneJaExisteException() {
+		
+		final var userDto = new UsuarioDTO(usuarios.get(0));
+		final var telefone = userDto.getTelefone();
+		when(this.usuarioRepository.existsByTelefone(telefone)).thenReturn(true);
+		
+		assertThrows(TelefoneJaExisteException.class, 
+				() -> usuarioService.validarCadastroUsuario(userDto));
+	}
+	
+	@Test
+	void deveLancarExcecaoUsuarioJaDesativadoException() {
+		final var user = usuarios.get(1);
+		Long id = user.getId();
+		user.desativar();
+		
+		when(this.usuarioRepository.findById(id)).thenReturn(Optional.of(user));
+		when(this.usuarioRepository.save(user)).thenReturn(user);
+		
+		this.usuarioRepository.save(user);
+		
+		final var userFind = this.usuarioRepository.findById(id).get();
+		
+		assertThrows(UsuarioJaDesativadoException.class, () -> usuarioService.desativarUsuario(userFind.getId()));
+	}
+	
+	@Test
+	void deveLancarExcecaoUsuarioJaAtivoException() {
+		final var user = usuarios.get(1);
+		Long id = user.getId();
+		
+		when(this.usuarioRepository.findById(id)).thenReturn(Optional.of(user));
+		when(this.usuarioRepository.save(user)).thenReturn(user);
+		
+		this.usuarioRepository.save(user);
+		
+		final var userFind = this.usuarioRepository.findById(id).get();
+		
+		assertThrows(UsuarioJaAtivoException.class, () -> usuarioService.ativarUsuario(userFind.getId()));
 	}
 }

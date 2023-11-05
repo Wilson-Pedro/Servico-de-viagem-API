@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Optional;
 
+import org.h2.command.dml.MergeUsing.When;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,13 +151,13 @@ class CarroControllerTest {
 //		
 //		when(this.carroService.findById(id)).thenReturn(carExpected);
 //		
-//		doNothing().when(this.carroService).delete(id);
+//		final var car = carroService.findById(id);
+//		
+//		doNothing().when(this.carroService).delete(car.getId());
 //		
 //		mockMvc.perform(delete("/carros/{id}", 1L))
 //			.andExpect(status().isNoContent())
 //			.andReturn();
-//		
-//		final var car = carroService.findById(id);
 //		
 //		this.carroService.delete(car.getId());
 //		

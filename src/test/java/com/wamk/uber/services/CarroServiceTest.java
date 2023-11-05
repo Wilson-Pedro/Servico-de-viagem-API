@@ -3,6 +3,7 @@ package com.wamk.uber.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
+import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.provider.CarroEntityAndCarroDtoProviderTest;
 import com.wamk.uber.provider.CarrosProviderTest;
 import com.wamk.uber.repositories.CarroRepository;
@@ -123,5 +125,28 @@ class CarroServiceTest {
 		carroRepository.delete(carroEsperado);
 		
 		verify(carroRepository, times(1)).delete(carroEsperado);
+	}
+	
+	@Test
+	void deveLancarExcacaoPlacaExistenteExceptionAposTentarRegistrar() {
+		
+		final var carroDto = new CarroDTO(carros.get(0));
+		final var placa = carroDto.getPlaca();
+		when(this.carroRepository.existsByPlaca(placa)).thenReturn(true);
+		
+		assertThrows(PlacaExistenteException.class, () -> this.carroService.validarSave(carroDto));
+	}
+	
+	@Test
+	void deveLancarExcacaoPlacaExistenteExceptionAposTentarAtualizar() {
+		
+		final var carroDto = new CarroDTO(carros.get(0));
+		final var placa = "JVF-9207";
+		Long id = 2L;
+		when(carroRepository.existsByPlaca(placa)).thenReturn(true);
+		when(carroService.atualizarCadastro(carroDto, id)).thenThrow(PlacaExistenteException.class);
+		
+		assertThrows(PlacaExistenteException.class, 
+				() -> this.carroService.validarUpdate(carroDto, id));
 	}
 }
