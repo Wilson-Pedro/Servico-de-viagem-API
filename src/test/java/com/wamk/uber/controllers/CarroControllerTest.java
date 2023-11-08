@@ -3,21 +3,17 @@ package com.wamk.uber.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.h2.command.dml.MergeUsing.When;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +55,7 @@ class CarroControllerTest {
 		
 		when(carroService.findAll()).thenReturn(carsExpected);
 		
-		mockMvc.perform(get("/carros")
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/carros"))
 				.andExpect(status().isOk())
 				.andReturn();
 		
@@ -78,8 +73,7 @@ class CarroControllerTest {
 		
 		when(this.carroService.findById(id)).thenReturn(carExpected);
 		
-		mockMvc.perform(get("/carros/{id}", 1L)
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/carros/{id}", 1L))
 				.andExpect(status().isOk())
 				.andReturn();
 		
@@ -88,6 +82,21 @@ class CarroControllerTest {
 		assertThat(car).usingRecursiveComparison().isEqualTo(carExpected);
 		verify(carroService, times(1)).findById(id);
 	}
+	
+//	@Test
+//	void devePaginarAListaDeCarros() throws Exception {
+//		Pageable pageable = PageRequest.of(0, 10);
+//		Page<Carro> carrosPages = (Page<Carro>) carros;
+//		when(this.carroService.findAll(pageable)).thenReturn(carrosPages);
+//		
+//		Page<Carro> pages = carroService.findAll(pageable);
+//		
+//		mockMvc.perform(post("/carros/pages"))
+//				.andExpect(status().isCreated())
+//				.andReturn();
+//		
+//		assertThat(pages).usingRecursiveComparison().isEqualTo(carrosPages);
+//	}
 	
 	@Test
 	void deveSalvarCarroComSucesso() throws Exception {

@@ -63,7 +63,7 @@ public class UsuarioController {
 		return ResponseEntity.ok(list.stream().map(x -> ViagemMapper.toDTO(x)).toList());
 	}
 	
-	@PostMapping
+	@PostMapping("/")
 	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
 		var usuario = usuarioService.save(usuarioDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDTO(usuario));
