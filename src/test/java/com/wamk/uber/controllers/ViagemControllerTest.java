@@ -4,12 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +36,7 @@ import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
+import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
 
 @SpringBootTest
@@ -148,5 +151,34 @@ class ViagemControllerTest {
 		
 		assertEquals("Pará - Rua das Goiabadas", trip.getDestino());
 		verify(this.viagemService, timeout(1)).save(viagemInputDtTO);
+	}
+	
+	@Test
+	void deveFinalizarViagemComSucesso() throws Exception {
+		
+		final var tripExpected = viagens.get(0);
+		final var id = tripExpected.getId();
+		
+		ViagemStatus finalizada = ViagemStatus.FINALIZADA;
+		
+		assertNotEquals(finalizada, tripExpected.getViagemStatus());
+		
+		mockMvc.perform(patch("/viagens/{id}/finalizar", id))
+				.andExpect(status().isNoContent())
+				.andReturn();
+		
+		tripExpected.finalizar();
+		
+		final var viagemInputDtTO = new ViagemInputDTO(tripExpected);
+		
+		doNothing().when(this.viagemService).finishTrip(id);
+		when(this.viagemService.save(viagemInputDtTO)).thenReturn(tripExpected);
+		
+		final var trip = this.viagemService.save(viagemInputDtTO);
+		this.viagemService.finishTrip(id);
+		
+		assertThat(trip).usingRecursiveComparison().isEqualTo(tripExpected);
+		verify(this.viagemService, times(1)).finishTrip(1L);
+		verify(this.viagemService, times(1)).save(viagemInputDtTO);
 	}
 }
