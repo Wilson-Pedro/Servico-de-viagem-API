@@ -152,19 +152,15 @@ public class UsuarioControllerTest {
 	void deveAtualizarUsuarioComSucesso() throws Exception {
 		
 		final var userExpected = usuarios.get(1);
-		final var userDTO = new UsuarioDTO(userExpected);
-		
-		Long id = userExpected.getId();
-		
-		when(this.usuarioService.save(userDTO)).thenReturn(userExpected);
+		final var id = userExpected.getId();
 		
 		assertNotEquals("Paula", userExpected.getNome());
 		
 		userExpected.setNome("Paula");
 		
-		final var userDtoUpdated = new UsuarioDTO(userExpected);
+		final var userDto = new UsuarioDTO(userExpected);
 		
-		String jsonRequest = objectMapper.writeValueAsString(userDtoUpdated);
+		String jsonRequest = objectMapper.writeValueAsString(userDto);
 		
 		mockMvc.perform(put("/usuarios/{id}", id)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -172,11 +168,11 @@ public class UsuarioControllerTest {
 				.andExpect(status().isOk())
 				.andReturn();
 		
-		when(this.usuarioService.save(userDtoUpdated)).thenReturn(userExpected);
+		when(this.usuarioService.save(userDto)).thenReturn(userExpected);
 		
-		final var userUpdated = this.usuarioService.save(userDtoUpdated);
+		final var userUpdated = this.usuarioService.save(userDto);
 		
 		assertEquals("Paula", userUpdated.getNome());
-		verify(usuarioService, times(1)).save(userDtoUpdated);
+		verify(usuarioService, times(1)).save(userDto);
 	}
 }

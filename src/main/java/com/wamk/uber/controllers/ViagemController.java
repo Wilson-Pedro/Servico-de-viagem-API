@@ -54,7 +54,7 @@ public class ViagemController {
 		return ResponseEntity.ok(pages.map(ViagemDTO::new));
 	}
 	
-	@PostMapping
+	@PostMapping("/")
 	public ResponseEntity<ViagemDTO> registrarUsuario(@RequestBody @Valid ViagemInputDTO viagemInputDTO){
 		var viagem = viagemService.save(viagemInputDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ViagemMapper.toDTO(viagem));

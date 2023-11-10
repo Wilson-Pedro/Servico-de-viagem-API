@@ -61,7 +61,7 @@ public class ViagemService {
 		return viagemRepository.findAll(pageable);
 	}
 
-	public Viagem atualizarCadastro(ViagemInputDTO viagemInputDTO,Long id) {
+	public Viagem atualizarCadastro(ViagemInputDTO viagemInputDTO, Long id) {
 		return viagemRepository.findById(id)
 				.map(viagem -> {
 					viagem.setOrigem(viagemInputDTO.getOrigem());
