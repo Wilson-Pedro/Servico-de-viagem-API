@@ -3,13 +3,13 @@ package com.wamk.uber.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,7 +36,6 @@ import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
-import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
 
 @SpringBootTest
@@ -55,16 +54,24 @@ class ViagemControllerTest {
 	private ObjectMapper objectMapper;
 	
 	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
+	Carro carro2 = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
 	
 	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
+	Passageiro passageiro2 = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 	
 	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+	Motorista motorista2 = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro2);
 	
 	private final List<Viagem> viagens = List.of(
 			new Viagem(1L, 
 					"Novo Castelo - Rua das Goiabas 1010", 
 					"Pará - Rua das Maçãs", 
 					"10 minutos", passageiro, motorista, 
+					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA),
+			new Viagem(2L, 
+					"Novo Castelo - Rua das Limonadas 1010", 
+					"Pará - Rua das Peras", 
+					"10 minutos", passageiro2, motorista2, 
 					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA)
 	);
 
@@ -181,4 +188,20 @@ class ViagemControllerTest {
 		verify(this.viagemService, times(1)).finishTrip(1L);
 		verify(this.viagemService, times(1)).save(viagemInputDtTO);
 	}
+	
+//	@Test
+//	void deveDeletarViagemApartirDoIdComSucesso() throws Exception {
+//		
+//		final var tripExpected = viagens.get(1);
+//		final var id = tripExpected.getId();
+//		
+//		doNothing().when(this.viagemService).delete(id);
+//		
+//		mockMvc.perform(delete("/viagens/{id}", id))
+//				.andExpect(status().isNoContent())
+//				.andReturn();
+//		
+//		this.viagemService.delete(id);
+//		verify(this.viagemService, times(1)).delete(id);
+//	}
 }

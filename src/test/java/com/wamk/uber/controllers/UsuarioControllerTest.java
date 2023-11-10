@@ -3,10 +3,12 @@ package com.wamk.uber.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -174,5 +176,21 @@ public class UsuarioControllerTest {
 		
 		assertEquals("Paula", userUpdated.getNome());
 		verify(usuarioService, times(1)).save(userDto);
+	}
+	
+	@Test
+	void deveDeletarUsuarioApartirDoIdComSucesso() throws Exception {
+		
+		final var userExpected = usuarios.get(2);
+		final var id = userExpected.getId();
+		
+		doNothing().when(this.usuarioService).delete(id);
+		
+		mockMvc.perform(delete("/usuarios/{id}", id))
+				.andExpect(status().isNoContent())
+				.andReturn();
+		
+		this.usuarioService.delete(id);
+		verify(this.usuarioService, times(1)).delete(id);
 	}
 }

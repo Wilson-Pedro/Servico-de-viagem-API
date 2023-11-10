@@ -3,10 +3,12 @@ package com.wamk.uber.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -152,24 +154,19 @@ class CarroControllerTest {
 		verify(this.carroService, times(1)).save(carDtoUpdated);
 	}
 	
-//	@Test
-//	void deveDeletarCarroComApartirDoIdSucesso() throws Exception {
-//		
-//		final var carExpected = carros.get(0);
-//		Long id = carExpected.getId();
-//		
-//		when(this.carroService.findById(id)).thenReturn(carExpected);
-//		
-//		final var car = carroService.findById(id);
-//		
-//		doNothing().when(this.carroService).delete(car.getId());
-//		
-//		mockMvc.perform(delete("/carros/{id}", 1L))
-//			.andExpect(status().isNoContent())
-//			.andReturn();
-//		
-//		this.carroService.delete(car.getId());
-//		
-//		verify(carroService, times(1)).delete(id);
-//	}
+	@Test
+	void deveDeletarCarroComApartirDoIdSucesso() throws Exception {
+		
+		final var carExpected = carros.get(2);
+		final var id = carExpected.getId();
+		
+		doNothing().when(this.carroService).delete(id);
+		
+		mockMvc.perform(delete("/carros/{id}", id))
+				.andExpect(status().isNoContent())
+				.andReturn();
+		
+		this.carroService.delete(id);
+		verify(this.carroService, times(1)).delete(id);
+	}
 }
