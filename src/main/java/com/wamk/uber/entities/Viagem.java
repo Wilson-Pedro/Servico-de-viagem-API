@@ -152,7 +152,7 @@ public class Viagem implements Serializable{
 		setViagemStatus(ViagemStatus.FINALIZADA);
 	}
 	
-	public void naoFinalizada() {
+	public void naoFinalizar() {
 		setViagemStatus(ViagemStatus.NAO_FINALIZADA);
 	}
 

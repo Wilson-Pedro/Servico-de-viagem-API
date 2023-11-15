@@ -157,7 +157,7 @@ class CarroControllerTest {
 	@Test
 	void deveDeletarCarroComApartirDoIdSucesso() throws Exception {
 		
-		final var carExpected = carros.get(2);
+		final var carExpected = carros.get(1);
 		final var id = carExpected.getId();
 		
 		doNothing().when(this.carroService).delete(id);

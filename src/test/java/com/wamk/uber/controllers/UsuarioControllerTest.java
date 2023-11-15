@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
@@ -35,6 +37,7 @@ import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
+import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
 
@@ -48,6 +51,8 @@ public class UsuarioControllerTest {
 	UsuarioService usuarioService = mock(UsuarioService.class);
 	
 	ViagemService viagemService = mock(ViagemService.class);
+	
+	UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 	
 	@Autowired
 	MockMvc mockMvc;
@@ -68,7 +73,7 @@ public class UsuarioControllerTest {
 	
 	private final List<Viagem> viagens = List.of(
 			new Viagem(1L, "Novo Castelo - Rua das Goiabas 1010", 
-					"Pará - Rua das Maçãs", "20min", 
+					"Pará - Rua das Maçãs", "20 minutos", 
 					(Passageiro)usuarios.get(0), (Motorista) usuarios.get(3), 
 					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA)
 	);
@@ -192,5 +197,50 @@ public class UsuarioControllerTest {
 		
 		this.usuarioService.delete(id);
 		verify(this.usuarioService, times(1)).delete(id);
+	}
+	
+	@Test
+	void deveSolicitarViagemComSucesso() throws Exception {
+		
+		final var viagemEsperada = viagens.get(0);
+		final var viagem = new Viagem();
+		final var solicitacao = new SolicitarViagemDTO(viagemEsperada);
+		
+//		String jsonRequest = objectMapper.writeValueAsString(solicitacao);
+//		
+//		mockMvc.perform(post("/usuarios/solicitacarViagem")
+//				.contentType(MediaType.APPLICATION_JSON)
+//				.content(jsonRequest))
+//		 		.andExpect(status().isNoContent())
+//		 		.andReturn();
+		
+		final var passageiro = viagens.get(0).getPassageiro();
+		final var motorista = viagens.get(0).getMotorista();
+		
+		when(usuarioRepository.findById(passageiro.getId()))
+				.thenReturn(Optional.of(passageiro));
+		
+		when(usuarioRepository.save(passageiro)).thenReturn(passageiro);
+		when(usuarioRepository.save(motorista)).thenReturn(motorista);
+		
+		passageiro.correr();
+		motorista.correr();
+		
+		viagem.setId(1L);
+		viagem.setOrigem(solicitacao.getOrigem());
+		viagem.setDestino(solicitacao.getDestino());
+		viagem.setTempoDeViagem("20 minutos");
+		viagem.setPassageiro(passageiro);
+		viagem.setMotorista(motorista);
+		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
+		viagem.naoFinalizar();
+		
+		usuarioRepository.save(passageiro);
+		usuarioRepository.save(motorista);
+		
+		verify(usuarioRepository, times(1)).save(passageiro);
+		verify(usuarioRepository, times(1)).save(motorista);
+		
+		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
 }

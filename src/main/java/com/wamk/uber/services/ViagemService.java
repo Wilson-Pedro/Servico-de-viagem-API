@@ -75,8 +75,9 @@ public class ViagemService {
 	@Transactional
 	public void delete(Long id) {
 		usuarioService.activateUserByViagemId(id);
-		viagemRepository.delete(viagemRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(id)));
+		Viagem viagem = viagemRepository.findById(id)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
+		viagemRepository.delete(viagem);
 	}
 
 	@Transactional
@@ -97,7 +98,7 @@ public class ViagemService {
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista((Motorista)motorista);
 		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
-		viagem.naoFinalizada();
+		viagem.naoFinalizar();
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		return viagem;
 	}

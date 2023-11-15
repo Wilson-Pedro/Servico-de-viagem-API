@@ -171,7 +171,7 @@ class ViagemServiceTest {
 		viagem.setPassageiro(passageiro);
 		viagem.setMotorista(motorista);
 		viagem.setFormaDePagamento(solicitacao.getFormaDePagamento());
-		viagem.naoFinalizada();
+		viagem.naoFinalizar();
 		
 		usuarioRepository.save(passageiro);
 		usuarioRepository.save(motorista);

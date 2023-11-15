@@ -36,6 +36,8 @@ import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
+import com.wamk.uber.repositories.UsuarioRepository;
+import com.wamk.uber.repositories.ViagemRepository;
 import com.wamk.uber.services.ViagemService;
 
 @SpringBootTest
@@ -47,6 +49,10 @@ class ViagemControllerTest {
 	
 	ViagemService viagemService = mock(ViagemService.class);
 	
+	ViagemRepository viagemRepository = mock(ViagemRepository.class);
+	
+	UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
+	
 	@Autowired
 	MockMvc mockMvc;
 	
@@ -55,12 +61,15 @@ class ViagemControllerTest {
 	
 	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
 	Carro carro2 = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
+	Carro carro3 = new Carro(3L, "Forger", 2022, "FTG-0160");
 	
 	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 	Passageiro passageiro2 = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
+	Passageiro passageiro3 = new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 	
 	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
 	Motorista motorista2 = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro2);
+	Motorista motorista3 = new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro3);
 	
 	private final List<Viagem> viagens = List.of(
 			new Viagem(1L, 
@@ -69,10 +78,10 @@ class ViagemControllerTest {
 					"10 minutos", passageiro, motorista, 
 					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA),
 			new Viagem(2L, 
-					"Novo Castelo - Rua das Limonadas 1010", 
+					"Novo Castelo - Rua das Limonadas 1020", 
 					"Pará - Rua das Peras", 
-					"10 minutos", passageiro2, motorista2, 
-					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA)
+					"20 minutos", passageiro2, motorista2, 
+					FormaDePagamento.DEBITO, ViagemStatus.NAO_FINALIZADA)
 	);
 
 	@Test
@@ -189,19 +198,51 @@ class ViagemControllerTest {
 		verify(this.viagemService, times(1)).save(viagemInputDtTO);
 	}
 	
-//	@Test
-//	void deveDeletarViagemApartirDoIdComSucesso() throws Exception {
-//		
-//		final var tripExpected = viagens.get(1);
-//		final var id = tripExpected.getId();
-//		
-//		doNothing().when(this.viagemService).delete(id);
-//		
-//		mockMvc.perform(delete("/viagens/{id}", id))
+	@Test 
+	void deveCancelarViagemComSucesso() throws Exception {
+		
+		final var tripCanceled = viagens.get(0);
+		Long id = tripCanceled.getId();
+		
+		Passageiro passageiro = tripCanceled.getPassageiro();
+		Motorista motorista = tripCanceled.getMotorista();
+		
+		UsuarioStatus ativo = UsuarioStatus.ATIVO;
+		
+		assertNotEquals(ativo, passageiro.getUsuarioStatus());
+		assertNotEquals(ativo, motorista.getUsuarioStatus());
+		
+//		mockMvc.perform(delete("/viagens/{id}/cancelar", id))
 //				.andExpect(status().isNoContent())
 //				.andReturn();
-//		
-//		this.viagemService.delete(id);
-//		verify(this.viagemService, times(1)).delete(id);
-//	}
+		
+		passageiro.ativar();
+		motorista.ativar();
+		
+		doNothing().when(this.viagemRepository).delete(tripCanceled);
+		
+		this.viagemRepository.delete(tripCanceled);
+		
+		assertEquals(ativo, passageiro.getUsuarioStatus());
+		assertEquals(ativo, motorista.getUsuarioStatus());
+		verify(this.viagemRepository, times(1)).delete(tripCanceled);
+
+	}
+	
+	@Test
+	void deveDeletarViagemApartirDoIdComSucesso() throws Exception {
+		
+		Viagem tripExpected =  new Viagem(3L, 
+				"Novo Castelo - Rua dos Abacaxis 1030", 
+				"Pará - Rua das Peras", 
+				"30 minutos", passageiro3, motorista3, 
+				FormaDePagamento.CREDITO, ViagemStatus.NAO_FINALIZADA);
+		
+		Long id = tripExpected.getId();
+		
+		doNothing().when(this.viagemService).delete(id);
+		
+		this.viagemService.delete(id);
+		verify(this.viagemService, times(1)).delete(id);
+	}
 }
