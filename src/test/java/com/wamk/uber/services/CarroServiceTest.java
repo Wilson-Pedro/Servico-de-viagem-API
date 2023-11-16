@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -124,7 +123,7 @@ class CarroServiceTest {
 		
 		carroRepository.delete(carroEsperado);
 		
-		verify(carroRepository, times(1)).delete(carroEsperado);
+		verify(carroRepository).delete(carroEsperado);
 	}
 	
 	@Test

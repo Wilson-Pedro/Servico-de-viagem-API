@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -81,9 +80,9 @@ public class UsuarioControllerTest {
 	@Test
 	void deveBuscarTodosOsUsuariosComSucesso() throws Exception {
 		
-		final var usersExpected = usuarios;
+		final var usuariosEsperados = usuarios;
 		
-		when(this.usuarioService.findAll()).thenReturn(usersExpected);
+		when(this.usuarioService.findAll()).thenReturn(usuariosEsperados);
 		
 		mockMvc.perform(get("/usuarios"))
 				.andExpect(status().isOk())
@@ -91,17 +90,17 @@ public class UsuarioControllerTest {
 		
 		final var users = this.usuarioService.findAll();
 		
-		assertThat(users).usingRecursiveComparison().isEqualTo(usersExpected);
-		verify(this.usuarioService, times(1)).findAll();
+		assertThat(users).usingRecursiveComparison().isEqualTo(usuariosEsperados);
+		verify(this.usuarioService).findAll();
 	}
 	
 	@Test
 	void deveBuscarUsuariApartirDoIdComSucesso() throws Exception {
 		
-		final var userExpected = usuarios.get(0);
-		Long id = userExpected.getId();
+		final var usuarioEsperado = usuarios.get(0);
+		Long id = usuarioEsperado.getId();
 		
-		when(this.usuarioService.findById(id)).thenReturn(userExpected);
+		when(this.usuarioService.findById(id)).thenReturn(usuarioEsperado);
 		
 		mockMvc.perform(get("/usuarios/{id}", id))
 				.andExpect(status().isOk())
@@ -109,18 +108,18 @@ public class UsuarioControllerTest {
 		
 		final var usuario = this.usuarioService.findById(id);
 		
-		assertThat(usuario).usingRecursiveComparison().isEqualTo(userExpected);
-		verify(usuarioService, times(1)).findById(id);
+		assertThat(usuario).usingRecursiveComparison().isEqualTo(usuarioEsperado);
+		verify(usuarioService).findById(id);
 	}
 	
 	@Test
 	@DisplayName("Deve retornar todas as viagens relacionadas ao Usuario a partir do UserId")
 	void deveBuscarTodasAsviagensApartirDoUserId() throws Exception {
 		
-		final var tripsExpected = viagens;
+		final var viagensEsperadas = viagens;
 		Long id = usuarios.get(0).getId();
 		
-		when(this.viagemService.getAllTripsByUserId(id)).thenReturn(tripsExpected);
+		when(this.viagemService.getAllTripsByUserId(id)).thenReturn(viagensEsperadas);
 		
 		mockMvc.perform(get("/usuarios/{id}/viagens", id))
 				.andExpect(status().isOk())
@@ -128,20 +127,20 @@ public class UsuarioControllerTest {
 		
 		final var trips = this.viagemService.getAllTripsByUserId(id);
 		
-		assertThat(trips).usingRecursiveComparison().isEqualTo(tripsExpected);
-		verify(this.viagemService, times(1)).getAllTripsByUserId(id);
+		assertThat(trips).usingRecursiveComparison().isEqualTo(viagensEsperadas);
+		verify(this.viagemService).getAllTripsByUserId(id);
 	}
 	
 	@Test
 	void deveSalvarUsuarioComSucesso() throws Exception {
 		
-		final var userExpected = new Passageiro
+		final var usuarioEsperado = new Passageiro
 				(7L, "Gilberto", "9812813902", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
-		final var userDTO = new UsuarioDTO(userExpected);
+		final var usuarioDTO = new UsuarioDTO(usuarioEsperado);
 		
-		when(this.usuarioService.save(userDTO)).thenReturn(userExpected);
+		when(this.usuarioService.save(usuarioDTO)).thenReturn(usuarioEsperado);
 		
-		String jsonRequest = objectMapper.writeValueAsString(userDTO);
+		String jsonRequest = objectMapper.writeValueAsString(usuarioDTO);
 		
 		mockMvc.perform(post("/usuarios/")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -149,23 +148,23 @@ public class UsuarioControllerTest {
 				.andExpect(status().isCreated())
 				.andReturn();
 		
-		final var usuario = this.usuarioService.save(userDTO);
+		final var usuario = this.usuarioService.save(usuarioDTO);
 		
-		assertThat(usuario).usingRecursiveComparison().isEqualTo(userExpected);
-		verify(this.usuarioService, times(1)).save(userDTO);
+		assertThat(usuario).usingRecursiveComparison().isEqualTo(usuarioEsperado);
+		verify(this.usuarioService).save(usuarioDTO);
 	}
 	
 	@Test
 	void deveAtualizarUsuarioComSucesso() throws Exception {
 		
-		final var userExpected = usuarios.get(1);
-		final var id = userExpected.getId();
+		final var usuarioEsperado = usuarios.get(1);
+		final var id = usuarioEsperado.getId();
 		
-		assertNotEquals("Paula", userExpected.getNome());
+		assertNotEquals("Paula", usuarioEsperado.getNome());
 		
-		userExpected.setNome("Paula");
+		usuarioEsperado.setNome("Paula");
 		
-		final var userDto = new UsuarioDTO(userExpected);
+		final var userDto = new UsuarioDTO(usuarioEsperado);
 		
 		String jsonRequest = objectMapper.writeValueAsString(userDto);
 		
@@ -175,19 +174,19 @@ public class UsuarioControllerTest {
 				.andExpect(status().isOk())
 				.andReturn();
 		
-		when(this.usuarioService.save(userDto)).thenReturn(userExpected);
+		when(this.usuarioService.save(userDto)).thenReturn(usuarioEsperado);
 		
 		final var userUpdated = this.usuarioService.save(userDto);
 		
 		assertEquals("Paula", userUpdated.getNome());
-		verify(usuarioService, times(1)).save(userDto);
+		verify(usuarioService).save(userDto);
 	}
 	
 	@Test
 	void deveDeletarUsuarioApartirDoIdComSucesso() throws Exception {
 		
-		final var userExpected = usuarios.get(2);
-		final var id = userExpected.getId();
+		final var usuarioEsperado = usuarios.get(2);
+		final var id = usuarioEsperado.getId();
 		
 		doNothing().when(this.usuarioService).delete(id);
 		
@@ -196,7 +195,7 @@ public class UsuarioControllerTest {
 				.andReturn();
 		
 		this.usuarioService.delete(id);
-		verify(this.usuarioService, times(1)).delete(id);
+		verify(this.usuarioService).delete(id);
 	}
 	
 	@Test
@@ -238,8 +237,8 @@ public class UsuarioControllerTest {
 		usuarioRepository.save(passageiro);
 		usuarioRepository.save(motorista);
 		
-		verify(usuarioRepository, times(1)).save(passageiro);
-		verify(usuarioRepository, times(1)).save(motorista);
+		verify(usuarioRepository).save(passageiro);
+		verify(usuarioRepository).save(motorista);
 		
 		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}

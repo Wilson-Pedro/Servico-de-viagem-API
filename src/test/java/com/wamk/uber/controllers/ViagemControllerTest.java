@@ -87,7 +87,7 @@ class ViagemControllerTest {
 	@Test
 	void deveBuscarTodasAsViagensComSucesso() throws Exception {
 		
-		final var tripsExpected = viagens;
+		final var viagensEsperadoas = viagens;
 		
 		when(this.viagemService.findAll()).thenReturn(viagens);
 		
@@ -97,17 +97,17 @@ class ViagemControllerTest {
 		
 		final var trips = this.viagemService.findAll();
 		
-		assertThat(trips).usingRecursiveComparison().isEqualTo(tripsExpected);
-		verify(this.viagemService, timeout(1)).findAll();
+		assertThat(trips).usingRecursiveComparison().isEqualTo(viagensEsperadoas);
+		verify(this.viagemService).findAll();
 	}
 	
 	@Test
 	void deveBuscarViagemApartirDoIdComSucesso() throws Exception {
 		
-		final var tripExpected = viagens.get(0);
-		Long id = tripExpected.getId();
+		final var viagemEsperada = viagens.get(0);
+		Long id = viagemEsperada.getId();
 		
-		when(this.viagemService.findById(id)).thenReturn(tripExpected);
+		when(this.viagemService.findById(id)).thenReturn(viagemEsperada);
 		
 		mockMvc.perform(get("/viagens/{id}", id))
 		        .andExpect(status().isOk())
@@ -115,17 +115,17 @@ class ViagemControllerTest {
 		
 		final var trip = this.viagemService.findById(id);
 		
-		assertThat(trip).usingRecursiveComparison().isEqualTo(tripExpected);
-		verify(this.viagemService, times(1)).findById(id);
+		assertThat(trip).usingRecursiveComparison().isEqualTo(viagemEsperada);
+		verify(this.viagemService).findById(id);
 	}
 	
 	@Test
 	void deveSalvarViagemComSucesso() throws Exception {
 		
-		final var tripExpected = viagens.get(0);
-		final var viagemInputDTO = new ViagemInputDTO(tripExpected);
+		final var viagemEsperada = viagens.get(0);
+		final var viagemInputDTO = new ViagemInputDTO(viagemEsperada);
 		
-		when(this.viagemService.save(viagemInputDTO)).thenReturn(tripExpected);
+		when(this.viagemService.save(viagemInputDTO)).thenReturn(viagemEsperada);
 		
 		String jsonRequest = objectMapper.writeValueAsString(viagemInputDTO);
 		
@@ -137,21 +137,21 @@ class ViagemControllerTest {
 		
 		final var trip = this.viagemService.save(viagemInputDTO);
 		
-		assertThat(trip).usingRecursiveComparison().isEqualTo(tripExpected);
-		verify(this.viagemService, times(1)).save(viagemInputDTO);
+		assertThat(trip).usingRecursiveComparison().isEqualTo(viagemEsperada);
+		verify(this.viagemService).save(viagemInputDTO);
 	}
 	
 	@Test
 	void deveAtualizarViagemComSucesso() throws Exception {
 		
-		final var tripExpected = viagens.get(0);
-		final var id = tripExpected.getId();
+		final var viagemEsperada = viagens.get(0);
+		final var id = viagemEsperada.getId();
 		
-		assertNotEquals("Pará - Rua das Goiabadas", tripExpected.getDestino());
+		assertNotEquals("Pará - Rua das Goiabadas", viagemEsperada.getDestino());
 		
-		tripExpected.setDestino("Pará - Rua das Goiabadas");
+		viagemEsperada.setDestino("Pará - Rua das Goiabadas");
 		
-		final var viagemInputDtTO = new ViagemInputDTO(tripExpected);
+		final var viagemInputDtTO = new ViagemInputDTO(viagemEsperada);
 		
 		String jsonRequest = objectMapper.writeValueAsString(viagemInputDtTO);
 		
@@ -161,51 +161,51 @@ class ViagemControllerTest {
 				.andExpect(status().isOk())
 				.andReturn();
 		
-		when(this.viagemService.save(viagemInputDtTO)).thenReturn(tripExpected);
+		when(this.viagemService.save(viagemInputDtTO)).thenReturn(viagemEsperada);
 		
 		final var trip = this.viagemService.save(viagemInputDtTO);
 		
 		assertEquals("Pará - Rua das Goiabadas", trip.getDestino());
-		verify(this.viagemService, timeout(1)).save(viagemInputDtTO);
+		verify(this.viagemService).save(viagemInputDtTO);
 	}
 	
 	@Test
 	void deveFinalizarViagemComSucesso() throws Exception {
 		
-		final var tripExpected = viagens.get(0);
-		final var id = tripExpected.getId();
+		final var viagemEsperada = viagens.get(0);
+		final var id = viagemEsperada.getId();
 		
 		ViagemStatus finalizada = ViagemStatus.FINALIZADA;
 		
-		assertNotEquals(finalizada, tripExpected.getViagemStatus());
+		assertNotEquals(finalizada, viagemEsperada.getViagemStatus());
 		
 		mockMvc.perform(patch("/viagens/{id}/finalizar", id))
 				.andExpect(status().isNoContent())
 				.andReturn();
 		
-		tripExpected.finalizar();
+		viagemEsperada.finalizar();
 		
-		final var viagemInputDtTO = new ViagemInputDTO(tripExpected);
+		final var viagemInputDtTO = new ViagemInputDTO(viagemEsperada);
 		
 		doNothing().when(this.viagemService).finishTrip(id);
-		when(this.viagemService.save(viagemInputDtTO)).thenReturn(tripExpected);
+		when(this.viagemService.save(viagemInputDtTO)).thenReturn(viagemEsperada);
 		
 		final var trip = this.viagemService.save(viagemInputDtTO);
 		this.viagemService.finishTrip(id);
 		
-		assertThat(trip).usingRecursiveComparison().isEqualTo(tripExpected);
-		verify(this.viagemService, times(1)).finishTrip(1L);
-		verify(this.viagemService, times(1)).save(viagemInputDtTO);
+		assertThat(trip).usingRecursiveComparison().isEqualTo(viagemEsperada);
+		verify(this.viagemService).finishTrip(1L);
+		verify(this.viagemService).save(viagemInputDtTO);
 	}
 	
 	@Test 
 	void deveCancelarViagemComSucesso() throws Exception {
 		
-		final var tripCanceled = viagens.get(0);
-		Long id = tripCanceled.getId();
+		final var viagemCancelada = viagens.get(0);
+//		Long id = viagemCancelada.getId();
 		
-		Passageiro passageiro = tripCanceled.getPassageiro();
-		Motorista motorista = tripCanceled.getMotorista();
+		Passageiro passageiro = viagemCancelada.getPassageiro();
+		Motorista motorista = viagemCancelada.getMotorista();
 		
 		UsuarioStatus ativo = UsuarioStatus.ATIVO;
 		
@@ -219,30 +219,30 @@ class ViagemControllerTest {
 		passageiro.ativar();
 		motorista.ativar();
 		
-		doNothing().when(this.viagemRepository).delete(tripCanceled);
+		doNothing().when(this.viagemRepository).delete(viagemCancelada);
 		
-		this.viagemRepository.delete(tripCanceled);
+		this.viagemRepository.delete(viagemCancelada);
 		
 		assertEquals(ativo, passageiro.getUsuarioStatus());
 		assertEquals(ativo, motorista.getUsuarioStatus());
-		verify(this.viagemRepository, times(1)).delete(tripCanceled);
+		verify(this.viagemRepository).delete(viagemCancelada);
 
 	}
 	
 	@Test
 	void deveDeletarViagemApartirDoIdComSucesso() throws Exception {
 		
-		Viagem tripExpected =  new Viagem(3L, 
+		Viagem viagemEsperada =  new Viagem(3L, 
 				"Novo Castelo - Rua dos Abacaxis 1030", 
 				"Pará - Rua das Peras", 
 				"30 minutos", passageiro3, motorista3, 
 				FormaDePagamento.CREDITO, ViagemStatus.NAO_FINALIZADA);
 		
-		Long id = tripExpected.getId();
+		Long id = viagemEsperada.getId();
 		
 		doNothing().when(this.viagemService).delete(id);
 		
 		this.viagemService.delete(id);
-		verify(this.viagemService, times(1)).delete(id);
+		verify(this.viagemService).delete(id);
 	}
 }

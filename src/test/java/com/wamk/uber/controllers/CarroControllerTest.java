@@ -53,9 +53,9 @@ class CarroControllerTest {
 	@Test
 	void deveBuscarTodosOsCarrosComSucesso() throws Exception {
 		
-		final var carsExpected = carros;
+		final var carrosEsperados = carros;
 		
-		when(carroService.findAll()).thenReturn(carsExpected);
+		when(carroService.findAll()).thenReturn(carrosEsperados);
 		
 		mockMvc.perform(get("/carros"))
 				.andExpect(status().isOk())
@@ -63,17 +63,17 @@ class CarroControllerTest {
 		
 		final var cars= carroService.findAll();
 		
-		assertThat(cars).usingRecursiveComparison().isEqualTo(carsExpected);
+		assertThat(cars).usingRecursiveComparison().isEqualTo(carrosEsperados);
 		verify(carroService, times(1)).findAll();
 	}
 	
 	@Test
 	void deveBuscarCarroPorIdComSucesso() throws Exception {
 		
-		final var carExpected = carros.get(0);
-		Long id = carExpected.getId();
+		final var carroEsperado = carros.get(0);
+		Long id = carroEsperado.getId();
 		
-		when(this.carroService.findById(id)).thenReturn(carExpected);
+		when(this.carroService.findById(id)).thenReturn(carroEsperado);
 		
 		mockMvc.perform(get("/carros/{id}", 1L))
 				.andExpect(status().isOk())
@@ -81,8 +81,8 @@ class CarroControllerTest {
 		
 		final var car = carroService.findById(id);
 		
-		assertThat(car).usingRecursiveComparison().isEqualTo(carExpected);
-		verify(carroService, times(1)).findById(id);
+		assertThat(car).usingRecursiveComparison().isEqualTo(carroEsperado);
+		verify(carroService).findById(id);
 	}
 	
 //	@Test
@@ -103,10 +103,10 @@ class CarroControllerTest {
 	@Test
 	void deveSalvarCarroComSucesso() throws Exception {
 		
-		final var carExpected = new Carro(4L, "Uno", 2022, "JVF-9297");
-		final var carroDto = new CarroDTO(carExpected);
+		final var carroEsperado = new Carro(4L, "Uno", 2022, "JVF-9297");
+		final var carroDto = new CarroDTO(carroEsperado);
 		
-		when(this.carroService.save(carroDto)).thenReturn(carExpected);
+		when(this.carroService.save(carroDto)).thenReturn(carroEsperado);
 		
 		String jsonRequest = objectMapper.writeValueAsString(carroDto);
 		
@@ -118,27 +118,27 @@ class CarroControllerTest {
 		
 		final var carSaved = this.carroService.save(carroDto);
 		
-		assertThat(carSaved).usingRecursiveComparison().isEqualTo(carExpected);
-		verify(carroService, times(1)).save(carroDto);
+		assertThat(carSaved).usingRecursiveComparison().isEqualTo(carroEsperado);
+		verify(carroService).save(carroDto);
 	}
 	
 	@Test
 	void deveAtualizarCarroComSucesso() throws Exception {
 		
-		final var carExpected = carros.get(0);
-		CarroDTO carDto = new CarroDTO(carExpected);
+		final var carroEsperado = carros.get(0);
+		CarroDTO carDto = new CarroDTO(carroEsperado);
 		
-		Long id = carExpected.getId();
+		Long id = carroEsperado.getId();
 		
-		when(this.carroService.save(carDto)).thenReturn(carExpected);
+		when(this.carroService.save(carDto)).thenReturn(carroEsperado);
 		
-		assertNotEquals("Toyota", carExpected.getModelo());
+		assertNotEquals("Toyota", carroEsperado.getModelo());
 		
-		carExpected.setModelo("Toyota");
+		carroEsperado.setModelo("Toyota");
 		
-		CarroDTO carDtoUpdated = new CarroDTO(carExpected);
+		CarroDTO carDtoAtualizado = new CarroDTO(carroEsperado);
 		
-		String jsonRequest = this.objectMapper.writeValueAsString(carDtoUpdated);
+		String jsonRequest = this.objectMapper.writeValueAsString(carDtoAtualizado);
 		
 		mockMvc.perform(put("/carros/{id}", id)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -146,19 +146,19 @@ class CarroControllerTest {
 				.andExpect(status().isOk())
 				.andReturn();
 		
-		when(this.carroService.save(carDtoUpdated)).thenReturn(carExpected);
+		when(this.carroService.save(carDtoAtualizado)).thenReturn(carroEsperado);
 		
-		final var carUpdated = this.carroService.save(carDtoUpdated);
+		final var carUpdated = this.carroService.save(carDtoAtualizado);
 		
 		assertEquals("Toyota", carUpdated.getModelo());
-		verify(this.carroService, times(1)).save(carDtoUpdated);
+		verify(this.carroService).save(carDtoAtualizado);
 	}
 	
 	@Test
 	void deveDeletarCarroComApartirDoIdSucesso() throws Exception {
 		
-		final var carExpected = carros.get(1);
-		final var id = carExpected.getId();
+		final var carroEsperado = carros.get(1);
+		final var id = carroEsperado.getId();
 		
 		doNothing().when(this.carroService).delete(id);
 		
@@ -167,6 +167,6 @@ class CarroControllerTest {
 				.andReturn();
 		
 		this.carroService.delete(id);
-		verify(this.carroService, times(1)).delete(id);
+		verify(this.carroService).delete(id);
 	}
 }
