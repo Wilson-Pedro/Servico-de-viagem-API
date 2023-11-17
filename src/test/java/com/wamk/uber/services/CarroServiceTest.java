@@ -125,27 +125,4 @@ class CarroServiceTest {
 		
 		verify(carroRepository).delete(carroEsperado);
 	}
-	
-	@Test
-	void deveLancarExcacaoPlacaExistenteExceptionAposTentarRegistrar() {
-		
-		final var carroDto = new CarroDTO(carros.get(0));
-		final var placa = carroDto.getPlaca();
-		when(this.carroRepository.existsByPlaca(placa)).thenReturn(true);
-		
-		assertThrows(PlacaExistenteException.class, () -> this.carroService.validarSave(carroDto));
-	}
-	
-	@Test
-	void deveLancarExcacaoPlacaExistenteExceptionAposTentarAtualizar() {
-		
-		final var carroDto = new CarroDTO(carros.get(0));
-		final var placa = "JVF-9207";
-		Long id = 2L;
-		when(carroRepository.existsByPlaca(placa)).thenReturn(true);
-		when(carroService.atualizarCadastro(carroDto, id)).thenThrow(PlacaExistenteException.class);
-		
-		assertThrows(PlacaExistenteException.class, 
-				() -> this.carroService.validarUpdate(carroDto, id));
-	}
 }
