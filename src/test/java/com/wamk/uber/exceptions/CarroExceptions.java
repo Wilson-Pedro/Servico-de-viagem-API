@@ -30,10 +30,20 @@ class CarroExceptions {
 			new Carro(2L, "Chevrolet", 2022, "FFG-0460"),
 			new Carro(3L, "Forger", 2022, "FTG-0160")
 	);
+	
+	@Test
+	@DisplayName("Deve lançar exceção: EntidadeNaoEncontradaException")
+	void deveLancarExcecaoAposTentarBuscarUmCarroInexistente() {
+		
+		Long id = 4L;
+		
+		assertThrows(EntidadeNaoEncontradaException.class, 
+				() -> this.carroService.findById(id));
+	}
 
 	@Test
 	@DisplayName("Deve lançar a Exceção: PlacaExistenteException")
-	void deveLancarExcacaoAposTentarRegistrarUmCarro() {
+	void deveLancarExcecaoAposTentarRegistrarUmCarro() {
 		
 		final var carroDto = new CarroDTO(carros.get(0));
 		
@@ -42,22 +52,12 @@ class CarroExceptions {
 	
 	@Test
 	@DisplayName("Deve lançar a Exceção: PlacaExistenteException")
-	void deveLancarExcacaoTentarAtualizarUmCarro() {
+	void deveLancarExcecaoTentarAtualizarUmCarro() {
 		
 		final var carroDto = new CarroDTO(carros.get(0));
 		Long id = 2L;
 		
 		assertThrows(PlacaExistenteException.class, 
 				() -> this.carroService.atualizarCadastro(carroDto, id));
-	}
-
-	@Test
-	@DisplayName("Deve lançar exceção: EntidadeNaoEncontradaException")
-	void deveLancarExcacaoAposTentarBuscarUmCarroInexistente() {
-		
-		Long id = 4L;
-		
-		assertThrows(EntidadeNaoEncontradaException.class, 
-				() -> this.carroService.findById(id));
 	}
 }
