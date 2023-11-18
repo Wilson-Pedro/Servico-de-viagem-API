@@ -184,10 +184,7 @@ public class ViagemService {
 			list = viagemRepository.findAllByPassageiro((Passageiro) usuario);
 		} else {
 			list = viagemRepository.findAllByMotorista((Motorista) usuario);
-		}
-		if(list == null) {
-			throw new IllegalArgumentException("");
-		}
+		} 
 		return list;
 	}
 }
