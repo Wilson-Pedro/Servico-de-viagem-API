@@ -119,16 +119,16 @@ public class UsuarioControllerTest {
 		final var viagensEsperadas = viagens;
 		Long id = usuarios.get(0).getId();
 		
-		when(this.viagemService.getAllTripsByUserId(id)).thenReturn(viagensEsperadas);
+		when(this.viagemService.buscarTodasAsViagensPorUserId(id)).thenReturn(viagensEsperadas);
 		
 		mockMvc.perform(get("/usuarios/{id}/viagens", id))
 				.andExpect(status().isOk())
 				.andReturn();
 		
-		final var trips = this.viagemService.getAllTripsByUserId(id);
+		final var trips = this.viagemService.buscarTodasAsViagensPorUserId(id);
 		
 		assertThat(trips).usingRecursiveComparison().isEqualTo(viagensEsperadas);
-		verify(this.viagemService).getAllTripsByUserId(id);
+		verify(this.viagemService).buscarTodasAsViagensPorUserId(id);
 	}
 	
 	@Test

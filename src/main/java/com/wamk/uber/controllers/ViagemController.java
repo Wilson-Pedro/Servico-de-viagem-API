@@ -75,13 +75,13 @@ public class ViagemController {
 	
 	@PatchMapping("/{id}/finalizar")
 	public ResponseEntity<Void> finishTrip(@PathVariable Long id){
-		viagemService.finishTrip(id);
+		viagemService.finalizarViagem(id);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("/{id}/cancelar")
 	public ResponseEntity<Void> cancelar(@PathVariable Long id){
-		viagemService.cancelTripById(id);
+		viagemService.cancelarViagemPorViagemId(id);
 		return ResponseEntity.noContent().build();
 	}
 }

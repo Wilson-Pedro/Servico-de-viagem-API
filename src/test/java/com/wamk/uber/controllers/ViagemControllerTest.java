@@ -187,14 +187,14 @@ class ViagemControllerTest {
 		
 		final var viagemInputDtTO = new ViagemInputDTO(viagemEsperada);
 		
-		doNothing().when(this.viagemService).finishTrip(id);
+		doNothing().when(this.viagemService).finalizarViagem(id);
 		when(this.viagemService.save(viagemInputDtTO)).thenReturn(viagemEsperada);
 		
 		final var trip = this.viagemService.save(viagemInputDtTO);
-		this.viagemService.finishTrip(id);
+		this.viagemService.finalizarViagem(id);
 		
 		assertThat(trip).usingRecursiveComparison().isEqualTo(viagemEsperada);
-		verify(this.viagemService).finishTrip(1L);
+		verify(this.viagemService).finalizarViagem(1L);
 		verify(this.viagemService).save(viagemInputDtTO);
 	}
 	

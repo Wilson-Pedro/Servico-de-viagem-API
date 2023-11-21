@@ -229,7 +229,7 @@ class ViagemServiceTest {
 		
 		when(viagemRepository.findByPassageiro(passageiro)).thenReturn(viagemEsperada);
 		
-		final var viagem = viagemService.findViagemByPassageiro(passageiro);
+		final var viagem = viagemService.acharViagemPorPassageiro(passageiro);
 		
 		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
@@ -240,7 +240,7 @@ class ViagemServiceTest {
 		
 		when(viagemRepository.findByMotorista(motorista)).thenReturn(viagemEsperada);
 		
-		final var viagem = viagemService.findViagemByMotorista(motorista);
+		final var viagem = viagemService.acharViagemPorMotorista(motorista);
 		
 		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}

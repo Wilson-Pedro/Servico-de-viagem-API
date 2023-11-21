@@ -1,8 +1,6 @@
 package com.wamk.uber.exceptions;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 

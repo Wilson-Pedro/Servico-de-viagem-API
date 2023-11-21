@@ -106,6 +106,6 @@ class ViagensExceeptions {
 		Long id = viagens.get(1).getId();
 		
 		assertThrows(ViagemJaFinalizadaException.class, 
-				() -> this.viagemService.cancelTripById(id));
+				() -> this.viagemService.cancelarViagemPorViagemId(id));
 	}
 }

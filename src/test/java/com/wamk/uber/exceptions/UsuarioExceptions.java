@@ -49,7 +49,7 @@ class UsuarioExceptions {
 		UsuarioStatus desativado = UsuarioStatus.DESATIVADO;
 		
 		assertThrows(MotoristaNaoEncontradoException.class, 
-				() -> this.usuarioService.findMotoristaByStatus(desativado));
+				() -> this.usuarioService.buscarMotoristaPorStatus(desativado));
 		
 	}
 	
@@ -66,7 +66,7 @@ class UsuarioExceptions {
 	}
 	
 	@Test
-	@DisplayName("Deve lançar exceção: UsuarioJaDesativadoException, apoós tentar desativar um usuario já desativado.")
+	@DisplayName("Deve lançar exceção: UsuarioJaDesativadoException, após tentar desativar um usuario já desativado.")
 	void deveLancarExcecaoAposTentarDesativarUmUsuario() {
 		
 		final var usuario = new Passageiro(7L, "Luan", "22144-1179", TipoUsuario.PASSAGEIRO, UsuarioStatus.DESATIVADO);

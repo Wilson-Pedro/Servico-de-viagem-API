@@ -74,7 +74,7 @@ public class ViagemService {
 	
 	@Transactional
 	public void delete(Long id) {
-		usuarioService.activateUserByViagemId(id);
+		usuarioService.ativarUsuarioPorViagemId(id);
 		Viagem viagem = viagemRepository.findById(id)
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 		viagemRepository.delete(viagem);
@@ -82,14 +82,14 @@ public class ViagemService {
 
 	@Transactional
 	public void solicitandoViagem(SolicitarViagemDTO solicitacao) {
-		viagemRepository.save(buildTrip(solicitacao));
+		viagemRepository.save(construirViagem(solicitacao));
 	}
 	
-	private Viagem buildTrip(SolicitarViagemDTO solicitacao) {
+	private Viagem construirViagem(SolicitarViagemDTO solicitacao) {
 		Viagem viagem = new Viagem();
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
-		Motorista motorista = (Motorista) usuarioService.findMotoristaByStatus(UsuarioStatus.ATIVO);
+		Motorista motorista = (Motorista) usuarioService.buscarMotoristaPorStatus(UsuarioStatus.ATIVO);
 		motorista.correr();
 		passageiro.correr();
 		viagem.setOrigem(solicitacao.getOrigem());
@@ -112,46 +112,46 @@ public class ViagemService {
 	}
 	
 	@Transactional
-	public void finishTrip(Long id) {
+	public void finalizarViagem(Long id) {
 		Viagem viagem = findById(id);
-		usuarioService.activateUserByViagemId(viagem.getId());
+		usuarioService.ativarUsuarioPorViagemId(viagem.getId());
 		viagem.finalizar();
 		viagemRepository.save(viagem);
 	}
 	
 	@Transactional
-	public void cancelTripByUserId(Long Userid) {
+	public void cancelarViagemPorUserId(Long Userid) {
 		
-		Viagem viagem = findViagemByUserId(Userid);
+		Viagem viagem = acharViagemPorUserId(Userid);
 		
 		if(viagem.estaFinalizada()) {
 			throw new ViagemJaFinalizadaException("");
 		}
-		usuarioService.activateUserByViagemId(viagem.getId());
+		usuarioService.ativarUsuarioPorViagemId(viagem.getId());
 		viagemRepository.delete(viagem);
 	}
 	
 	@Transactional
-	public void cancelTripById(Long id) {
+	public void cancelarViagemPorViagemId(Long id) {
 		
 		Viagem viagem = findById(id);
 		
 		if(viagem.estaFinalizada()) {
 			throw new ViagemJaFinalizadaException("");
 		}
-		usuarioService.activateUserByViagemId(viagem.getId());
+		usuarioService.ativarUsuarioPorViagemId(viagem.getId());
 		viagemRepository.delete(viagem);
 	}
 	
-	public Viagem findViagemByUserId(Long UserId) {
+	public Viagem acharViagemPorUserId(Long UserId) {
 		
 		Usuario usuario = usuarioService.findById(UserId);
 		Viagem viagem = new Viagem();
 		
 		if(usuario.getTipoUsuario().equals(TipoUsuario.PASSAGEIRO)) {
-			viagem = findViagemByPassageiro((Passageiro) usuario);
+			viagem = acharViagemPorPassageiro((Passageiro) usuario);
 		} else {
-			viagem = findViagemByMotorista((Motorista) usuario);
+			viagem = acharViagemPorMotorista((Motorista) usuario);
 		}
 		if(viagem == null) {
 			throw new EntidadeNaoEncontradaException(UserId);
@@ -162,20 +162,20 @@ public class ViagemService {
 		return viagem;
 	}
 	
-	public Viagem findViagemByPassageiro(Passageiro passageiro) {
+	public Viagem acharViagemPorPassageiro(Passageiro passageiro) {
 		return viagemRepository.findByPassageiro(passageiro);
 	}
 	
-	public Viagem findViagemByMotorista(Motorista motorista) {
+	public Viagem acharViagemPorMotorista(Motorista motorista) {
 		return viagemRepository.findByMotorista(motorista);
 	}
 
-	public List<Viagem> getAllTripsByUserId(Long UserId) {
-		List<Viagem> list = findAllTripsByUserId(UserId);
+	public List<Viagem> buscarTodasAsViagensPorUserId(Long UserId) {
+		List<Viagem> list = acharTodasAsViagensPorUserId(UserId);
 		return list;
 	}
 	
-	public List<Viagem> findAllTripsByUserId(Long UserId) {
+	public List<Viagem> acharTodasAsViagensPorUserId(Long UserId) {
 		
 		var usuario = usuarioService.findById(UserId);
 		List<Viagem> list;

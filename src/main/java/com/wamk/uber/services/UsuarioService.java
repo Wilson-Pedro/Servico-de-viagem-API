@@ -56,7 +56,7 @@ public class UsuarioService {
 				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
-	public Motorista findMotoristaByStatus(UsuarioStatus status) {
+	public Motorista buscarMotoristaPorStatus(UsuarioStatus status) {
 		return usuarioRepository.findAllByUsuarioStatus(status)
 				.stream()
 				.filter(x -> x.getUsuarioStatus().equals(status))
@@ -65,7 +65,7 @@ public class UsuarioService {
 	}
 
 	public Usuario atualizarCadastro(UsuarioDTO usuarioDTO, Long id) {
-		validarUpdateUsuario(usuarioDTO, id);
+		validarAtualizacaoDoUsuario(usuarioDTO, id);
 		return usuarioRepository.findById(id)
 				.map(usuario -> {
 					usuario.setNome(usuarioDTO.getNome());
@@ -90,7 +90,7 @@ public class UsuarioService {
 		}
 	}
 	
-	public void validarUpdateUsuario(UsuarioDTO usuarioDTO, Long id) {
+	public void validarAtualizacaoDoUsuario(UsuarioDTO usuarioDTO, Long id) {
 		
 		final var telefone = usuarioDTO.getTelefone();
 		
@@ -99,8 +99,8 @@ public class UsuarioService {
 			throw new TelefoneJaExisteException(telefone);
 		}
 	}
-	
-	public void activateUserByViagemId(Long id) {
+				
+	public void ativarUsuarioPorViagemId(Long id) {
 		Viagem viagem = viagemRepository.findById(id).get();
 		Passageiro passageiro = (Passageiro) findById(viagem.getPassageiro().getId());
 		Motorista motorista = (Motorista) findById(viagem.getMotorista().getId());

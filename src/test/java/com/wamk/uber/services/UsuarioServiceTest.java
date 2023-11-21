@@ -201,7 +201,7 @@ class UsuarioServiceTest {
 		
 		when(usuarioRepository.findAllByUsuarioStatus(ativo)).thenReturn(motoristas);
 		
-		Motorista motorista = usuarioService.findMotoristaByStatus(ativo);
+		Motorista motorista = usuarioService.buscarMotoristaPorStatus(ativo);
 		
 		assertThat(motorista).usingRecursiveComparison().isEqualTo(motoristaEsperado);
 	}

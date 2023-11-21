@@ -59,7 +59,7 @@ public class UsuarioController {
 	
 	@GetMapping("/{id}/viagens")
 	public ResponseEntity<List<ViagemDTO>> findAllTripsByUserId(@PathVariable Long id){
-		List<Viagem> list = viagemService.getAllTripsByUserId(id);
+		List<Viagem> list = viagemService.buscarTodasAsViagensPorUserId(id);
 		return ResponseEntity.ok(list.stream().map(x -> ViagemMapper.toDTO(x)).toList());
 	}
 	
@@ -96,7 +96,7 @@ public class UsuarioController {
 	
 	@DeleteMapping("/{usuarioId}/cancelarViagem")
 	public ResponseEntity<Void> cancelTrip(@PathVariable Long usuarioId){
-		viagemService.cancelTripByUserId(usuarioId);
+		viagemService.cancelarViagemPorUserId(usuarioId);
 		return ResponseEntity.noContent().build();
 	}
 	
