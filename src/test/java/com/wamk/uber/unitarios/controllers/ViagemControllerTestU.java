@@ -1,4 +1,4 @@
-package com.wamk.uber.controllers;
+package com.wamk.uber.unitarios.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wamk.uber.controllers.ViagemController;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
@@ -42,7 +43,7 @@ import com.wamk.uber.services.ViagemService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ViagemControllerTest {
+class ViagemControllerTestU {
 	
 	@InjectMocks
 	ViagemController viagemController;

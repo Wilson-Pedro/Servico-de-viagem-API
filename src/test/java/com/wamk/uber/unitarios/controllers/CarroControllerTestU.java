@@ -1,4 +1,4 @@
-package com.wamk.uber.controllers;
+package com.wamk.uber.unitarios.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,13 +25,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wamk.uber.controllers.CarroController;
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class CarroControllerTest {
+class CarroControllerTestU {
 
 	@InjectMocks
 	CarroController carroController;
@@ -64,7 +65,7 @@ class CarroControllerTest {
 		final var cars= carroService.findAll();
 		
 		assertThat(cars).usingRecursiveComparison().isEqualTo(carrosEsperados);
-		verify(carroService, times(1)).findAll();
+		verify(carroService).findAll();
 	}
 	
 	@Test

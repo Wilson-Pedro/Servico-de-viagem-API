@@ -1,4 +1,4 @@
-package com.wamk.uber.exceptions;
+package com.wamk.uber.integracao.exceptions;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -15,6 +15,10 @@ import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
+import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
+import com.wamk.uber.exceptions.TelefoneJaExisteException;
+import com.wamk.uber.exceptions.UsuarioJaAtivoException;
 import com.wamk.uber.services.UsuarioService;
 
 @SpringBootTest

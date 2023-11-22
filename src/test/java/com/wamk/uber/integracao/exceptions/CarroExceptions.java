@@ -1,4 +1,4 @@
-package com.wamk.uber.exceptions;
+package com.wamk.uber.integracao.exceptions;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
+import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
+import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.services.CarroService;
 

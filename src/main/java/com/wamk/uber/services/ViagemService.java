@@ -33,7 +33,7 @@ public class ViagemService {
 	
 	private final UsuarioRepository usuarioRepository;
 
-	ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
+	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
 			UsuarioRepository usuarioRepository) {
 		this.viagemRepository = viagemRepository;
 		this.usuarioService = usuarioService;

@@ -1,9 +1,8 @@
-package com.wamk.uber.services;
+package com.wamk.uber.unitarios.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -20,13 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
-import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.provider.CarroEntityAndCarroDtoProviderTest;
 import com.wamk.uber.provider.CarrosProviderTest;
 import com.wamk.uber.repositories.CarroRepository;
+import com.wamk.uber.services.CarroService;
 
 @ExtendWith(MockitoExtension.class)
-class CarroServiceTest {
+class CarroServiceTestU {
 	
 	private final CarroRepository carroRepository = mock(CarroRepository.class);
 	

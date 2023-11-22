@@ -1,4 +1,4 @@
-package com.wamk.uber.services;
+package com.wamk.uber.unitarios.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,9 +37,10 @@ import com.wamk.uber.provider.UsuarioEntityAndUsuarioDtoProviderTest;
 import com.wamk.uber.provider.UsuarioProviderTest;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
+import com.wamk.uber.services.UsuarioService;
 
 @ExtendWith(MockitoExtension.class)
-class UsuarioServiceTest {
+class UsuarioServiceTestU {
 	
 	private final UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 	

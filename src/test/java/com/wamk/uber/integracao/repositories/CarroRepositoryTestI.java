@@ -1,4 +1,4 @@
-package com.wamk.uber.repositories;
+package com.wamk.uber.integracao.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,10 +12,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
+import com.wamk.uber.repositories.CarroRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")
-class CarroRepositoryTest {
+class CarroRepositoryTestI {
 	
 	@Autowired
 	CarroRepository carroRepository;
