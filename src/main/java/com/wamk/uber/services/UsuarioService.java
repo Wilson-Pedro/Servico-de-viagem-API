@@ -43,6 +43,7 @@ public class UsuarioService {
 		return usuarioRepository.save(UsuarioMapper.toEntity(usuarioDTO));
 	}
 
+	@Transactional
 	public List<Usuario> findAll() {
 		return usuarioRepository.findAll();
 	}

@@ -4,12 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
@@ -41,7 +43,7 @@ class CarroServiceTestI {
 	}
 	
 	@Test
-	void deveSBuscarTodosOsCarrosComSucesso() {
+	void deveBuscarTodosOsCarrosComSucesso() {
 		List<Carro> carrosEsperados = List.of(
 				new Carro(1L, "Fiat", 2022, "JVF-9207"),
 				new Carro(2L, "Chevrolet", 2022, "FFG-0460"),
@@ -69,6 +71,7 @@ class CarroServiceTestI {
 		Carro carroEsperado = new Carro(1L, "Fiat", 2022, "JVF-9207");
 		carroRepository.save(carroEsperado);
 		
+		assertNotEquals(null, carroEsperado);
 		assertEquals(1, carroRepository.count());
 		
 		carroService.delete(carroEsperado.getId());
