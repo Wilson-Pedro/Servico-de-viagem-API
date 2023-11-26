@@ -147,6 +147,7 @@ class UsuarioServiceTestI {
 		assertEquals(0, usuarioRepository.count());
 	}
 	
+//	@Transactional
 //	@Test
 //	void deveAticarUsuariosAParitrDaViagemId() {
 //		carroRepository.saveAll(carros);
