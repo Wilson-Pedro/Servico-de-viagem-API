@@ -12,7 +12,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
 	boolean existsByTelefone(String telefone);
 	
-	Usuario findByUsuarioStatus(UsuarioStatus status);
-	
 	List<Motorista> findAllByUsuarioStatus(UsuarioStatus status);
 }

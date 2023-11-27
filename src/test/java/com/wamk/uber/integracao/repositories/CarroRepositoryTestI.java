@@ -49,6 +49,7 @@ class CarroRepositoryTestI {
 	@DisplayName("Deve confirmar a existência de um Carro com sucesso a partir de uma placa")
 	void deveValidarSeExisteCarroComDeterminadaPlacaCase1() {
 		String placa = "JVF-9207";
+		
 		boolean existe = carroRepository.existsByPlaca(placa);
 		
 		assertEquals(true, existe);
@@ -58,6 +59,7 @@ class CarroRepositoryTestI {
 	@DisplayName("Não deve confirmar a existência de um Carro com sucesso a partir de uma placa")
 	void deveValidarSeExisteCarroComDeterminadaPlacaCase2() {
 		String placa = "JDF-9107";
+		
 		boolean existe = carroRepository.existsByPlaca(placa);
 		
 		assertEquals(false, existe);

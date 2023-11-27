@@ -1,12 +1,23 @@
 package com.wamk.uber.integracao.repositories;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.wamk.uber.entities.Motorista;
+import com.wamk.uber.entities.Usuario;
+import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.repositories.UsuarioRepository;
 
 @DataJpaTest
@@ -17,8 +28,40 @@ class UsuarioRepositoryTest {
 	UsuarioRepository usuarioRepository;
 
 	@Test
-	void test() {
-		fail("Not yet implemented");
+	@DisplayName("Deve confirmar a existência de um Usuário a partir de um número telefone com sucesso")
+	void deveValidarSeExisteUsarioComDeterminadoTelefoneCase1() {
+		String telefone = "9816923456";
+		
+		boolean existe = usuarioRepository.existsByTelefone(telefone);
+		
+		assertEquals(true, existe);
 	}
 
+	@Test
+	@DisplayName("Não deve confirmar a existência de um Usuário a partir de um número telefone com sucesso")
+	void deveValidarSeExisteUsarioComDeterminadoTelefoneCase2() {
+		String telefone = "2866958451";
+		
+		boolean existe = usuarioRepository.existsByTelefone(telefone);
+		
+		assertEquals(false, existe);
+	}
+	
+	@Test
+	@DisplayName("Deve buscar todos os motoristas a partir do UsuarioStatus com sucesso")
+	void deveBuscarTodosOsMotoristasAPartirDoStatusComSucesso() {
+		UsuarioStatus ativo = UsuarioStatus.ATIVO;
+		TipoUsuario motorista = TipoUsuario.MOTORISTA; 
+		
+		List<Usuario> motoristasEsperados = usuarioRepository.findAll()
+				.stream()
+				.filter(x -> x.getTipoUsuario().equals(motorista) && x.getUsuarioStatus().equals(ativo))
+				.collect(Collectors.toList());
+		
+		List<Motorista> motoristas = usuarioRepository.findAllByUsuarioStatus(ativo);
+		
+		assertNotNull(motoristas);
+		assertFalse(motoristas.isEmpty());
+		assertThat(motoristas).usingRecursiveComparison().isEqualTo(motoristasEsperados);
+	}
 }
