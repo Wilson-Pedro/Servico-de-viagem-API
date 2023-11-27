@@ -1,7 +1,7 @@
 package com.wamk.uber.integracao.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -32,17 +32,17 @@ class CarroRepositoryTestI {
 		
 		Optional<Carro> result = this.carroRepository.findCarroByPlaca(placa);
 		
-		assertThat(result.isPresent()).isTrue();
+		assertThat(result.isPresent());
 	}
 	
 	@Test
 	@DisplayName("Não deve Buscar Carro com sucesso a partir de uma placa que não existe")
 	void deveBuscarCarroComSucessoCase2() {
-		String placa = "JHG-9117";
+		String placa = "JFR-9337";
 		
 		Optional<Carro> result = this.carroRepository.findCarroByPlaca(placa);
 		
-		assertThat(result.isEmpty()).isTrue();
+		assertTrue(result.isEmpty());
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ class CarroRepositoryTestI {
 		
 		boolean existe = carroRepository.existsByPlaca(placa);
 		
-		assertEquals(true, existe);
+		assertTrue(existe);
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ class CarroRepositoryTestI {
 		
 		boolean existe = carroRepository.existsByPlaca(placa);
 		
-		assertEquals(false, existe);
+		assertFalse(existe);
 	}
 	
 	private Carro createCarro(CarroDTO carroDTO) {
