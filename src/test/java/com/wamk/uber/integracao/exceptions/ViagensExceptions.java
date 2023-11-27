@@ -22,12 +22,13 @@ import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PassageiroCorrendoException;
 import com.wamk.uber.exceptions.UsuarioDesativadoException;
 import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
+import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 import com.wamk.uber.services.ViagemService;
 
 @SpringBootTest
-class ViagensExceeptions {
+class ViagensExceptions {
 	
 	@Autowired
 	ViagemService viagemService;
@@ -36,28 +37,23 @@ class ViagensExceeptions {
 	ViagemRepository viagemRepository;
 	
 	@Autowired
-	UsuarioRepository usuarioRepositoryr;
+	UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	CarroRepository carroRepository;
 	
 	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-	Carro carro2 = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
 	
 	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
-	Passageiro passageiro2 = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 	
 	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
-	Motorista motorista2 = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro2);
 	
 	private final List<Viagem> viagens = List.of(
 			new Viagem(1L, 
 					"Novo Castelo - Rua das Goiabas 1010", 
 					"Pará - Rua das Maçãs", 
 					"10 minutos", passageiro, motorista, 
-					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA),
-			new Viagem(2L, 
-					"Novo Castelo - Rua das Limonadas 1020", 
-					"Pará - Rua das Peras", 
-					"20 minutos", passageiro2, motorista2, 
-					FormaDePagamento.DEBITO, ViagemStatus.FINALIZADA)
+					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA)
 	);
 
 	@Test
@@ -75,7 +71,23 @@ class ViagensExceeptions {
 			+ "viagem com um passageiro que já está correndo(em viagem)")
 	void deveLancarExcecaoAposTentarSolicitarUmaViagem() {
 		
-		SolicitarViagemDTO solicitacao = new SolicitarViagemDTO(viagens.get(0));
+		Carro carro = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
+		
+		Passageiro passageiro = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
+		
+		Motorista motorista = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro);
+		
+		Viagem viagem = new Viagem(2L, 
+				"Novo Castelo - Rua das Limonadas 1020", 
+				"Pará - Rua das Peras", 
+				"20 minutos", passageiro, motorista, 
+				FormaDePagamento.DEBITO, ViagemStatus.FINALIZADA);
+		
+		carroRepository.save(carro);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		viagemRepository.save(viagem);
+		
+		SolicitarViagemDTO solicitacao = new SolicitarViagemDTO(viagem);
 		
 		assertThrows(PassageiroCorrendoException.class,
 				() -> this.viagemService.solicitandoViagem(solicitacao));
@@ -88,7 +100,7 @@ class ViagensExceeptions {
 		
 		Passageiro passageiro = new Passageiro(3L, "Ana", "8824719-2070", TipoUsuario.PASSAGEIRO, UsuarioStatus.DESATIVADO);
 		
-		usuarioRepositoryr.save(passageiro);
+		usuarioRepository.save(passageiro);
 		
 		SolicitarViagemDTO solicitacao = new SolicitarViagemDTO();
 		solicitacao.setPassageiroId(passageiro.getId());
@@ -104,10 +116,23 @@ class ViagensExceeptions {
 	@Test
 	@DisplayName("Deve lançar Exceção: ViagemJaFinalizadaException")
 	void deveLancarExcecaoAposCancelarUmaViagem() {
+		Carro carro = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
 		
-		viagemRepository.save(viagens.get(1));
+		Passageiro passageiro = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		
-		Long id = viagens.get(1).getId();
+		Motorista motorista = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro);
+		
+		Viagem viagem = new Viagem(2L, 
+				"Novo Castelo - Rua das Limonadas 1020", 
+				"Pará - Rua das Peras", 
+				"20 minutos", passageiro, motorista, 
+				FormaDePagamento.DEBITO, ViagemStatus.FINALIZADA);
+		
+		carroRepository.save(carro);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		viagemRepository.save(viagem);
+		
+		Long id = viagem.getId();
 		
 		assertThrows(ViagemJaFinalizadaException.class, 
 				() -> this.viagemService.cancelarViagemPorViagemId(id));

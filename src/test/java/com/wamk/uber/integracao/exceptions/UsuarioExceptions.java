@@ -19,6 +19,7 @@ import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.MotoristaNaoEncontradoException;
 import com.wamk.uber.exceptions.TelefoneJaExisteException;
 import com.wamk.uber.exceptions.UsuarioJaAtivoException;
+import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.services.UsuarioService;
 
 @SpringBootTest
@@ -26,6 +27,9 @@ class UsuarioExceptions {
 	
 	@Autowired
 	UsuarioService usuarioService;
+	
+	@Autowired
+	UsuarioRepository usuarioRepository;
 	
 	private final List<Usuario> usuarios = List.of(
 			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),
@@ -40,7 +44,7 @@ class UsuarioExceptions {
 	@DisplayName("Deve lançar exceção: EntidadeNaoEncontradaException")
 	void deveLancarExcecaoAposTentarBuscarUmUsuarioInexistente() {
 		
-		Long id = 10L;
+		Long id = 40L;
 		
 		assertThrows(EntidadeNaoEncontradaException.class, 
 				() -> this.usuarioService.findById(id));
@@ -86,8 +90,10 @@ class UsuarioExceptions {
 	@DisplayName("Deve lançar exceção: UsuarioJaAtivoException, após tentar ativado um usuario já ativado.")
 	void deveLancarExcecaoAposTentarAtivarUmUsuario() {
 		
-		final var usuario = usuarios.get(1);
-		Long id = usuario.getId();
+		Passageiro passageiro = new Passageiro(null, "Ana", "7715328-1472", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
+		
+		usuarioRepository.save(passageiro);
+		Long id = passageiro.getId();
 		
 		assertThrows(UsuarioJaAtivoException.class, 
 				() -> this.usuarioService.ativarUsuario(id));

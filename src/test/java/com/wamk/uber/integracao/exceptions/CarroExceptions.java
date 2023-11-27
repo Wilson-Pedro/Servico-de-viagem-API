@@ -35,7 +35,7 @@ class CarroExceptions {
 	@DisplayName("Deve lançar exceção: EntidadeNaoEncontradaException")
 	void deveLancarExcecaoAposTentarBuscarUmCarroInexistente() {
 		
-		Long id = 4L;
+		Long id = 40L;
 		
 		assertThrows(EntidadeNaoEncontradaException.class, 
 				() -> this.carroService.findById(id));
