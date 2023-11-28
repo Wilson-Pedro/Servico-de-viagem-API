@@ -7,7 +7,9 @@ import org.hibernate.validator.constraints.Length;
 import com.wamk.uber.entities.Usuario;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
+@Data
 public class UsuarioDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -38,38 +40,6 @@ public class UsuarioDTO implements Serializable{
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
-		this.tipoUsuario = tipoUsuario;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getTipoUsuario() {
-		return tipoUsuario;
-	}
-
-	public void setTipoUsuario(String tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
 	}
 }

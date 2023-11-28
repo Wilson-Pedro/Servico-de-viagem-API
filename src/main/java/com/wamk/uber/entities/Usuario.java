@@ -16,9 +16,11 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Entity(name = "TB_USUARIO")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Data
 public class Usuario implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -49,42 +51,6 @@ public class Usuario implements Serializable{
 		this.telefone = telefone;
 		this.tipoUsuario = tipoUsuario;
 		this.usuarioStatus = usuarioStatus;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public TipoUsuario getTipoUsuario() {
-		return tipoUsuario;
-	}
-
-	public void setTipoUsuario(TipoUsuario tipoUsuario) {
-		this.tipoUsuario = tipoUsuario;
-	}
-
-	public UsuarioStatus getUsuarioStatus() {
-		return usuarioStatus;
 	}
 	
 	public boolean estaAtivo() {

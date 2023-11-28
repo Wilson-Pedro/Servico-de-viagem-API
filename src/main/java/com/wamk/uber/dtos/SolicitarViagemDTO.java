@@ -9,7 +9,9 @@ import com.wamk.uber.enums.FormaDePagamento;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class SolicitarViagemDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -48,45 +50,5 @@ public class SolicitarViagemDTO implements Serializable{
 		destino = viagem.getDestino();
 		distancia = "5630 metros";
 		formaDePagamento = viagem.getFormaDePagamento();
-	}
-
-	public Long getPassageiroId() {
-		return passageiroId;
-	}
-
-	public void setPassageiroId(Long passageiroId) {
-		this.passageiroId = passageiroId;
-	}
-
-	public String getOrigem() {
-		return origem;
-	}
-
-	public void setOrigem(String origem) {
-		this.origem = origem;
-	}
-
-	public String getDestino() {
-		return destino;
-	}
-
-	public void setDestino(String destino) {
-		this.destino = destino;
-	}
-
-	public String getDistancia() {
-		return distancia;
-	}
-
-	public void setDistancia(String distancia) {
-		this.distancia = distancia;
-	}
-
-	public FormaDePagamento getFormaDePagamento() {
-		return formaDePagamento;
-	}
-
-	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
-		this.formaDePagamento = formaDePagamento;
 	}
 }

@@ -16,8 +16,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Entity(name = "TB_CARRO")
+@Data
 public class Carro implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -57,45 +59,6 @@ public class Carro implements Serializable{
 		placa = carroDTO.getPlaca();
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getModelo() {
-		return modelo;
-	}
-
-	public void setModelo(String modelo) {
-		this.modelo = modelo;
-	}
-
-	public Integer getAno() {
-		return ano;
-	}
-
-	public void setAno(Integer ano) {
-		this.ano = ano;
-	}
-
-	public String getPlaca() {
-		return placa;
-	}
-
-	public void setPlaca(String placa) {
-		this.placa = placa;
-	}
-
-	public Motorista getMotorista() {
-		return motorista;
-	}
-
-	public void setMotorista(Motorista motorista) {
-		this.motorista = motorista;
-	}
 
 	@Override
 	public int hashCode() {

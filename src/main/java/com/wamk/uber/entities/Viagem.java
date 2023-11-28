@@ -21,8 +21,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Entity(name = "TB_VIAGEM")
+@AllArgsConstructor
+@Data
 public class Viagem implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -60,84 +64,12 @@ public class Viagem implements Serializable{
 
 	public Viagem() {
 	}
-
-	public Viagem(Long id, String origem, String destino, String tempoDeViagem, 
-			Passageiro passageiro, Motorista motorista, FormaDePagamento formaDePagamento, ViagemStatus viagemStatus) {
-		this.id = id;
-		this.origem = origem;
-		this.destino = destino;
-		this.tempoDeViagem = tempoDeViagem;
-		this.passageiro = passageiro;
-		this.motorista = motorista;
-		this.formaDePagamento = formaDePagamento;
-		this.viagemStatus = viagemStatus;
-	}
 	
 	public Viagem(SolicitarViagemDTO solicitacao) {
 		origem = solicitacao.getOrigem();
 		destino = solicitacao.getDestino();
 		tempoDeViagem = solicitacao.getDestino();
 		formaDePagamento = solicitacao.getFormaDePagamento();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getOrigem() {
-		return origem;
-	}
-
-	public void setOrigem(String origem) {
-		this.origem = origem;
-	}
-
-	public String getDestino() {
-		return destino;
-	}
-
-	public void setDestino(String destino) {
-		this.destino = destino;
-	}
-
-	public String getTempoDeViagem() {
-		return tempoDeViagem;
-	}
-
-	public void setTempoDeViagem(String tempoDeViagem) {
-		this.tempoDeViagem = tempoDeViagem;
-	}
-
-	public Passageiro getPassageiro() {
-		return passageiro;
-	}
-
-	public void setPassageiro(Passageiro passageiro) {
-		this.passageiro = passageiro;
-	}
-
-	public Motorista getMotorista() {
-		return motorista;
-	}
-
-	public void setMotorista(Motorista motorista) {
-		this.motorista = motorista;
-	}
-
-	public FormaDePagamento getFormaDePagamento() {
-		return formaDePagamento;
-	}
-
-	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
-		this.formaDePagamento = formaDePagamento;
-	}
-
-	public ViagemStatus getViagemStatus() {
-		return viagemStatus;
 	}
 	
 	public boolean estaFinalizada() {
