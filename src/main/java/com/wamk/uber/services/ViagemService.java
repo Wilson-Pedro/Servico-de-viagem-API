@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
-import com.wamk.uber.dtos.mapper.ViagemMapper;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
@@ -26,6 +26,8 @@ import com.wamk.uber.repositories.ViagemRepository;
 
 @Service
 public class ViagemService {
+	
+	private final MyObjectMapper modelMapper;
 
 	private final ViagemRepository viagemRepository;
 	
@@ -34,7 +36,8 @@ public class ViagemService {
 	private final UsuarioRepository usuarioRepository;
 
 	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
-			UsuarioRepository usuarioRepository) {
+			UsuarioRepository usuarioRepository, MyObjectMapper modelMapper) {
+		this.modelMapper = modelMapper;
 		this.viagemRepository = viagemRepository;
 		this.usuarioService = usuarioService;
 		this.usuarioRepository = usuarioRepository;
@@ -45,7 +48,7 @@ public class ViagemService {
 		Passageiro passageiro = (Passageiro) usuarioService.findById(viagemInputDTO.getPassageiroId());
 		Motorista motorista = (Motorista) usuarioService.findById(viagemInputDTO.getMotoristaId());
 		//validarSolicitagem(passageiro);
-		return viagemRepository.save(ViagemMapper.toEntity(viagemInputDTO, passageiro, motorista));
+		return viagemRepository.save(modelMapper.toViagemEntity(viagemInputDTO, passageiro, motorista));
 	}
 
 	public List<Viagem> findAll() {

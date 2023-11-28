@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.CarroDTO;
-import com.wamk.uber.dtos.mapper.CarroMapper;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
 
@@ -30,21 +30,24 @@ public class CarroController {
 	
 	private final CarroService carroService;
 	
-	CarroController(CarroService carroService) {
+	private final MyObjectMapper modelMapper;
+	
+	CarroController(CarroService carroService, MyObjectMapper modelMapper) {
 		this.carroService = carroService;
+		this.modelMapper = modelMapper;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<CarroDTO>> findAll(){
-		return ResponseEntity.ok(carroService.findAll()
-				.stream()
-				.map(CarroMapper::toDTO).toList());
+		List<Carro> carros = carroService.findAll();
+		List<CarroDTO> dtos = modelMapper.converterList(carros, CarroDTO.class);
+		return ResponseEntity.ok(dtos);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<CarroDTO> findById(@PathVariable Long id){
 		Carro carro = carroService.findById(id);
-		return ResponseEntity.ok(CarroMapper.toDTO(carro));
+		return ResponseEntity.ok(modelMapper.converter(carro, CarroDTO.class));
 	}
 	
 	@GetMapping("/pages")
@@ -56,7 +59,8 @@ public class CarroController {
 	@PostMapping("/")
 	public ResponseEntity<CarroDTO> registrarCarro(@RequestBody @Valid CarroDTO carroDTO){
 		var carro = carroService.save(carroDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(CarroMapper.toDTO(carro));
+		return ResponseEntity.status(HttpStatus.CREATED).body(
+				modelMapper.converter(carro, CarroDTO.class));
 		
 	}
 	
@@ -64,7 +68,7 @@ public class CarroController {
 	public ResponseEntity<CarroDTO> atualiziar(@RequestBody @Valid CarroDTO carroDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var carro = carroService.atualizarCadastro(carroDTO, id);
-		return ResponseEntity.ok(CarroMapper.toDTO(carro));
+		return ResponseEntity.ok(modelMapper.converter(carro, CarroDTO.class));
 	}
 	
 	@DeleteMapping("/{id}")	

@@ -22,6 +22,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.UsuarioDTO;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
@@ -42,11 +43,13 @@ import com.wamk.uber.services.UsuarioService;
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTestU {
 	
+	private final MyObjectMapper modelMapper = mock(MyObjectMapper.class);
+	
 	private final UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 	
 	private final ViagemRepository viagemRepository = mock(ViagemRepository.class);
 	
-	private final UsuarioService usuarioService = new UsuarioService(usuarioRepository, viagemRepository);
+	private final UsuarioService usuarioService = new UsuarioService(modelMapper, usuarioRepository, viagemRepository);
 	
 	private final List<Usuario> usuarios = List.of(
 			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),

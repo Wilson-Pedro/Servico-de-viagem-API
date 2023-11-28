@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.dtos.UsuarioDTO;
-import com.wamk.uber.dtos.mapper.UsuarioMapper;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
@@ -25,14 +25,20 @@ import com.wamk.uber.exceptions.UsuarioJaDesativadoException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
 public class UsuarioService {
+	
+	private final MyObjectMapper modelMapper;
 
 	private final UsuarioRepository usuarioRepository;
 	
 	private final ViagemRepository viagemRepository;
 
-	public UsuarioService(UsuarioRepository usuarioRepository, ViagemRepository viagemRepository) {
+	public UsuarioService(MyObjectMapper modelMapper, UsuarioRepository usuarioRepository,
+			ViagemRepository viagemRepository) {
+		this.modelMapper = modelMapper;
 		this.usuarioRepository = usuarioRepository;
 		this.viagemRepository = viagemRepository;
 	}
@@ -40,7 +46,7 @@ public class UsuarioService {
 	@Transactional
 	public Usuario save(UsuarioDTO usuarioDTO) {
 		validarCadastroUsuario(usuarioDTO);
-		return usuarioRepository.save(UsuarioMapper.toEntity(usuarioDTO));
+		return usuarioRepository.save(modelMapper.toEntity(usuarioDTO));
 	}
 
 	@Transactional

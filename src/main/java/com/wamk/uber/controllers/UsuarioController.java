@@ -1,6 +1,5 @@
 package com.wamk.uber.controllers;
 
-
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -21,8 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.ViagemDTO;
-import com.wamk.uber.dtos.mapper.UsuarioMapper;
-import com.wamk.uber.dtos.mapper.ViagemMapper;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.services.UsuarioService;
@@ -35,12 +33,15 @@ import jakarta.validation.constraints.Positive;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
+	
+	private final MyObjectMapper modelMapper;
 
 	private final UsuarioService usuarioService;
 	
 	private final ViagemService viagemService;
 
-	UsuarioController(UsuarioService usuarioService, ViagemService viagemService) {
+	public UsuarioController(MyObjectMapper modelMapper, UsuarioService usuarioService, ViagemService viagemService) {
+		this.modelMapper = modelMapper;
 		this.usuarioService = usuarioService;
 		this.viagemService = viagemService;
 	}
@@ -48,32 +49,36 @@ public class UsuarioController {
 	@GetMapping
 	public ResponseEntity<List<UsuarioDTO>> findAll(){
 		List<Usuario> list = usuarioService.findAll();
-		return ResponseEntity.ok(list.stream().map(x -> UsuarioMapper.toDTO(x)).toList());
+		List<UsuarioDTO> dtos = modelMapper.converterList(list, UsuarioDTO.class);
+		return ResponseEntity.ok(dtos);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id){
 		var usuario = usuarioService.findById(id);
-		return ResponseEntity.ok(UsuarioMapper.toDTO(usuario));
+		var dto = modelMapper.converter(usuario, UsuarioDTO.class);
+		return ResponseEntity.ok(dto);
 	}
 	
 	@GetMapping("/{id}/viagens")
 	public ResponseEntity<List<ViagemDTO>> findAllTripsByUserId(@PathVariable Long id){
 		List<Viagem> list = viagemService.buscarTodasAsViagensPorUserId(id);
-		return ResponseEntity.ok(list.stream().map(x -> ViagemMapper.toDTO(x)).toList());
+		List<ViagemDTO> dtos = modelMapper.converterList(list, ViagemDTO.class);
+		return ResponseEntity.ok(dtos);
 	}
 	
 	@PostMapping("/")
 	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
 		var usuario = usuarioService.save(usuarioDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDTO(usuario));
+		var dto = new UsuarioDTO(usuario);
+		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> atualiziar(@RequestBody @Valid UsuarioDTO usuarioDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var usuario = usuarioService.atualizarCadastro(usuarioDTO, id);
-		return ResponseEntity.ok(UsuarioMapper.toDTO(usuario));
+		return ResponseEntity.ok(modelMapper.toDTO(usuario));
 	}
 	
 	@GetMapping("/pages")

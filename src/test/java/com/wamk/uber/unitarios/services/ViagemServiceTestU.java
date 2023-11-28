@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
@@ -37,13 +38,15 @@ import com.wamk.uber.services.ViagemService;
 @ExtendWith(MockitoExtension.class)
 class ViagemServiceTestU {
 	
+	private final MyObjectMapper modelMapper = mock(MyObjectMapper.class);
+	
 	private final ViagemRepository viagemRepository = mock(ViagemRepository.class);
 	
 	private final UsuarioService usuarioService = mock(UsuarioService.class);
 	
 	private final UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 	
-	private final ViagemService viagemService = new ViagemService(viagemRepository, usuarioService, usuarioRepository);
+	private final ViagemService viagemService = new ViagemService(viagemRepository, usuarioService, usuarioRepository, modelMapper);
 	
 	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
 	

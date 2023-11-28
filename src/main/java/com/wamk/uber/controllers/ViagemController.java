@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.ViagemDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
-import com.wamk.uber.dtos.mapper.ViagemMapper;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.services.ViagemService;
 
@@ -29,23 +29,26 @@ import jakarta.validation.constraints.Positive;
 @RestController
 @RequestMapping("/viagens")
 public class ViagemController {
+	
+	private final MyObjectMapper modelMapper;
 
 	private final ViagemService viagemService;
 	
-	ViagemController(ViagemService viagemService) {
+	ViagemController(ViagemService viagemService, MyObjectMapper modelMapper) {
+		this.modelMapper = modelMapper;
 		this.viagemService = viagemService;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<ViagemDTO>> findAll(){
 		List<Viagem> list = viagemService.findAll();
-		return ResponseEntity.ok(list.stream().map(x -> ViagemMapper.toDTO(x)).toList());
+		return ResponseEntity.ok(modelMapper.converterList(list, ViagemDTO.class));
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ViagemDTO> findById(@PathVariable Long id){
 		var viagem = viagemService.findById(id);
-		return ResponseEntity.ok(ViagemMapper.toDTO(viagem));
+		return ResponseEntity.ok(modelMapper.converter(viagem, ViagemDTO.class));
 	}
 	
 	@GetMapping("/pages")
@@ -57,14 +60,15 @@ public class ViagemController {
 	@PostMapping("/")
 	public ResponseEntity<ViagemDTO> registrarUsuario(@RequestBody @Valid ViagemInputDTO viagemInputDTO){
 		var viagem = viagemService.save(viagemInputDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(ViagemMapper.toDTO(viagem));
+		return ResponseEntity.status(HttpStatus.CREATED).body(
+				modelMapper.converter(viagem, ViagemDTO.class));
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<ViagemDTO> atualiziar(@RequestBody @Valid ViagemInputDTO viagemInputDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var viagem = viagemService.atualizarCadastro(viagemInputDTO, id);
-		return ResponseEntity.ok(ViagemMapper.toDTO(viagem));
+		return ResponseEntity.ok(modelMapper.converter(viagem, ViagemDTO.class));
 	}
 	
 	@DeleteMapping("/{id}")

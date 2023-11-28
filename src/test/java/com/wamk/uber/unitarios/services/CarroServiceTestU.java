@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.wamk.uber.dtos.CarroDTO;
+import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.provider.CarroEntityAndCarroDtoProviderTest;
 import com.wamk.uber.provider.CarrosProviderTest;
@@ -27,9 +28,11 @@ import com.wamk.uber.services.CarroService;
 @ExtendWith(MockitoExtension.class)
 class CarroServiceTestU {
 	
+	private final MyObjectMapper modelMapper = mock(MyObjectMapper.class);
+	
 	private final CarroRepository carroRepository = mock(CarroRepository.class);
 	
-	private final CarroService carroService = new CarroService(carroRepository);
+	private final CarroService carroService = new CarroService(modelMapper, carroRepository);
 	
 	private final List<Carro> carros = List.of(
 			new Carro(1L, "Fiat", 2022, "JVF-9207"),
