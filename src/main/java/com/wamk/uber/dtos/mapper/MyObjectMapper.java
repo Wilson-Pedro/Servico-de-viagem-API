@@ -38,14 +38,14 @@ public class MyObjectMapper {
 	}
 	
 	// USUÁRIO
-	public UsuarioDTO toDTO(Usuario usuario) {
+	public UsuarioDTO toUsuarioDTO(Usuario usuario) {
 		if(usuario == null) {
 			return null;
 		}
 		return new UsuarioDTO(usuario);
 	}
 	
-	public Usuario toEntity(UsuarioDTO usuarioDTO) {
+	public Usuario toUsuarioEntity(UsuarioDTO usuarioDTO) {
 		if(usuarioDTO == null) {
 			return null;
 		}
@@ -74,7 +74,7 @@ public class MyObjectMapper {
 	}
 	
 	//VIAGEM
-	public ViagemDTO toDTO(Viagem viagem) {
+	public ViagemDTO toViagemDTO(Viagem viagem) {
 		if(viagem == null) {
 			return null;
 		}

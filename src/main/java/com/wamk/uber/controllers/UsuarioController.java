@@ -78,7 +78,7 @@ public class UsuarioController {
 	public ResponseEntity<UsuarioDTO> atualiziar(@RequestBody @Valid UsuarioDTO usuarioDTO, 
 			@PathVariable @NotNull @Positive Long id){
 		var usuario = usuarioService.atualizarCadastro(usuarioDTO, id);
-		return ResponseEntity.ok(modelMapper.toDTO(usuario));
+		return ResponseEntity.ok(modelMapper.toUsuarioDTO(usuario));
 	}
 	
 	@GetMapping("/pages")
