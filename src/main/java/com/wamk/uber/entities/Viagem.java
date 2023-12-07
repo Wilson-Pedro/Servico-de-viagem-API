@@ -46,11 +46,11 @@ public class Viagem implements Serializable{
 	@Length(max = 100)
 	private String tempoDeViagem;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "passageiro_id")
 	private Passageiro passageiro;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "motorista_id")
 	private Motorista motorista;
 	

@@ -53,6 +53,12 @@ public class UsuarioController {
 		return ResponseEntity.ok(dtos);
 	}
 	
+	@GetMapping("/pages")
+	public ResponseEntity<Page<UsuarioDTO>> paginar(Pageable pageable){
+		Page<Usuario> pages = usuarioService.findAll(pageable);
+		return ResponseEntity.ok(pages.map(UsuarioDTO::new));
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id){
 		var usuario = usuarioService.findById(id);
@@ -81,12 +87,6 @@ public class UsuarioController {
 		return ResponseEntity.ok(modelMapper.toUsuarioDTO(usuario));
 	}
 	
-	@GetMapping("/pages")
-	public ResponseEntity<Page<UsuarioDTO>> paginar(Pageable pageable){
-		Page<Usuario> pages = usuarioService.findAll(pageable);
-		return ResponseEntity.ok(pages.map(UsuarioDTO::new));
-	}
-	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteById(@PathVariable @NotNull @Positive Long id){
@@ -94,9 +94,9 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/solicitacarViagem")
-	public ResponseEntity<Void> solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
+	public ResponseEntity solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
 		viagemService.solicitandoViagem(solicitacao);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().body("Corrida Solicidada com Sucesso.");
 	}
 	
 	@DeleteMapping("/{usuarioId}/cancelarViagem")
@@ -106,14 +106,14 @@ public class UsuarioController {
 	}
 	
 	@PatchMapping("/{id}/ativar")
-	public ResponseEntity<Void> ativarUsuario(@PathVariable Long id){
+	public ResponseEntity ativarUsuario(@PathVariable Long id){
 		usuarioService.ativarUsuario(id);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().body("Usuario ativado com sucesso.");
 	}
 	
 	@PatchMapping("/{id}/desativar")
-	public ResponseEntity<Void> desativarUsuario(@PathVariable Long id){
+	public ResponseEntity desativarUsuario(@PathVariable Long id){
 		usuarioService.desativarUsuario(id);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().body("Usuario desativado com sucesso.");
 	}
 }

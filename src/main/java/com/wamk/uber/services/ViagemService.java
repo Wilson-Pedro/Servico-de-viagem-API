@@ -51,6 +51,7 @@ public class ViagemService {
 		return viagemRepository.save(modelMapper.toViagemEntity(viagemInputDTO, passageiro, motorista));
 	}
 
+	@Transactional
 	public List<Viagem> findAll() {
 		return  viagemRepository.findAll();
 	}
