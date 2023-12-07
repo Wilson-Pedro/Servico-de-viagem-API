@@ -25,6 +25,6 @@ public enum FormaDePagamento {
 				.filter(pagamento -> pagamento.getDescricao().equals(descricao))
 				.findFirst()
 				.orElseThrow(() -> new IllegalArgumentException
-						("Tipo de Usuário inválido: " + descricao));
+						("Formato de Pagamento inválido: " + descricao));
 	}
 }
