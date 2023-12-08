@@ -22,8 +22,6 @@ import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
 
-@AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CarroControllerTestU {
 
 	@InjectMocks

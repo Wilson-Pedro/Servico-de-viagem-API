@@ -32,8 +32,6 @@ import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 public class UsuarioControllerTestU {
 
 	@InjectMocks
