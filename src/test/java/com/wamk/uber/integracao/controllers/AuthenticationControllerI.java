@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import static com.wamk.uber.LoginUniversal.*;
 import com.wamk.uber.dtos.RegistroDTO;
 import com.wamk.uber.dtos.records.AuthenticationDTO;
 import com.wamk.uber.entities.user.User;
@@ -37,7 +38,7 @@ class AuthenticationControllerI {
 	@Test
 	@Order(1)
 	void deveRegistraUsuarioComSucesso() {
-		RegistroDTO registroDTO = new RegistroDTO("wilson", "12345", UserRole.ADMIN);
+		RegistroDTO registroDTO = new RegistroDTO(LOGIN, PASSWORD, UserRole.ADMIN);
 		
 		String encryptedPassword = new BCryptPasswordEncoder().encode(registroDTO.getPassword());
 		
@@ -58,12 +59,13 @@ class AuthenticationControllerI {
 	@Test
 	@Order(2)
 	void deveRealizarLoginComSucesso() {
-		AuthenticationDTO dto = new AuthenticationDTO("wilson", "12345");
+		AuthenticationDTO dto = new AuthenticationDTO(LOGIN, PASSWORD);
 		var usernamePassowrd = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
 		var auth = this.authenticationManager.authenticate(usernamePassowrd);
 		var token = this.tokenService.generateToken((User) auth.getPrincipal());
 		
 		assertNotNull(token);
+		TOKEN = token;
 	}
 
 }

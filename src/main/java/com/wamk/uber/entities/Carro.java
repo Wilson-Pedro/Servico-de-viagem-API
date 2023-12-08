@@ -52,6 +52,13 @@ public class Carro implements Serializable{
 		this.placa = placa;
 	}
 	
+	public Carro(String modelo, Integer ano, String placa, Motorista motorista) {
+		this.modelo = modelo;
+		this.ano = ano;
+		this.placa = placa;
+		this.motorista = motorista;
+	}
+	
 	public Carro(CarroDTO carroDTO) {
 		id = carroDTO.getId();
 		modelo = carroDTO.getModelo();
