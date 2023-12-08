@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -22,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +44,8 @@ class CarroControllerTestU {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	static String TOKEN = "";
+	
 	CarroService carroService = mock(CarroService.class);
 	
 	private final List<Carro> carros = List.of(
@@ -56,9 +59,14 @@ class CarroControllerTestU {
 		
 		final var carrosEsperados = carros;
 		
-		when(carroService.findAll()).thenReturn(carrosEsperados);
+		//when(carroService.findAll()).thenReturn(carrosEsperados);
 		
-		mockMvc.perform(get("/carros"))
+		SecurityContextHolder.getContext().setAuthentication(
+				new UsernamePasswordAuthenticationToken("wilson", "12345")
+		);
+		
+		mockMvc.perform(get("/carros")
+				.header("Autthorization", "Bearer "))
 				.andExpect(status().isOk())
 				.andReturn();
 		
@@ -74,7 +82,7 @@ class CarroControllerTestU {
 		final var carroEsperado = carros.get(0);
 		Long id = carroEsperado.getId();
 		
-		when(this.carroService.findById(id)).thenReturn(carroEsperado);
+		//when(this.carroService.findById(id)).thenReturn(carroEsperado);
 		
 		mockMvc.perform(get("/carros/{id}", 1L))
 				.andExpect(status().isOk())
