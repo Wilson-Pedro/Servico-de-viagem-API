@@ -44,14 +44,6 @@ public class CarroDTO implements Serializable{
 		this.ano = ano;
 		this.placa = placa;
 	}
-
-	public CarroDTO(Long id, String modelo, Integer ano, String placa, Motorista motorista) {
-		this.id = id;
-		this.modelo = modelo;
-		this.ano = ano;
-		this.placa = placa;
-		this.motorista = motorista;
-	}
 	
 	public CarroDTO(Carro carro) {
 		id = carro.getId();

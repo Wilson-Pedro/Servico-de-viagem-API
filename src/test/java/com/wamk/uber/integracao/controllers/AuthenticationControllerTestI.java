@@ -24,7 +24,7 @@ import com.wamk.uber.repositories.UserRepository;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class AuthenticationControllerI {
+class AuthenticationControllerTestI {
 	
 	@Autowired
 	AuthenticationManager authenticationManager;
