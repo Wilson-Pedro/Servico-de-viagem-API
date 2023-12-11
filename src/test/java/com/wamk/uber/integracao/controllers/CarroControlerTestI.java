@@ -40,6 +40,8 @@ import com.wamk.uber.services.CarroService;
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CarroControlerTestI {
+	
+	private static String  CAR_ENDPOINT = "/carros";
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -99,7 +101,7 @@ class CarroControlerTestI {
 	@Order(3)
 	void deveBuscarTodosOsCarrosComSucesso() throws Exception {
 		
-		mockMvc.perform(get("/carros")
+		mockMvc.perform(get(CAR_ENDPOINT)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();
@@ -112,7 +114,7 @@ class CarroControlerTestI {
 		
 		Long id = carroService.findById(1L).getId();
 		
-		mockMvc.perform(get("/carros/{id}", id)
+		mockMvc.perform(get(CAR_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();
@@ -126,7 +128,7 @@ class CarroControlerTestI {
 		
 		String jsonRequest = objectMapper.writeValueAsString(carroDto);
 		
-		mockMvc.perform(post("/carros/")
+		mockMvc.perform(post(CAR_ENDPOINT + "/")
 				.header("Authorization", "Bearer " + TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
@@ -146,7 +148,7 @@ class CarroControlerTestI {
 		
 		String jsonRequest = objectMapper.writeValueAsString(carroDto);
 		
-		mockMvc.perform(put("/carros/{id}", id)
+		mockMvc.perform(put(CAR_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
@@ -162,7 +164,7 @@ class CarroControlerTestI {
 		
 		assertEquals(4, carroRepository.count());
 		
-		mockMvc.perform(delete("/carros/{id}", id)
+		mockMvc.perform(delete(CAR_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();

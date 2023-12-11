@@ -53,6 +53,8 @@ import com.wamk.uber.services.ViagemService;
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ViagemControllerTestI {
+	
+	private static String VIAGEM_ENDPOINT = "/viagens";
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -132,7 +134,7 @@ class ViagemControllerTestI {
 	@Order(3)
 	void deveBuscarTodasAsViagensComSucesso() throws Exception {
 		
-		mockMvc.perform(get("/viagens")
+		mockMvc.perform(get(VIAGEM_ENDPOINT)
 				.header("Authorization", "Bearer " + TOKEN))
 		.andExpect(status().isOk())
 		.andReturn();
@@ -163,7 +165,7 @@ class ViagemControllerTestI {
 		
 		assertEquals(1, viagemRepository.count());
 		
-		mockMvc.perform(post("/viagens/")
+		mockMvc.perform(post(VIAGEM_ENDPOINT + "/")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + TOKEN)
 				.content(jsonRequest))
@@ -184,7 +186,7 @@ class ViagemControllerTestI {
 		
 		String josnRequest = objectMapper.writeValueAsString(inputDto);
 		
-		mockMvc.perform(put("/viagens/{id}", 2L)
+		mockMvc.perform(put(VIAGEM_ENDPOINT + "/{id}", 2L)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + TOKEN)
 				.content(josnRequest))
@@ -198,7 +200,7 @@ class ViagemControllerTestI {
 		
 		assertEquals(2, viagemRepository.count());
 		
-		mockMvc.perform(delete("/viagens/{id}", 2L)
+		mockMvc.perform(delete(VIAGEM_ENDPOINT + "/{id}", 2L)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -213,7 +215,7 @@ class ViagemControllerTestI {
 		
 		assertEquals(1, viagemRepository.count());
 		
-		mockMvc.perform(delete("/viagens/{id}/cancelar", 1L)
+		mockMvc.perform(delete(VIAGEM_ENDPOINT + "/{id}/cancelar", 1L)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -238,7 +240,7 @@ class ViagemControllerTestI {
 		
 		assertEquals(ViagemStatus.NAO_FINALIZADA, viagem.getViagemStatus());
 		
-		mockMvc.perform(patch("/viagens/{id}/finalizar", 3L)
+		mockMvc.perform(patch(VIAGEM_ENDPOINT + "/{id}/finalizar", 3L)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();

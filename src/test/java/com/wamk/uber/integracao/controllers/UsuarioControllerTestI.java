@@ -49,6 +49,8 @@ import com.wamk.uber.services.UsuarioService;
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UsuarioControllerTestI {
+	
+	private static String USUARIO_ENDPOINT = "/usuarios";
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -114,7 +116,7 @@ class UsuarioControllerTestI {
 	@Order(3)
 	void deveBuscarTodosOsUsuariosComSucesso() throws Exception {
 		
-		mockMvc.perform(get("/usuarios")
+		mockMvc.perform(get(USUARIO_ENDPOINT)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();	
@@ -126,7 +128,7 @@ class UsuarioControllerTestI {
 		
 		Long id = usuarioService.findById(1L).getId();
 		
-		mockMvc.perform(get("/usuarios/{id}", id)
+		mockMvc.perform(get(USUARIO_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();	
@@ -152,7 +154,7 @@ class UsuarioControllerTestI {
 		
 		String jsonRequest = objectMapper.writeValueAsString(usuarioDto);
 		
-		mockMvc.perform(post("/usuarios/")
+		mockMvc.perform(post(USUARIO_ENDPOINT + "/")
 				.header("Authorization", "Bearer " + TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
@@ -172,7 +174,7 @@ class UsuarioControllerTestI {
 		
 		String jsonRequest = objectMapper.writeValueAsString(usuarioDto);
 		
-		mockMvc.perform(put("/usuarios/{id}", id)
+		mockMvc.perform(put(USUARIO_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
@@ -189,7 +191,7 @@ class UsuarioControllerTestI {
 		
 		assertEquals(7, usuarioRepository.count());
 		
-		mockMvc.perform(delete("/usuarios/{id}", id)
+		mockMvc.perform(delete(USUARIO_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -213,7 +215,7 @@ class UsuarioControllerTestI {
 		
 		assertEquals(1, viagemRepository.count());
 		
-		mockMvc.perform(post("/usuarios/solicitacarViagem")
+		mockMvc.perform(post(USUARIO_ENDPOINT + "/solicitacarViagem")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + TOKEN)
 				.content(jsonRequest))
@@ -233,7 +235,7 @@ class UsuarioControllerTestI {
 		
 		assertEquals(2, viagemRepository.count());
 		
-		mockMvc.perform(delete("/usuarios/{usuarioId}/cancelarViagem", userId)
+		mockMvc.perform(delete(USUARIO_ENDPOINT + "/{usuarioId}/cancelarViagem", userId)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -256,7 +258,7 @@ class UsuarioControllerTestI {
 		
 		assertNotEquals(desativo, passageiro.getUsuarioStatus());
 		
-		mockMvc.perform(patch("/usuarios/{id}/desativar", id)
+		mockMvc.perform(patch(USUARIO_ENDPOINT + "/{id}/desativar", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();
@@ -282,7 +284,7 @@ class UsuarioControllerTestI {
 		
 		assertNotEquals(ativo, passageiro.getUsuarioStatus());
 		
-		mockMvc.perform(patch("/usuarios/{id}/ativar", id)
+		mockMvc.perform(patch(USUARIO_ENDPOINT + "/{id}/ativar", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();
