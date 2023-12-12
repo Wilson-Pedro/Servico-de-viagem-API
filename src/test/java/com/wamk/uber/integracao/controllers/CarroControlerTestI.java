@@ -3,6 +3,7 @@ package com.wamk.uber.integracao.controllers;
 import static com.wamk.uber.LoginUniversal.LOGIN;
 import static com.wamk.uber.LoginUniversal.PASSWORD;
 import static com.wamk.uber.LoginUniversal.TOKEN;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -29,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.dtos.RegistroDTO;
 import com.wamk.uber.dtos.records.AuthenticationDTO;
+import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.user.User;
 import com.wamk.uber.enums.roles.UserRole;
 import com.wamk.uber.infra.security.TokenService;
@@ -117,6 +120,10 @@ class CarroControlerTestI {
 		mockMvc.perform(get(CAR_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
+				.andExpect(jsonPath("$.modelo", equalTo("Fiat")))
+				.andExpect(jsonPath("$.ano", equalTo(2022)))
+				.andExpect(jsonPath("$.placa", equalTo("JVF-9207")))
 				.andReturn();
 	}
 	
@@ -133,6 +140,10 @@ class CarroControlerTestI {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
 				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id", equalTo(4)))
+				.andExpect(jsonPath("$.modelo", equalTo("Toyota")))
+				.andExpect(jsonPath("$.ano", equalTo(2022)))
+				.andExpect(jsonPath("$.placa", equalTo("HRS-0305")))
 				.andReturn();
 		
 		assertEquals(4, carroRepository.count());
@@ -142,9 +153,13 @@ class CarroControlerTestI {
 	@Order(6)
 	void deveAtualizarCarroComSucesso() throws Exception {
 		
-		Long id = carroService.findById(2L).getId();
+		Carro carro = carroService.findById(2L);
+		
+		Long id = carro.getId();
 		
 		CarroDTO carroDto = new CarroDTO(null, "Sedans", 2023, "JVD-4401");
+		
+		assertNotEquals(carro.getModelo(), carroDto.getModelo());
 		
 		String jsonRequest = objectMapper.writeValueAsString(carroDto);
 		
@@ -153,7 +168,12 @@ class CarroControlerTestI {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.modelo", equalTo(carroDto.getModelo())))
 				.andReturn();
+		
+		Carro carroAtualizado = carroService.findById(2L);
+		
+		assertEquals(carroAtualizado.getModelo(), carroDto.getModelo());
 	}
 	
 	@Test

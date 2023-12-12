@@ -3,6 +3,7 @@ package com.wamk.uber.integracao.controllers;
 import static com.wamk.uber.LoginUniversal.LOGIN;
 import static com.wamk.uber.LoginUniversal.PASSWORD;
 import static com.wamk.uber.LoginUniversal.TOKEN;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -131,6 +133,10 @@ class UsuarioControllerTestI {
 		mockMvc.perform(get(USUARIO_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
+				.andExpect(jsonPath("$.nome", equalTo("Wilson")))
+				.andExpect(jsonPath("$.telefone", equalTo("9816923456")))
+				.andExpect(jsonPath("$.tipoUsuario", equalTo("Passageiro")))
 				.andReturn();	
 	}
 	
@@ -159,6 +165,10 @@ class UsuarioControllerTestI {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
 				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id", equalTo(7)))
+				.andExpect(jsonPath("$.nome", equalTo("Lucia")))
+				.andExpect(jsonPath("$.telefone", equalTo("(66)98273-9281")))
+				.andExpect(jsonPath("$.tipoUsuario", equalTo("Passageiro")))
 				.andReturn();
 		
 		assertEquals(7, usuarioRepository.count());
@@ -168,9 +178,13 @@ class UsuarioControllerTestI {
 	@Order(7)
 	void deveAtualizarUsuarioComSucesso() throws Exception {
 		
-		Long id = usuarioService.findById(2L).getId();
+		Usuario usuario = usuarioService.findById(2L);
+		
+		Long id = usuario.getId();
 		
 		UsuarioDTO usuarioDto = new UsuarioDTO(null, "Ana", "(66)98321-5237", "Passageiro");
+		
+		assertNotEquals(usuario.getTelefone(), usuarioDto.getTelefone());
 		
 		String jsonRequest = objectMapper.writeValueAsString(usuarioDto);
 		
@@ -179,8 +193,12 @@ class UsuarioControllerTestI {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.telefone", equalTo("(66)98321-5237")))
 				.andReturn();
 		
+		Usuario usuarioAtualizado = usuarioService.findById(2L);
+		
+		assertEquals(usuarioAtualizado.getTelefone(), usuarioDto.getTelefone());
 	}
 	
 	@Test

@@ -3,6 +3,7 @@ package com.wamk.uber.integracao.controllers;
 import static com.wamk.uber.LoginUniversal.LOGIN;
 import static com.wamk.uber.LoginUniversal.PASSWORD;
 import static com.wamk.uber.LoginUniversal.TOKEN;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,9 +12,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -32,14 +32,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wamk.uber.dtos.RegistroDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.dtos.records.AuthenticationDTO;
-import com.wamk.uber.entities.Carro;
-import com.wamk.uber.entities.Motorista;
-import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.entities.user.User;
 import com.wamk.uber.enums.FormaDePagamento;
-import com.wamk.uber.enums.TipoUsuario;
-import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.enums.roles.UserRole;
 import com.wamk.uber.infra.security.TokenService;
@@ -82,20 +77,6 @@ class ViagemControllerTestI {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-	
-	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-	
-	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
-	
-	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
-	
-	private final List<Viagem> viagens = List.of(
-			new Viagem(1L, 
-					"Novo Castelo - Rua das Goiabas 1010", 
-					"Pará - Rua das Maçãs", 
-					"10 minutos", passageiro, motorista, 
-					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA)
-	);
 
 	@Test
 	@Order(1)
@@ -136,8 +117,8 @@ class ViagemControllerTestI {
 		
 		mockMvc.perform(get(VIAGEM_ENDPOINT)
 				.header("Authorization", "Bearer " + TOKEN))
-		.andExpect(status().isOk())
-		.andReturn();
+				.andExpect(status().isOk())
+				.andReturn();
 	}
 	
 	@Test
@@ -149,6 +130,14 @@ class ViagemControllerTestI {
 		mockMvc.perform(get("/viagens/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
+				.andExpect(jsonPath("$.origem", equalTo("Novo Castelo - Rua das Goiabas 1010")))
+				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Maçãs")))
+				.andExpect(jsonPath("$.tempoDeViagem", equalTo("10 minutos")))
+				.andExpect(jsonPath("$.nomePassageiro", equalTo("Wilson")))
+				.andExpect(jsonPath("$.nomeMotorista", equalTo("Pedro")))
+				.andExpect(jsonPath("$.formaDePagamento", equalTo("PIX")))
+				.andExpect(jsonPath("$.viagemStatus", equalTo("NAO_FINALIZADA")))
 				.andReturn();
 	}
 	
@@ -170,6 +159,14 @@ class ViagemControllerTestI {
 				.header("Authorization", "Bearer " + TOKEN)
 				.content(jsonRequest))
 				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id", equalTo(2)))
+				.andExpect(jsonPath("$.origem", equalTo("Novo Castelo - Rua das Goiabas 1010")))
+				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Maçãs")))
+				.andExpect(jsonPath("$.tempoDeViagem", equalTo("10 minutos")))
+				.andExpect(jsonPath("$.nomePassageiro", equalTo("Ana")))
+				.andExpect(jsonPath("$.nomeMotorista", equalTo("Julia")))
+				.andExpect(jsonPath("$.formaDePagamento", equalTo("PAYPAL")))
+				.andExpect(jsonPath("$.viagemStatus", equalTo("NAO_FINALIZADA")))
 				.andReturn();
 		
 		assertEquals(2, viagemRepository.count());
@@ -184,6 +181,10 @@ class ViagemControllerTestI {
 				"Pará - Rua das Melancias", 
 				"20 minutos", 2L, 5L, FormaDePagamento.PAYPAL.getDescricao());
 		
+		Viagem viagem = viagemService.findById(2L);
+		
+		assertNotEquals(viagem.getDestino(), inputDto.getDestino());
+		
 		String josnRequest = objectMapper.writeValueAsString(inputDto);
 		
 		mockMvc.perform(put(VIAGEM_ENDPOINT + "/{id}", 2L)
@@ -191,7 +192,12 @@ class ViagemControllerTestI {
 				.header("Authorization", "Bearer " + TOKEN)
 				.content(josnRequest))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Melancias")))
 				.andReturn();
+		
+		Viagem viagemAtualizada = viagemService.findById(2L);
+		
+		assertEquals(viagemAtualizada.getDestino(), inputDto.getDestino());
 	}
 	
 	@Test
