@@ -21,11 +21,11 @@ public class ViagemEntityAndViagemDtoProviderTets implements ArgumentsProvider{
 	@Override
 	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
 		
-		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-		
 		Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 		
-		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+		
+		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 		
 		final var viagem = new Viagem(1L, 
 				"Novo Castelo - Rua das Goiabas 1010", 

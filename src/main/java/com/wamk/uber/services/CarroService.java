@@ -49,11 +49,9 @@ public class CarroService {
 		return carro;
 	}
 
-	@Transactional
 	public void delete(Long id) {
-		Carro carro = carroRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(id));
-		carroRepository.delete(carro);
+		carroRepository.delete(carroRepository.findById(id)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(id)));
 	}
 
 	public Carro atualizarCadastro(CarroDTO carroDTO,Long id) {

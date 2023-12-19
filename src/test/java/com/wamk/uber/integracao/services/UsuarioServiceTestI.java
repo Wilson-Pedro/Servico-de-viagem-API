@@ -6,7 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,7 @@ import com.wamk.uber.repositories.ViagemRepository;
 import com.wamk.uber.services.UsuarioService;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UsuarioServiceTestI {
 	
 	@Autowired
@@ -41,19 +45,19 @@ class UsuarioServiceTestI {
 	@Autowired
 	CarroRepository carroRepository;
 	
-	List<Carro> carros = List.of(
-			new Carro(1L, "Fiat", 2022, "JVF-9207"),
-			new Carro(2L, "Chevrolet", 2022, "FFG-0460"),
-			new Carro(3L, "Forger", 2022, "FTG-0160")
-	);
-	
 	List<Usuario> usuarios = List.of(
 			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),
 			new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
 			new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
-			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carros.get(0)),
-			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carros.get(1)),
-			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carros.get(2))
+			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
+			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
+			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
+	);
+	
+	List<Carro> carros = List.of(
+			new Carro(1L, "Fiat", 2022, "JVF-9207",(Motorista) usuarios.get(3)),
+			new Carro(2L, "Chevrolet", 2022, "FFG-0460",(Motorista) usuarios.get(4)),
+			new Carro(3L, "Forger", 2022, "FTG-0160",(Motorista) usuarios.get(5))
 	);
 	
 	Viagem viagem = new Viagem(1L, "Novo Castelo - Rua das Goiabas 1010", 
@@ -69,6 +73,7 @@ class UsuarioServiceTestI {
 	}
 
 	@Test
+	@Order(1)
 	void deveSalvarUsuarioComSucesso() {
 		Passageiro passageiro = new Passageiro(1L, "Julio", "98123411456", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		UsuarioDTO usuarioDto = new UsuarioDTO(passageiro);
@@ -80,19 +85,21 @@ class UsuarioServiceTestI {
 	
 	@Transactional
 	@Test
-	void deveRetoranTodosOsCarrosComSucesso() {
-		carroRepository.saveAll(carros);
+	@Order(2)
+	void deveRetornarTodosOsUsuarioComSucesso() {
 		usuarioRepository.saveAll(usuarios);
+		carroRepository.saveAll(carros);
 		List<Usuario> users = usuarioService.findAll();
 		
-		assertNotEquals(null, users);
+		assertNotNull(users);
 		assertThat(users).usingRecursiveComparison().isEqualTo(usuarios);
-		assertEquals(6, usuarioRepository.count());
+		assertEquals(users.size(), usuarioRepository.count());
 		
 	}
 	
 	@Transactional
 	@Test
+	@Order(3)
 	void deveBuscarUsarioAPartirDoIdComSucesso() {
 		usuarioRepository.save(usuarios.get(0));
 		Long id = usuarios.get(0).getId();
@@ -104,9 +111,10 @@ class UsuarioServiceTestI {
 	
 	@Transactional
 	@Test
+	@Order(4)
 	void deveBuscarMotoristaPorStatus() {
-		carroRepository.saveAll(carros);
 		usuarioRepository.saveAll(usuarios);
+		carroRepository.saveAll(carros);
 		
 		UsuarioStatus ativo = UsuarioStatus.ATIVO;
 		
@@ -118,6 +126,7 @@ class UsuarioServiceTestI {
 	
 	@Transactional
 	@Test
+	@Order(5)
 	void deveAtualizarUsuarioComSucesso() {
 		usuarioRepository.save(usuarios.get(0));
 		Long id = usuarios.get(0).getId();
@@ -134,12 +143,13 @@ class UsuarioServiceTestI {
 	
 	@Transactional
 	@Test
+	@Order(6)
 	void deveDeletarUsuarioComSucesso() {
 		var usuario = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 		usuarioRepository.save(usuario);
 		Long id = usuario.getId();
 		
-		assertNotEquals(null, usuario);
+		assertNotNull(usuario);
 		assertEquals(1, usuarioRepository.count());
 		
 		usuarioService.delete(id);
@@ -147,20 +157,47 @@ class UsuarioServiceTestI {
 		assertEquals(0, usuarioRepository.count());
 	}
 	
-//	@Transactional
+	@Transactional
+	@Test
+	@Order(7)
+	void deveAtivarUsuariosAParitrDaViagemId() {
+		usuarioRepository.saveAll(usuarios);
+		carroRepository.saveAll(carros);
+		viagemRepository.save(viagem);
+		
+		Passageiro passageiro = (Passageiro) usuarioService.findById(viagem.getPassageiro().getId());
+		Motorista motorista = (Motorista) usuarioService.findById(viagem.getMotorista().getId());
+		usuarioService.ativarUsuarioPorViagemId(viagem.getId());
+		
+		UsuarioStatus ativo = UsuarioStatus.ATIVO;
+		
+		assertEquals(ativo, passageiro.getUsuarioStatus());
+		assertEquals(ativo, motorista.getUsuarioStatus());
+	}
+	
+	@Transactional
+	@Test
+	@Order(8)
+	void deveDesativarUsuarioComSucesso() {
+		usuarioRepository.saveAll(usuarios);
+		carroRepository.saveAll(carros);
+		viagemRepository.save(viagem);
+		
+		usuarioService.desativarUsuario(usuarios.get(2).getId());
+		
+		UsuarioStatus desativo = UsuarioStatus.DESATIVADO;
+		
+		Usuario usuario = usuarioService.findById(usuarios.get(2).getId());
+		
+		assertEquals(desativo, usuario.getUsuarioStatus());
+	}
+	
 //	@Test
-//	void deveAticarUsuariosAParitrDaViagemId() {
-//		carroRepository.saveAll(carros);
+//	@Order(9)
+//	void deveSalvarTudoComSucesso() {
 //		usuarioRepository.saveAll(usuarios);
+//		carroRepository.saveAll(carros);
 //		viagemRepository.save(viagem);
-//		
-//		Passageiro passageiro = (Passageiro) usuarioService.findById(viagem.getPassageiro().getId());
-//		Motorista motorista = (Motorista) usuarioService.findById(viagem.getMotorista().getId());
-//		usuarioService.ativarUsuarioPorViagemId(viagem.getId());
-//		
-//		UsuarioStatus ativo = UsuarioStatus.ATIVO;
-//		
-//		assertEquals(ativo, viagem.getMotorista().getUsuarioStatus());
-//		assertEquals(ativo, viagem.getPassageiro().getUsuarioStatus());
 //	}
-}	
+	
+}

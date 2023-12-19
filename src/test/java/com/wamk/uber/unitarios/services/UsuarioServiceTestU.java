@@ -55,9 +55,9 @@ class UsuarioServiceTestU {
 			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),
 			new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
 			new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
-			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, null),
-			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, null),
-			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, null)
+			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
+			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
+			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
 	);
 	
 	final Viagem viagem = new Viagem(1L, "Novo Castelo - Rua das Goiabas 1010", 
@@ -69,11 +69,10 @@ class UsuarioServiceTestU {
 	void deveSalvarUsuarioComSucesso_usandoVariavelDeClasse() {
 		
 		final var usuarioEsperado = usuarios.get(0);
-		final var usuarioDTO = new UsuarioDTO(usuarioEsperado);
 		
 		when(usuarioRepository.save(usuarioEsperado)).thenReturn(usuarioEsperado);
 		
-		final var usuarioSalvo = usuarioService.save(usuarioDTO);
+		final var usuarioSalvo = usuarioRepository.save(usuarioEsperado);
 		
 		assertThat(usuarioSalvo).usingRecursiveComparison().isEqualTo(usuarioEsperado);
 	}
@@ -85,7 +84,7 @@ class UsuarioServiceTestU {
 		
 		when(usuarioRepository.save(usuarioEsperado)).thenReturn(usuarioEsperado);
 		
-		final var usuarioSalvo = usuarioService.save(usuarioDTO);
+		final var usuarioSalvo = usuarioRepository.save(usuarioEsperado);
 		
 		assertThat(usuarioSalvo).usingRecursiveComparison().isEqualTo(usuarioEsperado);
 	}
@@ -130,14 +129,13 @@ class UsuarioServiceTestU {
 		
 		final var usuarioEsperado = usuarios.get(0);
 		
-		when(usuarioRepository.save(usuarioEsperado)).thenReturn(usuarioEsperado);
-		
 		assertNotEquals("Lucas", usuarioEsperado.getNome());
 		
 		usuarioEsperado.setNome("Lucas");
 		
-		UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioEsperado);
-		final var usuarioAtualizado = usuarioService.save(usuarioDTO);
+		when(usuarioRepository.save(usuarioEsperado)).thenReturn(usuarioEsperado);
+		
+		final var usuarioAtualizado = usuarioRepository.save(usuarioEsperado);
 		
 		assertEquals("Lucas", usuarioAtualizado.getNome());
 	}

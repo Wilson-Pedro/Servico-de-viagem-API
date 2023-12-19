@@ -13,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,8 +39,8 @@ public class Carro implements Serializable{
 	@Length(min = 8, max = 50)
 	private String placa;
 	
-	@JsonIgnore
-	@OneToOne(mappedBy = "carro", cascade = CascadeType.ALL)
+	@OneToOne
+	@JoinColumn(name = "motorista_id")
 	private Motorista motorista;
 	
 	public Carro() {
@@ -82,5 +83,17 @@ public class Carro implements Serializable{
 			return false;
 		Carro other = (Carro) obj;
 		return Objects.equals(id, other.id);
+	}
+
+
+
+	public Carro(Long id, @NotBlank @Length(min = 2, max = 100) String modelo, @NotNull Integer ano,
+			@NotBlank @Length(min = 8, max = 50) String placa, Motorista motorista) {
+		super();
+		this.id = id;
+		this.modelo = modelo;
+		this.ano = ano;
+		this.placa = placa;
+		this.motorista = motorista;
 	}
 }

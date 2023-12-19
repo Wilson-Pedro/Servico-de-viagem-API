@@ -45,6 +45,7 @@ public class SecurityConfiguration {
 					.requestMatchers(new AntPathRequestMatcher("/usuarios/{id}", HttpMethod.GET.toString())).hasAnyRole("ADMIN", "USER")
 					.requestMatchers(new AntPathRequestMatcher("/usuarios/{id}/viagens", HttpMethod.GET.toString())).hasAnyRole("ADMIN", "USER")
 					.requestMatchers(new AntPathRequestMatcher("/usuarios/", HttpMethod.POST.toString())).hasAnyRole("ADMIN", "USER")
+					.requestMatchers(new AntPathRequestMatcher("/usuarios/{id}", HttpMethod.DELETE.toString())).hasAnyRole("ADMIN", "USER")
 					.requestMatchers(new AntPathRequestMatcher("/usuarios/solicitacarViagem", HttpMethod.POST.toString())).hasAnyRole("ADMIN", "USER")
 					.requestMatchers(new AntPathRequestMatcher("/usuarios/{id}", HttpMethod.PUT.toString())).hasAnyRole("ADMIN", "USER")
 					.requestMatchers(new AntPathRequestMatcher("/usuarios/{usuarioId}/cancelarViagem", HttpMethod.DELETE.toString())).hasAnyRole("ADMIN","USER")

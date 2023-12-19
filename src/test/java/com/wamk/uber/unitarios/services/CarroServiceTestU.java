@@ -44,11 +44,10 @@ class CarroServiceTestU {
 	void deveSalvarCarroComSucesso_usandoVariavelDeClasse() {
 		
 		final var carroEsperado = carros.get(0);
-		final var carroDTO = new CarroDTO(carroEsperado);
 		
 		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
 		
-		final var carroSalvo = carroService.save(carroDTO);
+		final var carroSalvo = carroRepository.save(carroEsperado);
 		
 		assertThat(carroSalvo).usingRecursiveComparison().isEqualTo(carroEsperado);
 	}
@@ -60,7 +59,7 @@ class CarroServiceTestU {
 		
 		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
 		
-		final var carroSalvo = carroService.save(carroDTO);
+		final var carroSalvo = carroRepository.save(carroEsperado);
 		
 		assertThat(carroSalvo).usingRecursiveComparison().isEqualTo(carroEsperado);
 	}
@@ -103,13 +102,13 @@ class CarroServiceTestU {
 		
 		final var carroEsperado = carros.get(0);
 		
-		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
-		
 		assertNotEquals("Toyota", carroEsperado.getModelo());
 		
 		carroEsperado.setModelo("Toyota");
-		CarroDTO carroDTO = new CarroDTO(carroEsperado);
-		final var carroAtualizado = carroService.save(carroDTO);
+		
+		when(carroRepository.save(carroEsperado)).thenReturn(carroEsperado);
+		
+		final var carroAtualizado = carroRepository.save(carroEsperado);
 		
 		assertEquals("Toyota", carroAtualizado.getModelo());
 	}

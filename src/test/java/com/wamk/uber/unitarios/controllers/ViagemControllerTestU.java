@@ -38,17 +38,17 @@ class ViagemControllerTestU {
 	
 	UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 	
-	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-	Carro carro2 = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
-	Carro carro3 = new Carro(3L, "Forger", 2022, "FTG-0160");
-	
 	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 	Passageiro passageiro2 = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 	Passageiro passageiro3 = new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 	
-	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
-	Motorista motorista2 = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro2);
-	Motorista motorista3 = new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro3);
+	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+	Motorista motorista2 = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+	Motorista motorista3 = new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+	
+	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
+	Carro carro2 = new Carro(2L, "Chevrolet", 2022, "FFG-0460", motorista2);
+	Carro carro3 = new Carro(3L, "Forger", 2022, "FTG-0160", motorista3);
 	
 	private final List<Viagem> viagens = List.of(
 			new Viagem(1L, 

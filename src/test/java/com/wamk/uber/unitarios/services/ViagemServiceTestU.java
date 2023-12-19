@@ -48,11 +48,11 @@ class ViagemServiceTestU {
 	
 	private final ViagemService viagemService = new ViagemService(viagemRepository, usuarioService, usuarioRepository, modelMapper);
 	
-	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-	
 	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 	
-	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+	
+	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 	
 	private final List<Viagem> viagens = List.of(
 			new Viagem(1L, 
@@ -66,11 +66,10 @@ class ViagemServiceTestU {
 	void deveSalvarViagemComSucesso_usandoVariavelDeClasse() {
 		
 		final var viagemEsperada = viagens.get(0);
-		final var viagemInputDTO = new ViagemInputDTO(viagemEsperada);
 		
 		when(viagemRepository.save(viagemEsperada)).thenReturn(viagemEsperada);
 		
-		final var viagemSalva = viagemService.save(viagemInputDTO);
+		final var viagemSalva = viagemRepository.save(viagemEsperada);
 		
 		assertThat(viagemSalva).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
@@ -82,7 +81,7 @@ class ViagemServiceTestU {
 		
 		when(viagemRepository.save(viagemEsperada)).thenReturn(viagemEsperada);
 		
-		var viagemSalva = viagemService.save(viagemInputDTO);
+		var viagemSalva = viagemRepository.save(viagemEsperada);
 		
 		assertThat(viagemSalva).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
@@ -124,14 +123,13 @@ class ViagemServiceTestU {
 		
 		final var viagemEsperada = viagens.get(0);
 		
-		when(viagemRepository.save(viagemEsperada)).thenReturn(viagemEsperada);
-		
 		assertEquals("Pará - Rua das Maçãs", viagemEsperada.getDestino());
 		
 		viagemEsperada.setDestino("Pará - Rua dos limões");
 		
-		ViagemInputDTO viagemInputDTO = new ViagemInputDTO(viagemEsperada);
-		final var viagemAtualizada = viagemService.save(viagemInputDTO);
+		when(viagemRepository.save(viagemEsperada)).thenReturn(viagemEsperada);
+		
+		final var viagemAtualizada = viagemRepository.save(viagemEsperada);
 		
 		assertEquals("Pará - Rua dos limões", viagemAtualizada.getDestino());	
 	}

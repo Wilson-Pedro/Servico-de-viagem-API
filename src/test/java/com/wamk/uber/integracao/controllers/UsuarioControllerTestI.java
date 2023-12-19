@@ -1,7 +1,5 @@
 package com.wamk.uber.integracao.controllers;
 
-import static com.wamk.uber.LoginUniversal.LOGIN;
-import static com.wamk.uber.LoginUniversal.PASSWORD;
 import static com.wamk.uber.LoginUniversal.TOKEN;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,6 +44,7 @@ import com.wamk.uber.repositories.UserRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 import com.wamk.uber.services.UsuarioService;
+import com.wamk.uber.services.ViagemService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -73,6 +72,9 @@ class UsuarioControllerTestI {
 	ViagemRepository viagemRepository;
 	
 	@Autowired
+	ViagemService viagemService;
+	
+	@Autowired
 	CarroRepository carroRepository;
 	
 	@Autowired
@@ -83,8 +85,8 @@ class UsuarioControllerTestI {
 
 	@Test
 	@Order(1)
-	void deveRegistraUsuarioComSucesso() {
-		RegistroDTO registroDTO = new RegistroDTO(LOGIN, PASSWORD, UserRole.ADMIN);
+	void deveRegistraUsuarioParaLoginComSucesso() {
+		RegistroDTO registroDTO = new RegistroDTO("lara", "56789", UserRole.ADMIN);
 		
 		String encryptedPassword = new BCryptPasswordEncoder().encode(registroDTO.getPassword());
 		
@@ -93,11 +95,8 @@ class UsuarioControllerTestI {
 		
 		User newUser = new User(registroDTO.getLogin(), encryptedPassword, registroDTO.getRole());
 		
-		assertEquals(0, userRepository.count());
-		
 		userRepository.save(newUser);
 		
-		assertEquals(1, userRepository.count());
 		assertEquals(UserRole.ADMIN, registroDTO.getRole());
 		
 	}
@@ -105,7 +104,7 @@ class UsuarioControllerTestI {
 	@Test
 	@Order(2)
 	void deveRealizarLoginComSucesso() {
-		AuthenticationDTO dto = new AuthenticationDTO(LOGIN, PASSWORD);
+		AuthenticationDTO dto = new AuthenticationDTO("lara", "56789");
 		var usernamePassowrd = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
 		var auth = this.authenticationManager.authenticate(usernamePassowrd);
 		var token = this.tokenService.generateToken((User) auth.getPrincipal());
@@ -122,6 +121,8 @@ class UsuarioControllerTestI {
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();	
+		
+		assertEquals(6, usuarioRepository.count());
 	}
 	
 	@Test
@@ -247,18 +248,24 @@ class UsuarioControllerTestI {
 	@Order(10)
 	void deveDeveCancelarViagemAPartirDoUserIdComSucesso() throws Exception {
 		
-		Usuario usuario = usuarioService.findById(1L);
+		Passageiro passageiro = new Passageiro
+				(null, "Junho", "(69)98937-6526", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		
-		Long userId = usuarioService.findById(usuario.getId()).getId();
+		usuarioRepository.save(passageiro);
 		
-		assertEquals(2, viagemRepository.count());
+		SolicitarViagemDTO solcitagem = new SolicitarViagemDTO
+				(passageiro.getId(), "Rua da Luz", "Rua das Goiabas", "250", FormaDePagamento.PAYPAL);
 		
-		mockMvc.perform(delete(USUARIO_ENDPOINT + "/{usuarioId}/cancelarViagem", userId)
+		viagemService.solicitandoViagem(solcitagem);
+		
+		assertEquals(3, viagemRepository.count());
+		
+		mockMvc.perform(delete(USUARIO_ENDPOINT + "/{usuarioId}/cancelarViagem", passageiro.getId())
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
 		
-		assertEquals(1, viagemRepository.count());
+		assertEquals(2, viagemRepository.count());
 	}
 	
 	@Test

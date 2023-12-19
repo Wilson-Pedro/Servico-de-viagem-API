@@ -21,11 +21,11 @@ public class ViagemProviderTest implements ArgumentsProvider{
 	@Override
 	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
 		
-		final var carro = new Carro(null, "Fiat", 2022, "JVF-9207");
-		
 		final var passageiro = new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 		
-		final var motorista = new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+		final var motorista = new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+		
+		final var carro = new Carro(null, "Fiat", 2022, "JVF-9207", motorista);
 		
 		return Stream.of(Arguments.of(List.of(
 				new Viagem(1L, 

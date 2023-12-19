@@ -19,8 +19,8 @@ import jakarta.persistence.OneToOne;
 public class Motorista extends Usuario{
 	private static final long serialVersionUID = 1L;
 	
-	@OneToOne
-	@JoinColumn(name = "carro_id")
+	@JsonIgnore
+	@OneToOne(mappedBy = "motorista")
 	private Carro carro;
 	
 	@JsonIgnore
@@ -28,12 +28,10 @@ public class Motorista extends Usuario{
 	private List<Viagem> viagens = new ArrayList<>();
 
 	public Motorista() {
-		super();
 	}
 
-	public Motorista(Long id, String nome, String telefone, TipoUsuario tipoUsuario, UsuarioStatus usuarioStatus, Carro carro) {
+	public Motorista(Long id, String nome, String telefone, TipoUsuario tipoUsuario, UsuarioStatus usuarioStatus) {
 		super(id, nome, telefone, tipoUsuario, usuarioStatus);
-		this.carro = carro;
 	}
 
 	public Carro getCarro() {

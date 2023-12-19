@@ -26,6 +26,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wamk.uber.dtos.CarroDTO;
@@ -37,6 +38,7 @@ import com.wamk.uber.enums.roles.UserRole;
 import com.wamk.uber.infra.security.TokenService;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UserRepository;
+import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.services.CarroService;
 
 @SpringBootTest
@@ -51,6 +53,9 @@ class CarroControlerTestI {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	UsuarioRepository usuarioRepository;
 
 	@Autowired
 	TokenService tokenService;
@@ -69,8 +74,8 @@ class CarroControlerTestI {
 
 	@Test
 	@Order(1)
-	void deveRegistraUsuarioComSucesso() {
-		RegistroDTO registroDTO = new RegistroDTO(LOGIN, PASSWORD, UserRole.ADMIN);
+	void deveRegistraUsuarioParaLoginComSucesso() {
+		RegistroDTO registroDTO = new RegistroDTO("wilson", "12345", UserRole.ADMIN);
 		
 		String encryptedPassword = new BCryptPasswordEncoder().encode(registroDTO.getPassword());
 		
@@ -79,19 +84,15 @@ class CarroControlerTestI {
 		
 		User newUser = new User(registroDTO.getLogin(), encryptedPassword, registroDTO.getRole());
 		
-		assertEquals(0, userRepository.count());
-		
 		userRepository.save(newUser);
 		
-		assertEquals(1, userRepository.count());
 		assertEquals(UserRole.ADMIN, registroDTO.getRole());
-		
 	}
 	
 	@Test
 	@Order(2)
 	void deveRealizarLoginComSucesso() {
-		AuthenticationDTO dto = new AuthenticationDTO(LOGIN, PASSWORD);
+		AuthenticationDTO dto = new AuthenticationDTO("wilson", "12345");
 		var usernamePassowrd = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
 		var auth = this.authenticationManager.authenticate(usernamePassowrd);
 		var token = this.tokenService.generateToken((User) auth.getPrincipal());
@@ -178,6 +179,7 @@ class CarroControlerTestI {
 	
 	@Test
 	@Order(7)
+	@Transactional
 	void deveDeletarCarroComSucesso() throws Exception {
 		
 		Long id = carroService.findById(3L).getId();

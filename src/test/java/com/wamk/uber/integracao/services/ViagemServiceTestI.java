@@ -3,11 +3,14 @@ package com.wamk.uber.integracao.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -29,6 +32,7 @@ import com.wamk.uber.services.ViagemService;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ViagemServiceTestI {
 	
 	@Autowired
@@ -42,12 +46,12 @@ class ViagemServiceTestI {
 	
 	@Autowired
 	CarroRepository carroRepository;
-
-	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
 	
 	private Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 	
-	private Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+	private Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+	
+	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 	
 	private List<Viagem> viagens = List.of(
 			new Viagem(1L, 
@@ -67,7 +71,7 @@ class ViagemServiceTestI {
 	@Test
 	void deveSalvarViagemComSucesso() {
 		var passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
-		var motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, null);
+		var motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		var viagemEsperada = new Viagem(1L, 
 				"Novo Castelo - Rua das Goiabas 1010", 
@@ -88,30 +92,45 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveRetornarTodasAsViagensComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
+		
 		List<Viagem> viagensEsperadas = viagemService.findAll();
+		
+		assertNotNull(viagensEsperadas);
+		assertEquals(viagensEsperadas.size(), viagemRepository.count());
 		assertThat(viagensEsperadas).usingRecursiveComparison().isEqualTo(viagens);
 	}
 	
 	@Transactional
 	@Test
 	void deveBuscarViagemApartirDoIdComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
-		var viagem = viagemService.findById(viagens.get(0).getId());
 		
-		assertNotEquals(null, viagem);
+		var viagem = viagemService.findById(viagens.get(0).getId());
+		Long id = viagemRepository.findAll().get(0).getId();
+		
+		assertNotNull(viagem);
+		assertNotNull(viagem);
+		assertEquals(id, viagem.getId());
+		assertEquals("Novo Castelo - Rua das Goiabas 1010", viagem.getOrigem());
+		assertEquals("Pará - Rua das Maçãs", viagem.getDestino());
+		assertEquals("10 minutos", viagem.getTempoDeViagem());
+		assertEquals(FormaDePagamento.PIX, viagem.getFormaDePagamento());
+		assertEquals(ViagemStatus.NAO_FINALIZADA, viagem.getViagemStatus());
+		assertThat(passageiro).usingRecursiveComparison().isEqualTo(viagem.getPassageiro());
+		assertThat(motorista).usingRecursiveComparison().isEqualTo(viagem.getMotorista());
 		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagens.get(0));
 	}
 	
 	@Transactional
 	@Test
 	void deveAtualizarViagemComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		Long id = viagens.get(0).getId();
@@ -129,8 +148,8 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveDeletarViagemComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		Long id = viagens.get(0).getId();
@@ -145,8 +164,8 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveCancelarViagemComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		Long id = viagens.get(0).getId();
@@ -162,8 +181,8 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveCancelarViagemPorUserIdComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		Long id = passageiro.getId();
@@ -179,8 +198,8 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveAcharViagemPorUserIdComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		Long id = passageiro.getId();
@@ -194,8 +213,8 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveBuscarTodasAsViagemPorUserIdComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		Long id = passageiro.getId();
@@ -209,8 +228,8 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveAcharViagemPorPassageiro() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		var viagem = viagemService.acharViagemPorPassageiro(passageiro);
@@ -222,8 +241,8 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveAcharViagemPorMotorista() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
 		
 		var viagem = viagemService.acharViagemPorMotorista(motorista);
@@ -236,7 +255,7 @@ class ViagemServiceTestI {
 	@Test
 	void deveConstruirViagemComSucesso() {
 		var passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
-		var motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, null);
+		var motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		
 		assertEquals(0, viagemRepository.count());
@@ -253,9 +272,10 @@ class ViagemServiceTestI {
 	@Transactional
 	@Test
 	void deveFinalizarViagemComSucesso() {
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.saveAll(viagens);
+		
 		Long id = viagens.get(0).getId();
 		
 		viagemService.finalizarViagem(id);

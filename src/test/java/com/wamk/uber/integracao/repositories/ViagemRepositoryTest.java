@@ -47,8 +47,8 @@ class ViagemRepositoryTest {
 	@Test
 	@DisplayName("Deve buscar viagem a partir do motorista com sucesso.")
 	void deveBuscarViagemAPartirDoMotoristaComSucesso() {
-		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 		
 		Viagem viagemEsperada = viagemRepository.findById(1L).get();
 		Viagem trip = viagemRepository.findByMotorista(motorista);
@@ -73,8 +73,9 @@ class ViagemRepositoryTest {
 	@Test
 	@DisplayName("Deve buscar todas as viagem a partir do motorista com sucesso.")
 	void deveBuscarTodasAsViagemAPartirDoMotoristaComSucesso() {
-		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+		
+		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 		
 		List<Viagem> viagensEsperadas = viagemRepository.findAll();
 		List<Viagem> viagens = viagemRepository.findAllByMotorista(motorista);

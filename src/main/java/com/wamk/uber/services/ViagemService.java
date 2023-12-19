@@ -147,6 +147,7 @@ public class ViagemService {
 		viagemRepository.delete(viagem);
 	}
 	
+	@Transactional
 	public Viagem acharViagemPorUserId(Long UserId) {
 		
 		Usuario usuario = usuarioService.findById(UserId);

@@ -38,9 +38,8 @@ public class ViagemInputDTO implements Serializable{
 	public ViagemInputDTO() {
 	}
 
-	public ViagemInputDTO(Long id, String origem, String destino, String tempoDeViagem,
+	public ViagemInputDTO(String origem, String destino, String tempoDeViagem,
 			Long passageiroId, Long motoristaId, String formaDePagamento) {
-		this.id = id;
 		this.origem = origem;
 		this.destino = destino;
 		this.tempoDeViagem = tempoDeViagem;

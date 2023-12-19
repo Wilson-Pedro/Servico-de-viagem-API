@@ -42,11 +42,11 @@ class ViagensExceptions {
 	@Autowired
 	CarroRepository carroRepository;
 	
-	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207");
-	
 	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 	
-	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO, carro);
+	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
+	
+	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 	
 	private final List<Viagem> viagens = List.of(
 			new Viagem(1L, 
@@ -71,11 +71,11 @@ class ViagensExceptions {
 			+ "viagem com um passageiro que já está correndo(em viagem)")
 	void deveLancarExcecaoAposTentarSolicitarUmaViagem() {
 		
-		Carro carro = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
-		
 		Passageiro passageiro = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 		
-		Motorista motorista = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro);
+		Motorista motorista = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+		
+		Carro carro = new Carro(2L, "Chevrolet", 2022, "FFG-0460", motorista);
 		
 		Viagem viagem = new Viagem(2L, 
 				"Novo Castelo - Rua das Limonadas 1020", 
@@ -116,11 +116,12 @@ class ViagensExceptions {
 	@Test
 	@DisplayName("Deve lançar Exceção: ViagemJaFinalizadaException")
 	void deveLancarExcecaoAposCancelarUmaViagem() {
-		Carro carro = new Carro(2L, "Chevrolet", 2022, "FFG-0460");
 		
 		Passageiro passageiro = new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		
-		Motorista motorista = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO, carro);
+		Motorista motorista = new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+		
+		Carro carro = new Carro(2L, "Chevrolet", 2022, "FFG-0460", motorista);
 		
 		Viagem viagem = new Viagem(2L, 
 				"Novo Castelo - Rua das Limonadas 1020", 
