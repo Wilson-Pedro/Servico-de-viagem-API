@@ -3,6 +3,8 @@ package com.wamk.uber.unitarios.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -16,6 +18,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
@@ -126,4 +132,18 @@ class CarroServiceTestU {
 		
 		verify(carroRepository).delete(carroEsperado);
 	}
+	
+	@Test
+	void devePaginarUmaListaDeCarrosComSucesso() {
+		
+		List<Carro> list = this.carros;
+		Page<Carro> page = new PageImpl<>(list, PageRequest.of(0, 10), list.size());
+		
+		when(carroService.findAll(any(Pageable.class))).thenReturn(page);
+		
+		Page<Carro> pageCarro = carroService.findAll(PageRequest.of(0, 10));
+		
+		assertNotNull(pageCarro);
+		assertEquals(pageCarro.getContent().size(), list.size());
+	} 
 }

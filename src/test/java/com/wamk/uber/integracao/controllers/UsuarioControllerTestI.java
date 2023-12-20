@@ -20,6 +20,9 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -317,5 +320,20 @@ class UsuarioControllerTestI {
 		Passageiro passageiroAtivado = (Passageiro) usuarioService.findById(id);
 		
 		assertEquals(ativo, passageiroAtivado.getUsuarioStatus());
+	}
+	
+	@Test
+	@Order(13)
+	void devePaginarUmaListaDeUsuariosComSucesso() throws Exception {
+		
+		var usuarios = usuarioService.findAll();
+		Page<Usuario> page = new PageImpl<>(usuarios, PageRequest.of(0, 10), usuarios.size());
+		
+		mockMvc.perform(get(USUARIO_ENDPOINT + "/pages")
+				.header("Authorization", "Bearer " + TOKEN))
+				.andExpect(status().isOk())
+				.andReturn();
+		
+		assertEquals(page.getContent().size(), usuarios.size());
 	}
 }

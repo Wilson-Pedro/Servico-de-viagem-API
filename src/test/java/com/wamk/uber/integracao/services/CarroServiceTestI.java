@@ -1,12 +1,10 @@
 package com.wamk.uber.integracao.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,19 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
-import com.wamk.uber.entities.Viagem;
-import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
-import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;

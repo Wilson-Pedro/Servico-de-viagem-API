@@ -3,7 +3,9 @@ package com.wamk.uber.unitarios.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -20,6 +22,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
@@ -265,5 +271,19 @@ class UsuarioServiceTestU {
 		final var userFind = this.usuarioRepository.findById(id).get();
 		
 		assertThrows(UsuarioJaAtivoException.class, () -> usuarioService.ativarUsuario(userFind.getId()));
+	}
+	
+	@Test
+	void devePaginarUmaListaDeCarrosComSucesso() {
+		
+		List<Usuario> list = this.usuarios;
+		Page<Usuario> page = new PageImpl<>(list, PageRequest.of(0, 10), list.size());
+		
+		when(usuarioService.findAll(any(Pageable.class))).thenReturn(page);
+		
+		Page<Usuario> pageUsuario = usuarioService.findAll(PageRequest.of(0, 10));
+		
+		assertNotNull(pageUsuario);
+		assertEquals(pageUsuario.getContent().size(), list.size());
 	}
 }

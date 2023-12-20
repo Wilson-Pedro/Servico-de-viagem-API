@@ -1,7 +1,5 @@
 package com.wamk.uber.integracao.controllers;
 
-import static com.wamk.uber.LoginUniversal.LOGIN;
-import static com.wamk.uber.LoginUniversal.PASSWORD;
 import static com.wamk.uber.LoginUniversal.TOKEN;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,6 +19,9 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -192,5 +193,20 @@ class CarroControlerTestI {
 				.andReturn();
 		
 		assertEquals(3, carroRepository.count());
+	}
+
+	@Test
+	@Order(8)
+	void devePaginarUmaListaDeCarrosComSucesso() throws Exception {
+		
+		var carros = carroService.findAll();
+		Page<Carro> page = new PageImpl<>(carros, PageRequest.of(0, 10), carros.size());
+		
+		mockMvc.perform(get(CAR_ENDPOINT + "/pages")
+				.header("Authorization", "Bearer " + TOKEN))
+		 		.andExpect(status().isOk())
+		 		.andReturn();
+		
+		assertEquals(page.getContent().size(), carros.size());
 	}
 }
