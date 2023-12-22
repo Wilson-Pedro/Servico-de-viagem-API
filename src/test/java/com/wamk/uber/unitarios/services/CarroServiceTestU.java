@@ -26,10 +26,14 @@ import org.springframework.data.domain.Pageable;
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
+import com.wamk.uber.entities.Motorista;
+import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.provider.CarroEntityAndCarroDtoProviderTest;
 import com.wamk.uber.provider.CarrosProviderTest;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.services.CarroService;
+import com.wamk.uber.services.UsuarioService;
 
 @ExtendWith(MockitoExtension.class)
 class CarroServiceTestU {
@@ -38,12 +42,20 @@ class CarroServiceTestU {
 	
 	private final CarroRepository carroRepository = mock(CarroRepository.class);
 	
-	private final CarroService carroService = new CarroService(modelMapper, carroRepository);
+	private final UsuarioService usuarioService = mock(UsuarioService.class);
 	
-	private final List<Carro> carros = List.of(
-			new Carro(1L, "Fiat", 2022, "JVF-9207"),
-			new Carro(2L, "Chevrolet", 2022, "FFG-0460"),
-			new Carro(3L, "Forger", 2022, "FTG-0160")
+	private final CarroService carroService = new CarroService(modelMapper, carroRepository, usuarioService);
+	
+	List<Motorista> motoristas = List.of(
+			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
+			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
+			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
+	);
+	
+	List<Carro> carros = List.of(
+			new Carro(1L, "Fiat", 2022, "JVF-9207",motoristas.get(0)),
+			new Carro(2L, "Chevrolet", 2022, "FFG-0460",motoristas.get(1)),
+			new Carro(3L, "Forger", 2022, "FTG-0160",motoristas.get(2))
 	);
 	
 	@Test

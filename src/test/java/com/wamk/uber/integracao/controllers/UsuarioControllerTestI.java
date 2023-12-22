@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -12,6 +13,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -34,6 +37,7 @@ import com.wamk.uber.dtos.RegistroDTO;
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.records.AuthenticationDTO;
+import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.entities.user.User;
@@ -85,9 +89,16 @@ class UsuarioControllerTestI {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-
+	
 	@Test
 	@Order(1)
+	void deveDeletarTudoComSucesso() {
+		carroRepository.deleteAll();
+		usuarioRepository.deleteAll();
+	}
+
+	@Test
+	@Order(2)
 	void deveRegistraUsuarioParaLoginComSucesso() {
 		RegistroDTO registroDTO = new RegistroDTO("lara", "56789", UserRole.ADMIN);
 		
@@ -105,7 +116,7 @@ class UsuarioControllerTestI {
 	}
 	
 	@Test
-	@Order(2)
+	@Order(3)
 	void deveRealizarLoginComSucesso() {
 		AuthenticationDTO dto = new AuthenticationDTO("lara", "56789");
 		var usernamePassowrd = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
@@ -117,47 +128,7 @@ class UsuarioControllerTestI {
 	}
 	
 	@Test
-	@Order(3)
-	void deveBuscarTodosOsUsuariosComSucesso() throws Exception {
-		
-		mockMvc.perform(get(USUARIO_ENDPOINT)
-				.header("Authorization", "Bearer " + TOKEN))
-				.andExpect(status().isOk())
-				.andReturn();	
-		
-		assertEquals(6, usuarioRepository.count());
-	}
-	
-	@Test
 	@Order(4)
-	void deveBuscarUsuarioAPartirDoIdComSucesso() throws Exception {
-		
-		Long id = usuarioService.findById(1L).getId();
-		
-		mockMvc.perform(get(USUARIO_ENDPOINT + "/{id}", id)
-				.header("Authorization", "Bearer " + TOKEN))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
-				.andExpect(jsonPath("$.nome", equalTo("Wilson")))
-				.andExpect(jsonPath("$.telefone", equalTo("9816923456")))
-				.andExpect(jsonPath("$.tipoUsuario", equalTo("Passageiro")))
-				.andReturn();	
-	}
-	
-	@Test
-	@Order(5)
-	void deveBuscarViagensAPartirDoUserIdComSucesso() throws Exception {
-		
-		Long id = usuarioService.findById(1L).getId();
-		
-		mockMvc.perform(get("/usuarios/{id}/viagens", id)
-				.header("Authorization", "Bearer " + TOKEN))
-				.andExpect(status().isOk())
-				.andReturn();	
-	}
-	
-	@Test
-	@Order(6)
 	void deveRegistarUsuarioComSucesso() throws Exception {
 		
 		UsuarioDTO usuarioDto = new UsuarioDTO(null, "Lucia", "(66)98273-9281", "Passageiro");
@@ -169,24 +140,67 @@ class UsuarioControllerTestI {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id", equalTo(7)))
 				.andExpect(jsonPath("$.nome", equalTo("Lucia")))
 				.andExpect(jsonPath("$.telefone", equalTo("(66)98273-9281")))
 				.andExpect(jsonPath("$.tipoUsuario", equalTo("Passageiro")))
 				.andReturn();
 		
-		assertEquals(7, usuarioRepository.count());
+		Long id = usuarioRepository.findAll().get(0).getId();
+		
+		assertNotNull(id);
+		assertTrue(id > 0);
+		assertEquals(1, usuarioRepository.count());
+	}
+	
+	@Test
+	@Order(5)
+	void deveBuscarTodosOsUsuariosComSucesso() throws Exception {
+		
+		mockMvc.perform(get(USUARIO_ENDPOINT)
+				.header("Authorization", "Bearer " + TOKEN))
+				.andExpect(status().isOk())
+				.andReturn();	
+		
+		assertEquals(1, usuarioRepository.count());
+	}
+	
+	@Test
+	@Order(6)
+	void deveBuscarUsuarioAPartirDoIdComSucesso() throws Exception {
+		
+		Long id = usuarioRepository.findAll().get(0).getId();
+		
+		mockMvc.perform(get(USUARIO_ENDPOINT + "/{id}", id)
+				.header("Authorization", "Bearer " + TOKEN))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
+				.andExpect(jsonPath("$.nome", equalTo("Lucia")))
+				.andExpect(jsonPath("$.telefone", equalTo("(66)98273-9281")))
+				.andExpect(jsonPath("$.tipoUsuario", equalTo("Passageiro")))
+				.andReturn();	
 	}
 	
 	@Test
 	@Order(7)
+	void deveBuscarViagensAPartirDoUserIdComSucesso() throws Exception {
+		
+		Long id = usuarioRepository.findAll().get(0).getId();
+		
+		mockMvc.perform(get("/usuarios/{id}/viagens", id)
+				.header("Authorization", "Bearer " + TOKEN))
+				.andExpect(status().isOk())
+				.andReturn();	
+	}
+	
+	@Test
+	@Order(8)
 	void deveAtualizarUsuarioComSucesso() throws Exception {
 		
-		Usuario usuario = usuarioService.findById(2L);
+		Long id = usuarioRepository.findAll().get(0).getId();
 		
-		Long id = usuario.getId();
+		Usuario usuario = usuarioService.findById(id);
 		
-		UsuarioDTO usuarioDto = new UsuarioDTO(null, "Ana", "(66)98321-5237", "Passageiro");
+		UsuarioDTO usuarioDto = new UsuarioDTO(null, "Lucia", "(66)98321-5237", "Passageiro");
 		
 		assertNotEquals(usuario.getTelefone(), usuarioDto.getTelefone());
 		
@@ -200,42 +214,46 @@ class UsuarioControllerTestI {
 				.andExpect(jsonPath("$.telefone", equalTo("(66)98321-5237")))
 				.andReturn();
 		
-		Usuario usuarioAtualizado = usuarioService.findById(2L);
+		Usuario usuarioAtualizado = usuarioService.findById(id);
 		
 		assertEquals(usuarioAtualizado.getTelefone(), usuarioDto.getTelefone());
 	}
 	
 	@Test
-	@Order(8)
+	@Order(9)
 	void deveDeletarUsuarioAPartirDoIdComSucesso() throws Exception {
 		
-		Long id = usuarioService.findById(2L).getId();
+		Passageiro passageiro = new Passageiro(null, "Wilson", "9897663-4737", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		
-		assertEquals(7, usuarioRepository.count());
+		usuarioRepository.save(passageiro);
+		
+		Long id = usuarioRepository.findAll().get(0).getId();
+		
+		assertEquals(2, usuarioRepository.count());
 		
 		mockMvc.perform(delete(USUARIO_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
 		
-		assertEquals(6, usuarioRepository.count());
+		assertEquals(1, usuarioRepository.count());
 	}
 	
 	@Test
-	@Order(9)
+	@Order(10)
 	void deveSolicitarViagemComSucesso() throws Exception {
 		
 		Passageiro passageiro = new Passageiro
 				(null, "Silva", "(69)98647-6866", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
-		
-		usuarioRepository.save(passageiro);
+		Motorista motorista = new Motorista(null, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		
 		SolicitarViagemDTO solcitagem = new SolicitarViagemDTO
 				(passageiro.getId(), "Rua da Luz", "Rua das Goiabas", "250", FormaDePagamento.PAYPAL);
 		
 		String jsonRequest = objectMapper.writeValueAsString(solcitagem);
 		
-		assertEquals(1, viagemRepository.count());
+		assertEquals(0, viagemRepository.count());
 		
 		mockMvc.perform(post(USUARIO_ENDPOINT + "/solicitacarViagem")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -244,15 +262,18 @@ class UsuarioControllerTestI {
 				.andExpect(status().isOk())
 				.andReturn();
 		
-		assertEquals(2, viagemRepository.count());
+		assertEquals(1, viagemRepository.count());
 	}
 	
 	@Test
-	@Order(10)
+	@Order(11)
 	void deveDeveCancelarViagemAPartirDoUserIdComSucesso() throws Exception {
 		
 		Passageiro passageiro = new Passageiro
 				(null, "Junho", "(69)98937-6526", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
+		
+		Motorista motorista = new Motorista(null, "Julia", "9822163815", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+		usuarioRepository.saveAll(List.of(passageiro, motorista));
 		
 		usuarioRepository.save(passageiro);
 		
@@ -261,22 +282,22 @@ class UsuarioControllerTestI {
 		
 		viagemService.solicitandoViagem(solcitagem);
 		
-		assertEquals(3, viagemRepository.count());
+		assertEquals(2, viagemRepository.count());
 		
 		mockMvc.perform(delete(USUARIO_ENDPOINT + "/{usuarioId}/cancelarViagem", passageiro.getId())
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
 		
-		assertEquals(2, viagemRepository.count());
+		assertEquals(1, viagemRepository.count());
 	}
 	
 	@Test
-	@Order(11)
+	@Order(12)
 	void deveDesativarUsuarioComSucesso() throws Exception {
 		
 		Passageiro passageiro = new Passageiro
-				(8L, "Gil", "(69)98321-6812", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
+				(null, "Gil", "(69)98321-6812", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO);
 		
 		usuarioRepository.save(passageiro);
 		
@@ -292,17 +313,17 @@ class UsuarioControllerTestI {
 				.andReturn();
 		
 		
-		Passageiro passageiroDesativado = (Passageiro) usuarioService.findById(8L);
+		Passageiro passageiroDesativado = (Passageiro) usuarioService.findById(id);
 		
 		assertEquals(desativo, passageiroDesativado.getUsuarioStatus());
 	}
 	
 	@Test
-	@Order(12)
+	@Order(13)
 	void deveAtivarUsuarioComSucesso() throws Exception {
 		
 		Passageiro passageiro = new Passageiro
-				(9L, "Laura", "(69)98321-6812", TipoUsuario.PASSAGEIRO, UsuarioStatus.DESATIVADO);
+				(null, "Laura", "(69)98321-6812", TipoUsuario.PASSAGEIRO, UsuarioStatus.DESATIVADO);
 		
 		usuarioRepository.save(passageiro);
 		
@@ -323,7 +344,7 @@ class UsuarioControllerTestI {
 	}
 	
 	@Test
-	@Order(13)
+	@Order(14)
 	void devePaginarUmaListaDeUsuariosComSucesso() throws Exception {
 		
 		var usuarios = usuarioService.findAll();

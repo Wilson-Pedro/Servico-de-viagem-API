@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.CarroDTO;
+import com.wamk.uber.dtos.input.CarroInputDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
@@ -57,8 +58,8 @@ public class CarroController {
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<CarroDTO> registrarCarro(@RequestBody @Valid CarroDTO carroDTO){
-		var carro = carroService.save(carroDTO);
+	public ResponseEntity<CarroDTO> registrarCarro(@RequestBody @Valid CarroInputDTO inputDTO){
+		var carro = carroService.save(inputDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(
 				modelMapper.converter(carro, CarroDTO.class));
 		

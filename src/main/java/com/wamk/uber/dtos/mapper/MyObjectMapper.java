@@ -8,8 +8,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.dtos.ViagemDTO;
+import com.wamk.uber.dtos.input.CarroInputDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
@@ -18,6 +20,8 @@ import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.ViagemStatus;
+import com.wamk.uber.services.CarroService;
+import com.wamk.uber.services.UsuarioService;
 
 @Component
 public class MyObjectMapper {

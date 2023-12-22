@@ -83,8 +83,8 @@ class ViagensExceptions {
 				"20 minutos", passageiro, motorista, 
 				FormaDePagamento.DEBITO, ViagemStatus.FINALIZADA);
 		
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.save(viagem);
 		
 		SolicitarViagemDTO solicitacao = new SolicitarViagemDTO(viagem);
@@ -129,8 +129,8 @@ class ViagensExceptions {
 				"20 minutos", passageiro, motorista, 
 				FormaDePagamento.DEBITO, ViagemStatus.FINALIZADA);
 		
-		carroRepository.save(carro);
 		usuarioRepository.saveAll(List.of(passageiro, motorista));
+		carroRepository.save(carro);
 		viagemRepository.save(viagem);
 		
 		Long id = viagem.getId();

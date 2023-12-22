@@ -32,9 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.dtos.RegistroDTO;
+import com.wamk.uber.dtos.input.CarroInputDTO;
 import com.wamk.uber.dtos.records.AuthenticationDTO;
 import com.wamk.uber.entities.Carro;
+import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.user.User;
+import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.roles.UserRole;
 import com.wamk.uber.infra.security.TokenService;
 import com.wamk.uber.repositories.CarroRepository;
@@ -110,7 +114,6 @@ class CarroControlerTestI {
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andReturn();
-		
 	}
 	
 	@Test
@@ -132,8 +135,10 @@ class CarroControlerTestI {
 	@Test
 	@Order(5)
 	void deveRegistrarCarroComSucesso() throws Exception {
+		var motorista = new Motorista(null, "Carla", "9896928-1345", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+		usuarioRepository.save(motorista);
 		
-		CarroDTO carroDto = new CarroDTO(null, "Toyota", 2022, "HRS-0305");
+		CarroInputDTO carroDto = new CarroInputDTO(null, "Toyota", 2022, "HRS-0305", motorista.getId());
 		
 		String jsonRequest = objectMapper.writeValueAsString(carroDto);
 		
