@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wamk.uber.dtos.input.CarroInputDTO;
+import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 
@@ -32,8 +32,6 @@ public class CarroDTO implements Serializable{
 	@Length(min = 8, max = 50)
 	private String placa;
 	
-	@JsonIgnore
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "carro")
 	private Motorista motorista;
 
 	public CarroDTO() {
@@ -54,7 +52,7 @@ public class CarroDTO implements Serializable{
 		motorista = carro.getMotorista();
 	}
 	
-	public CarroDTO(CarroInputDTO carro) {
+	public CarroDTO(CarroMinDTO carro) {
 		id = carro.getId();
 		modelo = carro.getModelo();
 		ano = carro.getAno();

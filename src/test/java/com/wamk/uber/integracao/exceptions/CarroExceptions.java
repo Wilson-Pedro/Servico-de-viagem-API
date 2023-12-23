@@ -10,12 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.wamk.uber.dtos.CarroDTO;
-import com.wamk.uber.dtos.input.CarroInputDTO;
+import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
-import com.wamk.uber.entities.Passageiro;
-import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
@@ -74,7 +71,7 @@ class CarroExceptions {
 		Motorista motorista = new Motorista(null, "Lara", "9833683829", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
 		usuarioRepository.save(motorista);
 		
-		final var carroDto = new CarroInputDTO(12L, "Fiat", 2023, "JVF-9207", motorista.getId());
+		final var carroDto = new CarroMinDTO(12L, "Fiat", 2023, "JVF-9207", motorista.getId());
 		
 		assertThrows(PlacaExistenteException.class, () -> this.carroService.save(carroDto));
 	}
@@ -89,7 +86,7 @@ class CarroExceptions {
 		Motorista motorista = new Motorista(null, "Lara", "9833683829", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
 		usuarioRepository.save(motorista);
 		
-		final var carroDto = new CarroInputDTO(12L, "Fiat", 2023, "JVF-9207", motorista.getId());
+		final var carroDto = new CarroMinDTO(12L, "Fiat", 2023, "JVF-9207", motorista.getId());
 		Long id = carroRepository.findAll().get(0).getId();
 		
 		assertThrows(PlacaExistenteException.class, 

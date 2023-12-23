@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.dtos.RegistroDTO;
-import com.wamk.uber.dtos.input.CarroInputDTO;
+import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.dtos.records.AuthenticationDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
@@ -138,7 +138,7 @@ class CarroControlerTestI {
 		var motorista = new Motorista(null, "Carla", "9896928-1345", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
 		usuarioRepository.save(motorista);
 		
-		CarroInputDTO carroDto = new CarroInputDTO(null, "Toyota", 2022, "HRS-0305", motorista.getId());
+		CarroMinDTO carroDto = new CarroMinDTO(null, "Toyota", 2022, "HRS-0305", motorista.getId());
 		
 		String jsonRequest = objectMapper.writeValueAsString(carroDto);
 		

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.CarroDTO;
-import com.wamk.uber.dtos.input.CarroInputDTO;
+import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.services.CarroService;
@@ -39,26 +39,26 @@ public class CarroController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<CarroDTO>> findAll(){
+	public ResponseEntity<List<CarroMinDTO>> findAll(){
 		List<Carro> carros = carroService.findAll();
-		List<CarroDTO> dtos = modelMapper.converterList(carros, CarroDTO.class);
+		List<CarroMinDTO> dtos = carros.stream().map(x -> new CarroMinDTO(x)).toList();
 		return ResponseEntity.ok(dtos);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<CarroDTO> findById(@PathVariable Long id){
 		Carro carro = carroService.findById(id);
-		return ResponseEntity.ok(modelMapper.converter(carro, CarroDTO.class));
+		return ResponseEntity.ok(new CarroDTO(carro));
 	}
 	
 	@GetMapping("/pages")
-	public ResponseEntity<Page<CarroDTO>> paginar(Pageable pageable){
+	public ResponseEntity<Page<CarroMinDTO>> paginar(Pageable pageable){
 		Page<Carro> pages = carroService.findAll(pageable);
-		return ResponseEntity.ok(pages.map(CarroDTO::new));
+		return ResponseEntity.ok(pages.map(CarroMinDTO::new));
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<CarroDTO> registrarCarro(@RequestBody @Valid CarroInputDTO inputDTO){
+	public ResponseEntity<CarroDTO> registrarCarro(@RequestBody @Valid CarroMinDTO inputDTO){
 		var carro = carroService.save(inputDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(
 				modelMapper.converter(carro, CarroDTO.class));

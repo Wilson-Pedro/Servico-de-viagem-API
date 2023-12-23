@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
 import com.wamk.uber.controllers.CarroController;
-import com.wamk.uber.dtos.input.CarroInputDTO;
+import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.enums.TipoUsuario;
@@ -69,7 +69,7 @@ class CarroControllerTestU {
 	void deveSalvarCarroComSucesso() throws Exception {
 		
 		final var carroEsperado = carros.get(0);
-		final var carroInputDto = new CarroInputDTO(carroEsperado);
+		final var carroInputDto = new CarroMinDTO(carroEsperado);
 		
 		when(this.carroService.save(carroInputDto)).thenReturn(carroEsperado);
 		

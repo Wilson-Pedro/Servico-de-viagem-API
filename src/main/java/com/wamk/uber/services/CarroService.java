@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wamk.uber.dtos.CarroDTO;
-import com.wamk.uber.dtos.input.CarroInputDTO;
+import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
@@ -33,7 +33,7 @@ public class CarroService {
 	}
 
 	@Transactional
-	public Carro save(CarroInputDTO inputDTO) {
+	public Carro save(CarroMinDTO inputDTO) {
 		validarSave(inputDTO);
 		CarroDTO carroDTO = toCarroDto(inputDTO);
 		return carroRepository.save(modelMapper.converter(carroDTO, Carro.class));
@@ -69,7 +69,7 @@ public class CarroService {
 				}).orElseThrow(() -> new EntidadeNaoEncontradaException(id));
 	}
 	
-	public void validarSave(CarroInputDTO carro) {
+	public void validarSave(CarroMinDTO carro) {
 		if(carroRepository.existsByPlaca(carro.getPlaca())) {
 			throw new PlacaExistenteException("Placa já cadastrada.");
 		}
@@ -82,7 +82,7 @@ public class CarroService {
 		}
 	}
 	
-	public CarroDTO toCarroDto(CarroInputDTO carroInputDTO) {
+	public CarroDTO toCarroDto(CarroMinDTO carroInputDTO) {
 		
 		if(carroInputDTO == null) {
 			return null;

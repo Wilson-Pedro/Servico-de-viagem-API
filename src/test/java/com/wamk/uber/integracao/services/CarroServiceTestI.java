@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.wamk.uber.dtos.CarroDTO;
-import com.wamk.uber.dtos.input.CarroInputDTO;
+import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
@@ -66,7 +66,6 @@ class CarroServiceTestI {
 		usuarioRepository.deleteAll();
 	}
 	
-	
 	@Test
 	@Order(1)
 	void deveSalvarCarroComSucesso() {
@@ -74,7 +73,7 @@ class CarroServiceTestI {
 		
 		usuarioRepository.save(motorista);
 		
-		var carroDto = new CarroInputDTO(null, "Fiat", 2022, "JVF-9207", motorista.getId());
+		var carroDto = new CarroMinDTO(null, "Fiat", 2022, "JVF-9207", motorista.getId());
 		
 		assertEquals(0, carroRepository.count());
 		

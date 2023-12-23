@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CarroInputDTO implements Serializable{
+public class CarroMinDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -30,10 +30,10 @@ public class CarroInputDTO implements Serializable{
 	@NotNull
 	private Long motoristaId;
 	
-	public CarroInputDTO() {
+	public CarroMinDTO() {
 	}
 
-	public CarroInputDTO(Long id, String modelo, Integer ano, String placa, Long motoristaId) {
+	public CarroMinDTO(Long id, String modelo, Integer ano, String placa, Long motoristaId) {
 		this.id = id;
 		this.modelo = modelo;
 		this.ano = ano;
@@ -41,7 +41,7 @@ public class CarroInputDTO implements Serializable{
 		this.motoristaId = motoristaId;
 	}
 	
-	public CarroInputDTO(Carro carro) {
+	public CarroMinDTO(Carro carro) {
 		id = carro.getId();
 		modelo = carro.getModelo();
 		ano = carro.getAno();
