@@ -64,12 +64,12 @@ http://localhost:8080/usuarios/1
 ```
 
 ## Status do Projeto
-- Em Desenvolvimento...
+- Completo v1
 
 
 ## Autor
 
-- [@Wilson Pedro](https://github.com/Wilson-Pedro)
+- [Wilson Pedro](https://github.com/Wilson-Pedro)
 
 ## Linkedin
 - [Wilson Pedro](https://www.linkedin.com/in/wilson-pedro-976333226/)
