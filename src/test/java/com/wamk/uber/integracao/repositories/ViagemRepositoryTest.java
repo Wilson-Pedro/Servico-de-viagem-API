@@ -13,16 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
 import com.wamk.uber.entities.Viagem;
-import com.wamk.uber.enums.FormaDePagamento;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
-import com.wamk.uber.enums.ViagemStatus;
-import com.wamk.uber.repositories.CarroRepository;
-import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
 @DataJpaTest
@@ -48,7 +43,6 @@ class ViagemRepositoryTest {
 	@DisplayName("Deve buscar viagem a partir do motorista com sucesso.")
 	void deveBuscarViagemAPartirDoMotoristaComSucesso() {
 		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
-		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 		
 		Viagem viagemEsperada = viagemRepository.findById(1L).get();
 		Viagem trip = viagemRepository.findByMotorista(motorista);
@@ -74,8 +68,6 @@ class ViagemRepositoryTest {
 	@DisplayName("Deve buscar todas as viagem a partir do motorista com sucesso.")
 	void deveBuscarTodasAsViagemAPartirDoMotoristaComSucesso() {
 		Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
-		
-		Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
 		
 		List<Viagem> viagensEsperadas = viagemRepository.findAll();
 		List<Viagem> viagens = viagemRepository.findAllByMotorista(motorista);

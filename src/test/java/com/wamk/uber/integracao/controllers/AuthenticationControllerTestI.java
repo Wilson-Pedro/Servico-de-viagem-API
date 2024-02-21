@@ -34,6 +34,12 @@ class AuthenticationControllerTestI {
 
 	@Autowired
 	TokenService tokenService;
+	
+	@Test
+	@Order(1)
+	void deleteAllSuccessfully() {
+		userRepository.deleteAll();
+	}
 
 	@Test
 	@Order(1)

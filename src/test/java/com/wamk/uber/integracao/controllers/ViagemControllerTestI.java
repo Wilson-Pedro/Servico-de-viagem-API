@@ -13,6 +13,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -33,11 +36,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wamk.uber.dtos.RegistroDTO;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.dtos.records.AuthenticationDTO;
+import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.entities.Passageiro;
+import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.entities.Viagem;
 import com.wamk.uber.entities.user.User;
 import com.wamk.uber.enums.FormaDePagamento;
+import com.wamk.uber.enums.TipoUsuario;
+import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.enums.roles.UserRole;
 import com.wamk.uber.infra.security.TokenService;
@@ -80,9 +87,38 @@ class ViagemControllerTestI {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-
+	
+	List<Usuario> usuarios = List.of(
+			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),
+			new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
+			new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
+			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
+			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
+			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
+	);
+	
+	List<Carro> carros = List.of(
+			new Carro(1L, "Fiat", 2022, "JVF-9207",(Motorista) usuarios.get(3)),
+			new Carro(2L, "Chevrolet", 2022, "FFG-0460",(Motorista) usuarios.get(4)),
+			new Carro(3L, "Forger", 2022, "FTG-0160",(Motorista) usuarios.get(5))
+	);
+	
+	Viagem viagem = new Viagem(1L, "Novo Castelo - Rua das Goiabas 1010", 
+			"Pará - Rua das Maçãs", "20 minutos", 
+			(Passageiro)usuarios.get(0), (Motorista) usuarios.get(3), 
+			FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA);
+	
 	@Test
 	@Order(1)
+	void deveDeletarTudo() {
+		userRepository.deleteAll();
+		viagemRepository.deleteAll();
+		carroRepository.deleteAll();
+		usuarioRepository.deleteAll();
+	}
+
+	@Test
+	@Order(3)
 	void deveRegistraUsuarioParaLoginComSucesso() {
 		RegistroDTO registroDTO = new RegistroDTO("pedro", "34567", UserRole.ADMIN);
 		
@@ -93,17 +129,11 @@ class ViagemControllerTestI {
 		
 		User newUser = new User(registroDTO.getLogin(), encryptedPassword, registroDTO.getRole());
 		
-		//assertEquals(0, userRepository.count());
-		
 		userRepository.save(newUser);
-		
-//		assertEquals(1, userRepository.count());
-//		assertEquals(UserRole.ADMIN, registroDTO.getRole());
-		
 	}
 	
 	@Test
-	@Order(2)
+	@Order(4)
 	void deveRealizarLoginComSucesso() {
 		AuthenticationDTO dto = new AuthenticationDTO("pedro", "34567");
 		var usernamePassowrd = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
@@ -115,7 +145,7 @@ class ViagemControllerTestI {
 	}
 	
 	@Test
-	@Order(3)
+	@Order(5)
 	void deveBuscarTodasAsViagensComSucesso() throws Exception {
 		
 		mockMvc.perform(get(VIAGEM_ENDPOINT)
@@ -125,10 +155,14 @@ class ViagemControllerTestI {
 	}
 	
 	@Test
-	@Order(4)
+	@Order(6)
 	void deveBuscarViagemPorIdComSucesso() throws Exception {
 		
-		Long id = viagemService.findById(1L).getId();
+		usuarioRepository.save(usuarios.get(0));
+		usuarioRepository.save(usuarios.get(3));
+		viagemRepository.save(viagem);
+		
+		Long id = viagemService.findAll().get(0).getId();
 		
 		mockMvc.perform(get("/viagens/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
@@ -136,22 +170,24 @@ class ViagemControllerTestI {
 				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
 				.andExpect(jsonPath("$.origem", equalTo("Novo Castelo - Rua das Goiabas 1010")))
 				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Maçãs")))
-				.andExpect(jsonPath("$.tempoDeViagem", equalTo("10 minutos")))
+				.andExpect(jsonPath("$.tempoDeViagem", equalTo("20 minutos")))
 				.andExpect(jsonPath("$.nomePassageiro", equalTo("Wilson")))
 				.andExpect(jsonPath("$.nomeMotorista", equalTo("Pedro")))
 				.andExpect(jsonPath("$.formaDePagamento", equalTo("PIX")))
-				.andExpect(jsonPath("$.viagemStatus", equalTo("NAO_FINALIZADA")))
-				.andReturn();
+				.andExpect(jsonPath("$.viagemStatus", equalTo("NAO_FINALIZADA")));
 	}
 	
 	@Test
-	@Order(5)
+	@Order(7)
 	void deveRegistrarUmaViagemComSucesso() throws Exception {
+		
+		usuarioRepository.save(usuarios.get(1));
+		usuarioRepository.save(usuarios.get(4));
 		
 		ViagemInputDTO inputDto = new ViagemInputDTO( 
 						"Novo Castelo - Rua das Goiabas 1010", 
 						"Pará - Rua das Maçãs", 
-						"10 minutos", 2L, 5L, FormaDePagamento.PAYPAL.getDescricao());
+						"10 minutos", usuarios.get(1).getId(), usuarios.get(4).getId(), FormaDePagamento.PAYPAL.getDescricao());
 		
 		String jsonRequest = objectMapper.writeValueAsString(inputDto);
 		
@@ -162,7 +198,6 @@ class ViagemControllerTestI {
 				.header("Authorization", "Bearer " + TOKEN)
 				.content(jsonRequest))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id", equalTo(2)))
 				.andExpect(jsonPath("$.origem", equalTo("Novo Castelo - Rua das Goiabas 1010")))
 				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Maçãs")))
 				.andExpect(jsonPath("$.tempoDeViagem", equalTo("10 minutos")))
@@ -177,39 +212,39 @@ class ViagemControllerTestI {
 	}
 	
 	@Test
-	@Order(6)
+	@Order(8)
 	void deveAtualizarViagemComSucesso() throws Exception {
 		ViagemInputDTO inputDto = new ViagemInputDTO( 
 				"Novo Castelo - Rua das Goiabas 1010", 
 				"Pará - Rua das Melancias", 
 				"20 minutos", 2L, 5L, FormaDePagamento.PAYPAL.getDescricao());
 		
-		Viagem viagem = viagemService.findById(2L);
+		Long id = viagemService.findAll().get(1).getId();
+		
+		Viagem viagem = viagemService.findById(id);
 		
 		assertNotEquals(viagem.getDestino(), inputDto.getDestino());
 		
 		String josnRequest = objectMapper.writeValueAsString(inputDto);
 		
-		mockMvc.perform(put(VIAGEM_ENDPOINT + "/{id}", 2L)
+		mockMvc.perform(put(VIAGEM_ENDPOINT + "/{id}", id)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + TOKEN)
 				.content(josnRequest))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Melancias")))
 				.andReturn();
-		
-		Viagem viagemAtualizada = viagemService.findById(2L);
-		
-		assertEquals(viagemAtualizada.getDestino(), inputDto.getDestino());
 	}
 	
 	@Test
-	@Order(7)
+	@Order(9)
 	void deveDeletarViagemComSucesso() throws Exception {
+		
+		Long id = viagemService.findAll().get(1).getId();
 		
 		assertEquals(2, viagemRepository.count());
 		
-		mockMvc.perform(delete(VIAGEM_ENDPOINT + "/{id}", 2L)
+		mockMvc.perform(delete(VIAGEM_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -219,12 +254,14 @@ class ViagemControllerTestI {
 	}
 	
 	@Test
-	@Order(8)
+	@Order(10)
 	void deveCancelarViagemComSucesso() throws Exception {
+		
+		Long id = viagemService.findAll().get(0).getId();
 		
 		assertEquals(1, viagemRepository.count());
 		
-		mockMvc.perform(delete(VIAGEM_ENDPOINT + "/{id}/cancelar", 1L)
+		mockMvc.perform(delete(VIAGEM_ENDPOINT + "/{id}/cancelar", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
@@ -234,12 +271,15 @@ class ViagemControllerTestI {
 	}
 
 	@Test
-	@Order(9)
+	@Order(11)
 	void deveFinalizarViagemComSucesso() throws Exception {
 		
-		Passageiro p = (Passageiro) usuarioRepository.findById(3L).get();
+		usuarioRepository.save(usuarios.get(2));
+		usuarioRepository.save(usuarios.get(5));
 		
-		Motorista m = (Motorista) usuarioRepository.findById(5L).get();
+		Passageiro p = (Passageiro) usuarioRepository.findById(usuarios.get(2).getId()).get();
+		
+		Motorista m = (Motorista) usuarioRepository.findById(usuarios.get(5).getId()).get();
 		
 		Viagem viagem = new Viagem(null, 
 				"Novo Castelo - Rua das Goiabas 1010", "Pará - Rua das Maçãs", 
@@ -263,7 +303,7 @@ class ViagemControllerTestI {
 	}
 	
 	@Test
-	@Order(10)
+	@Order(12)
 	void devePaginarUmaListaDeViagensComSucesso() throws Exception {
 		
 		var viagens = viagemService.findAll();

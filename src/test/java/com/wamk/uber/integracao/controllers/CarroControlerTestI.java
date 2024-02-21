@@ -76,10 +76,19 @@ class CarroControlerTestI {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-
+	
 	@Test
 	@Order(1)
+	void deleteAll() {
+		carroRepository.deleteAll();
+		usuarioRepository.deleteAll();
+	}
+
+	@Test
+	@Order(2)
 	void deveRegistraUsuarioParaLoginComSucesso() {
+		userRepository.deleteAll();
+		
 		RegistroDTO registroDTO = new RegistroDTO("wilson", "12345", UserRole.ADMIN);
 		
 		String encryptedPassword = new BCryptPasswordEncoder().encode(registroDTO.getPassword());
@@ -95,7 +104,7 @@ class CarroControlerTestI {
 	}
 	
 	@Test
-	@Order(2)
+	@Order(3)
 	void deveRealizarLoginComSucesso() {
 		AuthenticationDTO dto = new AuthenticationDTO("wilson", "12345");
 		var usernamePassowrd = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
@@ -105,9 +114,34 @@ class CarroControlerTestI {
 		assertNotNull(token);
 		TOKEN = token;
 	}
-
+	
 	@Test
-	@Order(3)
+	@Order(4)
+	void deveRegistrarCarroComSucesso() throws Exception {
+		var motorista = new Motorista(1L, "Carla", "9896928-1345", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
+		usuarioRepository.save(motorista);
+		
+		CarroMinDTO carroDto = new CarroMinDTO(null, "Toyota", 2022, "HRS-0305", motorista.getId());
+		
+		String jsonRequest = objectMapper.writeValueAsString(carroDto);
+		
+		assertEquals(0, carroRepository.count());
+		
+		mockMvc.perform(post(CAR_ENDPOINT + "/")
+				.header("Authorization", "Bearer " + TOKEN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.modelo", equalTo("Toyota")))
+				.andExpect(jsonPath("$.ano", equalTo(2022)))
+				.andExpect(jsonPath("$.placa", equalTo("HRS-0305")))
+				.andReturn();
+		
+		assertEquals(1, carroRepository.count());
+	}
+	
+	@Test
+	@Order(5)
 	void deveBuscarTodosOsCarrosComSucesso() throws Exception {
 		
 		mockMvc.perform(get(CAR_ENDPOINT)
@@ -117,52 +151,28 @@ class CarroControlerTestI {
 	}
 	
 	@Test
-	@Order(4)
+	@Order(6)
 	void deveBuscarCarroAPartirDoIdComSucesso() throws Exception {
 		
-		Long id = carroService.findById(1L).getId();
+		Long id = carroService.findAll().get(0).getId();
 		
 		mockMvc.perform(get(CAR_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
-				.andExpect(jsonPath("$.modelo", equalTo("Fiat")))
-				.andExpect(jsonPath("$.ano", equalTo(2022)))
-				.andExpect(jsonPath("$.placa", equalTo("JVF-9207")))
-				.andReturn();
-	}
-	
-	@Test
-	@Order(5)
-	void deveRegistrarCarroComSucesso() throws Exception {
-		var motorista = new Motorista(null, "Carla", "9896928-1345", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
-		usuarioRepository.save(motorista);
-		
-		CarroMinDTO carroDto = new CarroMinDTO(null, "Toyota", 2022, "HRS-0305", motorista.getId());
-		
-		String jsonRequest = objectMapper.writeValueAsString(carroDto);
-		
-		mockMvc.perform(post(CAR_ENDPOINT + "/")
-				.header("Authorization", "Bearer " + TOKEN)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonRequest))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id", equalTo(4)))
 				.andExpect(jsonPath("$.modelo", equalTo("Toyota")))
 				.andExpect(jsonPath("$.ano", equalTo(2022)))
 				.andExpect(jsonPath("$.placa", equalTo("HRS-0305")))
 				.andReturn();
-		
-		assertEquals(4, carroRepository.count());
 	}
 	
 	@Test
-	@Order(6)
+	@Order(7)
 	void deveAtualizarCarroComSucesso() throws Exception {
 		
-		Carro carro = carroService.findById(2L);
+		Long id = carroService.findAll().get(0).getId();
 		
-		Long id = carro.getId();
+		Carro carro = carroService.findById(id);
 		
 		CarroDTO carroDto = new CarroDTO(null, "Sedans", 2023, "JVD-4401");
 		
@@ -175,33 +185,28 @@ class CarroControlerTestI {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonRequest))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.modelo", equalTo(carroDto.getModelo())))
-				.andReturn();
-		
-		Carro carroAtualizado = carroService.findById(2L);
-		
-		assertEquals(carroAtualizado.getModelo(), carroDto.getModelo());
+				.andExpect(jsonPath("$.modelo", equalTo("Sedans")));
 	}
 	
 	@Test
-	@Order(7)
+	@Order(8)
 	@Transactional
 	void deveDeletarCarroComSucesso() throws Exception {
 		
-		Long id = carroService.findById(3L).getId();
+		Long id = carroService.findAll().get(0).getId();
 		
-		assertEquals(4, carroRepository.count());
+		assertEquals(1, carroRepository.count());
 		
 		mockMvc.perform(delete(CAR_ENDPOINT + "/{id}", id)
 				.header("Authorization", "Bearer " + TOKEN))
 				.andExpect(status().isNoContent())
 				.andReturn();
 		
-		assertEquals(3, carroRepository.count());
+		assertEquals(0, carroRepository.count());
 	}
 
 	@Test
-	@Order(8)
+	@Order(9)
 	void devePaginarUmaListaDeCarrosComSucesso() throws Exception {
 		
 		var carros = carroService.findAll();

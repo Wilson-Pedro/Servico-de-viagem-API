@@ -7,7 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -18,19 +21,24 @@ import com.wamk.uber.repositories.CarroRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CarroRepositoryTestI {
 	
 	@Autowired
 	CarroRepository carroRepository;
+	
+	@Test
+	@Order(1)
+	void saveCar() {
+		carroRepository.save(new Carro(null, "Toyota", 2022, "JHG-9117", null));
+	}
 
 	@Test
 	@DisplayName("Deve Buscar Carro a partir de uma plca que existe com sucesso")
 	void deveBuscarCarroComSucessoCase1() {
-		String placa = "JHG-9117";
-		CarroDTO carroDTO = new CarroDTO(1L, "Fiat", 2022, placa);
-		this.createCarro(carroDTO);
+		carroRepository.save(new Carro(null, "Toyota", 2022, "JFJ-9117", null));
 		
-		Optional<Carro> result = this.carroRepository.findCarroByPlaca(placa);
+		Optional<Carro> result = this.carroRepository.findCarroByPlaca("JFJ-9117");
 		
 		assertThat(result.isPresent());
 	}
@@ -48,7 +56,8 @@ class CarroRepositoryTestI {
 	@Test
 	@DisplayName("Deve confirmar a existência de um Carro com sucesso a partir de uma placa")
 	void deveValidarSeExisteCarroComDeterminadaPlacaCase1() {
-		String placa = "JVF-9207";
+		String placa = "ASD-9117";
+		carroRepository.save(new Carro(null, "Toyota", 2022, placa, null));
 		
 		boolean existe = carroRepository.existsByPlaca(placa);
 		
@@ -63,10 +72,5 @@ class CarroRepositoryTestI {
 		boolean existe = carroRepository.existsByPlaca(placa);
 		
 		assertFalse(existe);
-	}
-	
-	private Carro createCarro(CarroDTO carroDTO) {
-		Carro newCar = new Carro(carroDTO);
-		return carroRepository.save(newCar);
 	}
 }
