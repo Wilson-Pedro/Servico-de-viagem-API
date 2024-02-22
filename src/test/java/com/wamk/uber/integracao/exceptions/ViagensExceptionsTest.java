@@ -28,7 +28,7 @@ import com.wamk.uber.repositories.ViagemRepository;
 import com.wamk.uber.services.ViagemService;
 
 @SpringBootTest
-class ViagensExceptions {
+class ViagensExceptionsTest {
 	
 	@Autowired
 	ViagemService viagemService;

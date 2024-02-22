@@ -24,7 +24,7 @@ import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.services.UsuarioService;
 
 @SpringBootTest
-class UsuarioExceptions {
+class UsuarioExceptionsTest {
 	
 	@Autowired
 	UsuarioService usuarioService;

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.services.CarroService;
 
 @SpringBootTest
-class CarroExceptions {
+class CarroExceptionsTest {
 	
 	@Autowired
 	CarroRepository carroRepository;
@@ -34,9 +33,9 @@ class CarroExceptions {
 	CarroService carroService;
 	
 	List<Motorista> motoristas = List.of(
-			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
-			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
-			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
+			new Motorista(1L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
+			new Motorista(2L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
+			new Motorista(3L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
 	);
 	
 	List<Carro> carros = List.of(
@@ -44,12 +43,6 @@ class CarroExceptions {
 			new Carro(2L, "Chevrolet", 2022, "FFG-0460",motoristas.get(1)),
 			new Carro(3L, "Forger", 2022, "FTG-0160",motoristas.get(2))
 	);
-	
-	@BeforeEach
-	void setUp() {
-		carroRepository.deleteAll();
-		usuarioRepository.deleteAll();
-	}
 	
 	@Test
 	@DisplayName("Deve lançar exceção: EntidadeNaoEncontradaException")
@@ -64,14 +57,16 @@ class CarroExceptions {
 	@Test
 	@DisplayName("Deve lançar a Exceção: PlacaExistenteException")
 	void deveLancarExcecaoAposTentarRegistrarUmCarro() {
+		carroRepository.deleteAll();
+		usuarioRepository.deleteAll();
 		
-		usuarioRepository.saveAll(motoristas);
-		carroRepository.saveAll(carros);
+		usuarioRepository.save(motoristas.get(0));
+		carroRepository.save(new Carro(3L, "Forger", 2022, "FTG-0160", motoristas.get(0)));
 		
 		Motorista motorista = new Motorista(null, "Lara", "9833683829", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
 		usuarioRepository.save(motorista);
 		
-		final var carroDto = new CarroMinDTO(12L, "Fiat", 2023, "JVF-9207", motorista.getId());
+		final var carroDto = new CarroMinDTO(12L, "Fiat", 2023, "FTG-0160", motorista.getId());
 		
 		assertThrows(PlacaExistenteException.class, () -> this.carroService.save(carroDto));
 	}
@@ -79,14 +74,18 @@ class CarroExceptions {
 	@Test
 	@DisplayName("Deve lançar a Exceção: PlacaExistenteException")
 	void deveLancarExcecaoTentarAtualizarUmCarro() {
+		carroRepository.deleteAll();
+		usuarioRepository.deleteAll();
 		
-		usuarioRepository.saveAll(motoristas);
-		carroRepository.saveAll(carros);
+		usuarioRepository.save(motoristas.get(0));
+		carroRepository.save(new Carro(3L, "Forger", 2022, "FTG-0160", motoristas.get(0)));
 		
 		Motorista motorista = new Motorista(null, "Lara", "9833683829", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO);
 		usuarioRepository.save(motorista);
 		
-		final var carroDto = new CarroMinDTO(12L, "Fiat", 2023, "JVF-9207", motorista.getId());
+		Long motoristaId = usuarioRepository.findAll().get(1).getId();
+		
+		final var carroDto = new CarroMinDTO(12L, "Fiat", 2023, "FTG-0160", motoristaId);
 		Long id = carroRepository.findAll().get(0).getId();
 		
 		assertThrows(PlacaExistenteException.class, 

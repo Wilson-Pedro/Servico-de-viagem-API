@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -89,12 +88,12 @@ class ViagemControllerTestI {
 	ObjectMapper objectMapper;
 	
 	List<Usuario> usuarios = List.of(
-			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),
-			new Passageiro(2L, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
-			new Passageiro(3L, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
-			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
-			new Motorista(5L, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
-			new Motorista(6L, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
+			new Passageiro(null, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),
+			new Passageiro(null, "Ana", "983819-2470", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
+			new Passageiro(null, "Luan", "983844-2479", TipoUsuario.PASSAGEIRO, UsuarioStatus.ATIVO),
+			new Motorista(null, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
+			new Motorista(null, "Julia", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO),
+			new Motorista(null, "Carla", "9833163865", TipoUsuario.MOTORISTA, UsuarioStatus.ATIVO)
 	);
 	
 	List<Carro> carros = List.of(
@@ -103,9 +102,10 @@ class ViagemControllerTestI {
 			new Carro(3L, "Forger", 2022, "FTG-0160",(Motorista) usuarios.get(5))
 	);
 	
-	Viagem viagem = new Viagem(1L, "Novo Castelo - Rua das Goiabas 1010", 
-			"Pará - Rua das Maçãs", "20 minutos", 
-			(Passageiro)usuarios.get(0), (Motorista) usuarios.get(3), 
+	Viagem viagem = new Viagem(null, 
+			"Novo Castelo - Rua das Goiabas 1010", 
+			"Pará - Rua das Maçãs", 
+			"10 minutos", (Passageiro)usuarios.get(0), (Motorista)usuarios.get(3), 
 			FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA);
 	
 	@Test
@@ -156,42 +156,22 @@ class ViagemControllerTestI {
 	
 	@Test
 	@Order(6)
-	void deveBuscarViagemPorIdComSucesso() throws Exception {
-		
-		usuarioRepository.save(usuarios.get(0));
-		usuarioRepository.save(usuarios.get(3));
-		viagemRepository.save(viagem);
-		
-		Long id = viagemService.findAll().get(0).getId();
-		
-		mockMvc.perform(get("/viagens/{id}", id)
-				.header("Authorization", "Bearer " + TOKEN))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
-				.andExpect(jsonPath("$.origem", equalTo("Novo Castelo - Rua das Goiabas 1010")))
-				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Maçãs")))
-				.andExpect(jsonPath("$.tempoDeViagem", equalTo("20 minutos")))
-				.andExpect(jsonPath("$.nomePassageiro", equalTo("Wilson")))
-				.andExpect(jsonPath("$.nomeMotorista", equalTo("Pedro")))
-				.andExpect(jsonPath("$.formaDePagamento", equalTo("PIX")))
-				.andExpect(jsonPath("$.viagemStatus", equalTo("NAO_FINALIZADA")));
-	}
-	
-	@Test
-	@Order(7)
 	void deveRegistrarUmaViagemComSucesso() throws Exception {
 		
 		usuarioRepository.save(usuarios.get(1));
 		usuarioRepository.save(usuarios.get(4));
 		
+		Long passgaeiroId = usuarioRepository.findAll().get(0).getId();
+		Long motoristaId = usuarioRepository.findAll().get(1).getId();
+		
 		ViagemInputDTO inputDto = new ViagemInputDTO( 
 						"Novo Castelo - Rua das Goiabas 1010", 
 						"Pará - Rua das Maçãs", 
-						"10 minutos", usuarios.get(1).getId(), usuarios.get(4).getId(), FormaDePagamento.PAYPAL.getDescricao());
+						"10 minutos", passgaeiroId, motoristaId, FormaDePagamento.PIX.getDescricao());
 		
 		String jsonRequest = objectMapper.writeValueAsString(inputDto);
 		
-		assertEquals(1, viagemRepository.count());
+		assertEquals(0, viagemRepository.count());
 		
 		mockMvc.perform(post(VIAGEM_ENDPOINT + "/")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -203,12 +183,31 @@ class ViagemControllerTestI {
 				.andExpect(jsonPath("$.tempoDeViagem", equalTo("10 minutos")))
 				.andExpect(jsonPath("$.nomePassageiro", equalTo("Ana")))
 				.andExpect(jsonPath("$.nomeMotorista", equalTo("Julia")))
-				.andExpect(jsonPath("$.formaDePagamento", equalTo("PAYPAL")))
+				.andExpect(jsonPath("$.formaDePagamento", equalTo("PIX")))
 				.andExpect(jsonPath("$.viagemStatus", equalTo("NAO_FINALIZADA")))
 				.andReturn();
 		
-		assertEquals(2, viagemRepository.count());
+		assertEquals(1, viagemRepository.count());
 		
+	}
+	
+	@Test
+	@Order(7)
+	void deveBuscarViagemPorIdComSucesso() throws Exception {
+		
+		Long id = viagemService.findAll().get(0).getId();
+		
+		mockMvc.perform(get("/viagens/{id}", id)
+				.header("Authorization", "Bearer " + TOKEN))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", equalTo(id.intValue())))
+				.andExpect(jsonPath("$.origem", equalTo("Novo Castelo - Rua das Goiabas 1010")))
+				.andExpect(jsonPath("$.destino", equalTo("Pará - Rua das Maçãs")))
+				.andExpect(jsonPath("$.tempoDeViagem", equalTo("10 minutos")))
+				.andExpect(jsonPath("$.nomePassageiro", equalTo("Ana")))
+				.andExpect(jsonPath("$.nomeMotorista", equalTo("Julia")))
+				.andExpect(jsonPath("$.formaDePagamento", equalTo("PIX")))
+				.andExpect(jsonPath("$.viagemStatus", equalTo("NAO_FINALIZADA")));
 	}
 	
 	@Test
@@ -219,7 +218,7 @@ class ViagemControllerTestI {
 				"Pará - Rua das Melancias", 
 				"20 minutos", 2L, 5L, FormaDePagamento.PAYPAL.getDescricao());
 		
-		Long id = viagemService.findAll().get(1).getId();
+		Long id = viagemService.findAll().get(0).getId();
 		
 		Viagem viagem = viagemService.findById(id);
 		
@@ -239,6 +238,10 @@ class ViagemControllerTestI {
 	@Test
 	@Order(9)
 	void deveDeletarViagemComSucesso() throws Exception {
+		
+		usuarioRepository.save(usuarios.get(0));
+		usuarioRepository.save(usuarios.get(3));
+		viagemRepository.save(viagem);
 		
 		Long id = viagemService.findAll().get(1).getId();
 		
