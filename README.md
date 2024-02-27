@@ -11,6 +11,7 @@ O Servico-de-viagem-API é uma interface de programação de aplicativos que ofe
 
 ## Banco de dados
 -H2 
+-PostgresSQL
 
 
 ## Modelo conceitual
