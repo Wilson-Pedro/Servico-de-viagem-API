@@ -25,8 +25,6 @@ import com.wamk.uber.exceptions.UsuarioJaDesativadoException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 
-import lombok.AllArgsConstructor;
-
 @Service
 public class UsuarioService {
 	
