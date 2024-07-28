@@ -16,6 +16,7 @@ import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.repositories.CarroRepository;
+import com.wamk.uber.services.interfaces.UsuarioService;
 
 @Service
 public class CarroService {

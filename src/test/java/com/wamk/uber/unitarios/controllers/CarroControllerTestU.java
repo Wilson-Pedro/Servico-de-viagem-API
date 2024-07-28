@@ -11,13 +11,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
-import com.wamk.uber.controllers.CarroController;
 import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.services.CarroService;
+import com.wamk.uber.web.controllers.CarroController;
 
 class CarroControllerTestU {
 

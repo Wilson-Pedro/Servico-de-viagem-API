@@ -1,4 +1,4 @@
-package com.wamk.uber.controllers;
+package com.wamk.uber.web.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +7,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.RegistroDTO;
@@ -16,12 +15,12 @@ import com.wamk.uber.dtos.records.LoginResponseDTO;
 import com.wamk.uber.entities.user.User;
 import com.wamk.uber.infra.security.TokenService;
 import com.wamk.uber.repositories.UserRepository;
+import com.wamk.uber.web.apis.AuthenticationAPI;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationController implements AuthenticationAPI{
 	
 	final AuthenticationManager authenticationManager;
 	
@@ -36,7 +35,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+	public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data) {
 		var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
 		var auth = this.authenticationManager.authenticate(usernamePassword);
 		
@@ -46,7 +45,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity register(@RequestBody @Valid RegistroDTO data) {
+	public ResponseEntity<Void> register(@RequestBody @Valid RegistroDTO data) {
 		if(this.userRepository.findByLogin(data.getLogin()) != null) {
 			return ResponseEntity.badRequest().build();
 		}

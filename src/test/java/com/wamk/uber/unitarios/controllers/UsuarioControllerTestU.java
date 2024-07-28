@@ -14,10 +14,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import com.wamk.uber.controllers.UsuarioController;
 import com.wamk.uber.dtos.SolicitarViagemDTO;
 import com.wamk.uber.dtos.UsuarioDTO;
 import com.wamk.uber.entities.Motorista;
@@ -29,8 +26,9 @@ import com.wamk.uber.enums.TipoUsuario;
 import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.repositories.UsuarioRepository;
-import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.interfaces.UsuarioService;
+import com.wamk.uber.web.controllers.UsuarioController;
 
 public class UsuarioControllerTestU {
 

@@ -24,9 +24,10 @@ import com.wamk.uber.exceptions.UsuarioJaAtivoException;
 import com.wamk.uber.exceptions.UsuarioJaDesativadoException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
+import com.wamk.uber.services.interfaces.UsuarioService;
 
 @Service
-public class UsuarioService {
+public class UsuarioServiceImpl implements UsuarioService {
 	
 	private final MyObjectMapper modelMapper;
 
@@ -34,7 +35,7 @@ public class UsuarioService {
 	
 	private final ViagemRepository viagemRepository;
 
-	public UsuarioService(MyObjectMapper modelMapper, UsuarioRepository usuarioRepository,
+	public UsuarioServiceImpl(MyObjectMapper modelMapper, UsuarioRepository usuarioRepository,
 			ViagemRepository viagemRepository) {
 		this.modelMapper = modelMapper;
 		this.usuarioRepository = usuarioRepository;

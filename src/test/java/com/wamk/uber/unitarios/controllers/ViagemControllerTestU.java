@@ -13,7 +13,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
-import com.wamk.uber.controllers.ViagemController;
 import com.wamk.uber.dtos.input.ViagemInputDTO;
 import com.wamk.uber.entities.Carro;
 import com.wamk.uber.entities.Motorista;
@@ -26,6 +25,7 @@ import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.web.controllers.ViagemController;
 
 class ViagemControllerTestU {
 	

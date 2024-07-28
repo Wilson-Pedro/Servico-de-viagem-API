@@ -1,4 +1,4 @@
-package com.wamk.uber.controllers;
+package com.wamk.uber.web.controllers;
 
 import java.util.List;
 
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wamk.uber.dtos.SolicitarViagemDTO;
@@ -23,16 +21,16 @@ import com.wamk.uber.dtos.ViagemDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.entities.Viagem;
-import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.interfaces.UsuarioService;
+import com.wamk.uber.web.apis.UsuarioAPI;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioAPI{
 	
 	private final MyObjectMapper modelMapper;
 
@@ -47,34 +45,34 @@ public class UsuarioController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<UsuarioDTO>> findAll(){
+	public ResponseEntity<List<UsuarioDTO>> findAll() {
 		List<Usuario> list = usuarioService.findAll();
 		List<UsuarioDTO> dtos = modelMapper.converterList(list, UsuarioDTO.class);
 		return ResponseEntity.ok(dtos);
 	}
 	
 	@GetMapping("/pages")
-	public ResponseEntity<Page<UsuarioDTO>> paginar(Pageable pageable){
+	public ResponseEntity<Page<UsuarioDTO>> paginar(Pageable pageable) {
 		Page<Usuario> pages = usuarioService.findAll(pageable);
 		return ResponseEntity.ok(pages.map(UsuarioDTO::new));
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id){
+	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
 		var usuario = usuarioService.findById(id);
 		var dto = modelMapper.converter(usuario, UsuarioDTO.class);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@GetMapping("/{id}/viagens")
-	public ResponseEntity<List<ViagemDTO>> findAllTripsByUserId(@PathVariable Long id){
+	public ResponseEntity<List<ViagemDTO>> findAllTripsByUserId(@PathVariable Long id) {
 		List<Viagem> list = viagemService.buscarTodasAsViagensPorUserId(id);
 		List<ViagemDTO> dtos = modelMapper.converterList(list, ViagemDTO.class);
 		return ResponseEntity.ok(dtos);
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO){
+	public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) {
 		var usuario = usuarioService.save(usuarioDTO);
 		var dto = new UsuarioDTO(usuario);
 		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -82,37 +80,37 @@ public class UsuarioController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> atualiziar(@RequestBody @Valid UsuarioDTO usuarioDTO, 
-			@PathVariable @NotNull @Positive Long id){
+			@PathVariable @NotNull @Positive Long id) {
 		var usuario = usuarioService.atualizarCadastro(usuarioDTO, id);
 		return ResponseEntity.ok(modelMapper.toUsuarioDTO(usuario));
 	}
 	
 	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteById(@PathVariable @NotNull @Positive Long id){
+	public ResponseEntity<Void> deleteById(@PathVariable @NotNull @Positive Long id) {
 		usuarioService.delete(id);
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PostMapping("/solicitacarViagem")
-	public ResponseEntity solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
+	public ResponseEntity<String> solicitandoViagem(@RequestBody @Valid SolicitarViagemDTO solicitacao) {
 		viagemService.solicitandoViagem(solicitacao);
 		return ResponseEntity.ok().body("Corrida Solicidada com Sucesso.");
 	}
 	
 	@DeleteMapping("/{usuarioId}/cancelarViagem")
-	public ResponseEntity<Void> cancelTrip(@PathVariable Long usuarioId){
+	public ResponseEntity<Void> cancelTrip(@PathVariable Long usuarioId) {
 		viagemService.cancelarViagemPorUserId(usuarioId);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@PatchMapping("/{id}/ativar")
-	public ResponseEntity ativarUsuario(@PathVariable Long id){
+	public ResponseEntity<String> ativarUsuario(@PathVariable Long id) {
 		usuarioService.ativarUsuario(id);
 		return ResponseEntity.ok().body("Usuario ativado com sucesso.");
 	}
 	
 	@PatchMapping("/{id}/desativar")
-	public ResponseEntity desativarUsuario(@PathVariable Long id){
+	public ResponseEntity<String> desativarUsuario(@PathVariable Long id) {
 		usuarioService.desativarUsuario(id);
 		return ResponseEntity.ok().body("Usuario desativado com sucesso.");
 	}

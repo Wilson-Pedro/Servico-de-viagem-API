@@ -23,6 +23,7 @@ import com.wamk.uber.exceptions.UsuarioDesativadoException;
 import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
+import com.wamk.uber.services.interfaces.UsuarioService;
 
 @Service
 public class ViagemService {

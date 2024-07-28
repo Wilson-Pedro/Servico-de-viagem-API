@@ -44,7 +44,7 @@ import com.wamk.uber.provider.UsuarioEntityAndUsuarioDtoProviderTest;
 import com.wamk.uber.provider.UsuarioProviderTest;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.UsuarioService;
+import com.wamk.uber.services.UsuarioServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTestU {
@@ -55,7 +55,7 @@ class UsuarioServiceTestU {
 	
 	private final ViagemRepository viagemRepository = mock(ViagemRepository.class);
 	
-	private final UsuarioService usuarioService = new UsuarioService(modelMapper, usuarioRepository, viagemRepository);
+	private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl(modelMapper, usuarioRepository, viagemRepository);
 	
 	private final List<Usuario> usuarios = List.of(
 			new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO),

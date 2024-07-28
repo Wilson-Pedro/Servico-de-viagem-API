@@ -38,8 +38,8 @@ import com.wamk.uber.provider.ViagemEntityAndViagemDtoProviderTets;
 import com.wamk.uber.provider.ViagemProviderTest;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.UsuarioService;
 import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.interfaces.UsuarioService;
 
 @ExtendWith(MockitoExtension.class)
 class ViagemServiceTestU {
