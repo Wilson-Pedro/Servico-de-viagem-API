@@ -1,4 +1,4 @@
-package com.wamk.uber.services;
+package com.wamk.uber.services.impl;
 
 import java.util.List;
 
@@ -24,9 +24,10 @@ import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
 import com.wamk.uber.services.interfaces.UsuarioService;
+import com.wamk.uber.services.interfaces.ViagemService;
 
 @Service
-public class ViagemService {
+public class ViagemServiceImpl implements ViagemService{
 	
 	private final MyObjectMapper modelMapper;
 
@@ -36,7 +37,7 @@ public class ViagemService {
 	
 	private final UsuarioRepository usuarioRepository;
 
-	public ViagemService(ViagemRepository viagemRepository, UsuarioService usuarioService,
+	public ViagemServiceImpl(ViagemRepository viagemRepository, UsuarioService usuarioService,
 			UsuarioRepository usuarioRepository, MyObjectMapper modelMapper) {
 		this.modelMapper = modelMapper;
 		this.viagemRepository = viagemRepository;
@@ -48,7 +49,6 @@ public class ViagemService {
 	public Viagem save(ViagemInputDTO viagemInputDTO) {
 		Passageiro passageiro = (Passageiro) usuarioService.findById(viagemInputDTO.getPassageiroId());
 		Motorista motorista = (Motorista) usuarioService.findById(viagemInputDTO.getMotoristaId());
-		//validarSolicitagem(passageiro);
 		return viagemRepository.save(modelMapper.toViagemEntity(viagemInputDTO, passageiro, motorista));
 	}
 
@@ -90,7 +90,7 @@ public class ViagemService {
 		viagemRepository.save(construirViagem(solicitacao));
 	}
 	
-	private Viagem construirViagem(SolicitarViagemDTO solicitacao) {
+	public Viagem construirViagem(SolicitarViagemDTO solicitacao) {
 		Viagem viagem = new Viagem();
 		Passageiro passageiro = (Passageiro) usuarioService.findById(solicitacao.getPassageiroId());
 		validarSolicitagem(passageiro);
@@ -162,9 +162,6 @@ public class ViagemService {
 		if(viagem == null) {
 			throw new EntidadeNaoEncontradaException(UserId);
 		}
-//		if(viagem == null) {
-//			throw new ViagemJaFinalizadaException("");
-//		}
 		return viagem;
 	}
 	

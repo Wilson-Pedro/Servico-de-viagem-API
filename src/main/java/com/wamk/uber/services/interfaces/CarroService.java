@@ -13,13 +13,13 @@ public interface CarroService {
 
 	Carro save(CarroMinDTO inputDTO);
 	
+	Carro findById(Long id);
+	
+	Carro atualizarCadastro(CarroDTO carroDTO,Long id);
+	
 	List<Carro> findAll();
 	
 	Page<Carro> findAll(Pageable pageable);
 	
-	Carro findById(Long id);
-	
 	void delete(Long id);
-	
-	Carro atualizarCadastro(CarroDTO carroDTO,Long id);
 }

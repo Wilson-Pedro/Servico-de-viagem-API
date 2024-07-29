@@ -1,4 +1,4 @@
-package com.wamk.uber.services;
+package com.wamk.uber.services.impl;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.wamk.uber.repositories.UserRepository;
 
 @Service
-public class AuthorizationService implements UserDetailsService{
+public class AuthorizationService implements UserDetailsService {
 	
 	final UserRepository userRepository;
 

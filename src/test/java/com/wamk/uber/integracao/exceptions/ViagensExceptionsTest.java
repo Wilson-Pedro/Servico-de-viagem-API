@@ -25,7 +25,7 @@ import com.wamk.uber.exceptions.ViagemJaFinalizadaException;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.interfaces.ViagemService;
 
 @SpringBootTest
 class ViagensExceptionsTest {
@@ -47,14 +47,6 @@ class ViagensExceptionsTest {
 	Motorista motorista = new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO);
 	
 	Carro carro = new Carro(1L, "Fiat", 2022, "JVF-9207", motorista);
-	
-	private final List<Viagem> viagens = List.of(
-			new Viagem(1L, 
-					"Novo Castelo - Rua das Goiabas 1010", 
-					"Pará - Rua das Maçãs", 
-					"10 minutos", passageiro, motorista, 
-					FormaDePagamento.PIX, ViagemStatus.NAO_FINALIZADA)
-	);
 
 	@Test
 	@DisplayName("Deve lançar Exceção: EntidadeNaoEncontradaException")

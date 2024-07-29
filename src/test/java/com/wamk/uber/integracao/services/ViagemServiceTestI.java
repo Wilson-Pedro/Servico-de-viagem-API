@@ -27,7 +27,7 @@ import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.interfaces.ViagemService;
 
 import jakarta.transaction.Transactional;
 

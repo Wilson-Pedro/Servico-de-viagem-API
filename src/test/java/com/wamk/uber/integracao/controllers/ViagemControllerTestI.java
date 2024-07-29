@@ -51,7 +51,7 @@ import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UserRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.interfaces.ViagemService;
 
 @SpringBootTest
 @AutoConfigureMockMvc

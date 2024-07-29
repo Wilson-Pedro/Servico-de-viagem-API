@@ -1,4 +1,4 @@
-package com.wamk.uber.services;
+package com.wamk.uber.services.impl;
 
 import java.util.List;
 import java.util.Objects;

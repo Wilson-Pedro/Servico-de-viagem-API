@@ -24,7 +24,7 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.enums.ViagemStatus;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.interfaces.ViagemService;
 import com.wamk.uber.web.controllers.ViagemController;
 
 class ViagemControllerTestU {

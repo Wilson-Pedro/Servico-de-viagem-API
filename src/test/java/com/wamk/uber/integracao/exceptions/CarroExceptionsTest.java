@@ -18,7 +18,7 @@ import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
-import com.wamk.uber.services.CarroServiceImpl;
+import com.wamk.uber.services.impl.CarroServiceImpl;
 import com.wamk.uber.services.interfaces.CarroService;
 
 @SpringBootTest

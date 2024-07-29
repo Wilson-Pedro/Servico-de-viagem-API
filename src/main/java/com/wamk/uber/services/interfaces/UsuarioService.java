@@ -14,15 +14,15 @@ public interface UsuarioService {
 
 	Usuario save(UsuarioDTO usuarioDTO);
 	
-	List<Usuario> findAll();
-	
-	Page<Usuario> findAll(Pageable pageable);
-	
 	Usuario findById(Long id);
+	
+	Usuario atualizarCadastro(UsuarioDTO usuarioDTO, Long id);
 	
 	Motorista buscarMotoristaPorStatus(UsuarioStatus status);
 	
-	Usuario atualizarCadastro(UsuarioDTO usuarioDTO, Long id);
+	List<Usuario> findAll();
+	
+	Page<Usuario> findAll(Pageable pageable);
 	
 	void delete(Long id);
 	

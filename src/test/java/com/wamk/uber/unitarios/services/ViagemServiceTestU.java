@@ -38,7 +38,7 @@ import com.wamk.uber.provider.ViagemEntityAndViagemDtoProviderTets;
 import com.wamk.uber.provider.ViagemProviderTest;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.ViagemService;
+import com.wamk.uber.services.impl.ViagemServiceImpl;
 import com.wamk.uber.services.interfaces.UsuarioService;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +52,7 @@ class ViagemServiceTestU {
 	
 	private final UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
 	
-	private final ViagemService viagemService = new ViagemService(viagemRepository, usuarioService, usuarioRepository, modelMapper);
+	private final ViagemServiceImpl viagemServiceImpl = new ViagemServiceImpl(viagemRepository, usuarioService, usuarioRepository, modelMapper);
 	
 	Passageiro passageiro = new Passageiro(1L, "Wilson", "9816923456", TipoUsuario.PASSAGEIRO, UsuarioStatus.CORRENDO);
 	
@@ -96,7 +96,7 @@ class ViagemServiceTestU {
 	void deveBuscarTodasAsViagensComSucesso_usandoVariavelDeClasse() {
 		when(viagemRepository.findAll()).thenReturn(viagens);
 		
-		final var trips = viagemService.findAll();
+		final var trips = viagemServiceImpl.findAll();
 		
 		assertThat(trips).usingRecursiveComparison().isEqualTo(viagens);
 	}
@@ -107,7 +107,7 @@ class ViagemServiceTestU {
 		
 		when(viagemRepository.findAll()).thenReturn(viagensEsperadas);
 		
-		final var trips = viagemService.findAll();
+		final var trips = viagemServiceImpl.findAll();
 		
 		assertThat(trips).usingRecursiveComparison().isEqualTo(viagensEsperadas);
 	}
@@ -119,7 +119,7 @@ class ViagemServiceTestU {
 		
 		when(viagemRepository.findById(viagemEsperada.getId())).thenReturn(Optional.of(viagemEsperada));
 		
-		final var trip = viagemService.findById(viagemEsperada.getId());
+		final var trip = viagemServiceImpl.findById(viagemEsperada.getId());
 		
 		assertThat(trip).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
@@ -238,7 +238,7 @@ class ViagemServiceTestU {
 		
 		when(viagemRepository.findByPassageiro(passageiro)).thenReturn(viagemEsperada);
 		
-		final var viagem = viagemService.acharViagemPorPassageiro(passageiro);
+		final var viagem = viagemServiceImpl.acharViagemPorPassageiro(passageiro);
 		
 		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
@@ -249,7 +249,7 @@ class ViagemServiceTestU {
 		
 		when(viagemRepository.findByMotorista(motorista)).thenReturn(viagemEsperada);
 		
-		final var viagem = viagemService.acharViagemPorMotorista(motorista);
+		final var viagem = viagemServiceImpl.acharViagemPorMotorista(motorista);
 		
 		assertThat(viagem).usingRecursiveComparison().isEqualTo(viagemEsperada);
 	}
@@ -260,9 +260,9 @@ class ViagemServiceTestU {
 		List<Viagem> list = this.viagens;
 		Page<Viagem> page = new PageImpl<>(list, PageRequest.of(0, 10), list.size());
 		
-		when(viagemService.findAll(any(Pageable.class))).thenReturn(page);
+		when(viagemServiceImpl.findAll(any(Pageable.class))).thenReturn(page);
 		
-		Page<Viagem> pageViagem = viagemService.findAll(PageRequest.of(0, 10));
+		Page<Viagem> pageViagem = viagemServiceImpl.findAll(PageRequest.of(0, 10));
 		
 		assertNotNull(pageViagem);
 		assertEquals(pageViagem.getContent().size(), list.size());

@@ -21,8 +21,8 @@ import com.wamk.uber.dtos.ViagemDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Usuario;
 import com.wamk.uber.entities.Viagem;
-import com.wamk.uber.services.ViagemService;
 import com.wamk.uber.services.interfaces.UsuarioService;
+import com.wamk.uber.services.interfaces.ViagemService;
 import com.wamk.uber.web.apis.UsuarioAPI;
 
 import jakarta.validation.Valid;

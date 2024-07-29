@@ -44,7 +44,7 @@ import com.wamk.uber.provider.UsuarioEntityAndUsuarioDtoProviderTest;
 import com.wamk.uber.provider.UsuarioProviderTest;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.UsuarioServiceImpl;
+import com.wamk.uber.services.impl.UsuarioServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTestU {

@@ -32,7 +32,7 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.provider.CarroEntityAndCarroDtoProviderTest;
 import com.wamk.uber.provider.CarrosProviderTest;
 import com.wamk.uber.repositories.CarroRepository;
-import com.wamk.uber.services.CarroServiceImpl;
+import com.wamk.uber.services.impl.CarroServiceImpl;
 import com.wamk.uber.services.interfaces.UsuarioService;
 
 @ExtendWith(MockitoExtension.class)
