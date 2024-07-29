@@ -32,7 +32,7 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.provider.CarroEntityAndCarroDtoProviderTest;
 import com.wamk.uber.provider.CarrosProviderTest;
 import com.wamk.uber.repositories.CarroRepository;
-import com.wamk.uber.services.CarroService;
+import com.wamk.uber.services.CarroServiceImpl;
 import com.wamk.uber.services.interfaces.UsuarioService;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +44,7 @@ class CarroServiceTestU {
 	
 	private final UsuarioService usuarioService = mock(UsuarioService.class);
 	
-	private final CarroService carroService = new CarroService(modelMapper, carroRepository, usuarioService);
+	private final CarroServiceImpl carroServiceImpl = new CarroServiceImpl(modelMapper, carroRepository, usuarioService);
 	
 	List<Motorista> motoristas = List.of(
 			new Motorista(4L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
@@ -86,7 +86,7 @@ class CarroServiceTestU {
 	void deveBuscarTodosOsCarrosComSucesso_usandoVariavelDeClasse() {
 		when(carroRepository.findAll()).thenReturn(carros);
 		
-		final var cars = carroService.findAll();
+		final var cars = carroServiceImpl.findAll();
 		
 		assertThat(carros).usingRecursiveComparison().isEqualTo(cars);
 	}
@@ -98,7 +98,7 @@ class CarroServiceTestU {
 
 		when(carroRepository.findAll()).thenReturn(carrosEsperados);
 		
-		final var cars = carroService.findAll();
+		final var cars = carroServiceImpl.findAll();
 		
 		assertThat(cars).usingRecursiveComparison().isEqualTo(carrosEsperados);
 	}
@@ -110,7 +110,7 @@ class CarroServiceTestU {
 		
 		when(carroRepository.findById(carroEsperado.getId())).thenReturn(Optional.of(carroEsperado));
 		
-		final var car = carroService.findById(carroEsperado.getId());
+		final var car = carroServiceImpl.findById(carroEsperado.getId());
 		
 		assertThat(car).usingRecursiveAssertion().isEqualTo(carroEsperado);
 	}
@@ -151,9 +151,9 @@ class CarroServiceTestU {
 		List<Carro> list = this.carros;
 		Page<Carro> page = new PageImpl<>(list, PageRequest.of(0, 10), list.size());
 		
-		when(carroService.findAll(any(Pageable.class))).thenReturn(page);
+		when(carroServiceImpl.findAll(any(Pageable.class))).thenReturn(page);
 		
-		Page<Carro> pageCarro = carroService.findAll(PageRequest.of(0, 10));
+		Page<Carro> pageCarro = carroServiceImpl.findAll(PageRequest.of(0, 10));
 		
 		assertNotNull(pageCarro);
 		assertEquals(pageCarro.getContent().size(), list.size());

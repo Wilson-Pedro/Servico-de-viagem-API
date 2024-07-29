@@ -44,7 +44,7 @@ import com.wamk.uber.infra.security.TokenService;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UserRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
-import com.wamk.uber.services.CarroService;
+import com.wamk.uber.services.interfaces.CarroService;
 
 @SpringBootTest
 @AutoConfigureMockMvc

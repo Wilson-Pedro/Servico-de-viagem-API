@@ -18,7 +18,8 @@ import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
-import com.wamk.uber.services.CarroService;
+import com.wamk.uber.services.CarroServiceImpl;
+import com.wamk.uber.services.interfaces.CarroService;
 
 @SpringBootTest
 class CarroExceptionsTest {
@@ -31,6 +32,9 @@ class CarroExceptionsTest {
 	
 	@Autowired
 	CarroService carroService;
+	
+	@Autowired
+	CarroServiceImpl carroServiceImpl;
 	
 	List<Motorista> motoristas = List.of(
 			new Motorista(1L, "Pedro", "9822349876", TipoUsuario.MOTORISTA, UsuarioStatus.CORRENDO),
@@ -89,6 +93,6 @@ class CarroExceptionsTest {
 		Long id = carroRepository.findAll().get(0).getId();
 		
 		assertThrows(PlacaExistenteException.class, 
-				() -> this.carroService.atualizarCadastro(carroService.toCarroDto(carroDto), id));
+				() -> this.carroService.atualizarCadastro(carroServiceImpl.toCarroDto(carroDto), id));
 	}
 }

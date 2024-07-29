@@ -16,10 +16,11 @@ import com.wamk.uber.entities.Motorista;
 import com.wamk.uber.exceptions.EntidadeNaoEncontradaException;
 import com.wamk.uber.exceptions.PlacaExistenteException;
 import com.wamk.uber.repositories.CarroRepository;
+import com.wamk.uber.services.interfaces.CarroService;
 import com.wamk.uber.services.interfaces.UsuarioService;
 
 @Service
-public class CarroService {
+public class CarroServiceImpl implements CarroService {
 	
 	private final MyObjectMapper modelMapper;
 
@@ -27,7 +28,7 @@ public class CarroService {
 	
 	private final UsuarioService usuarioService;
 	
-	public CarroService(MyObjectMapper modelMapper, CarroRepository carroRepository, UsuarioService usuarioService) {
+	public CarroServiceImpl(MyObjectMapper modelMapper, CarroRepository carroRepository, UsuarioService usuarioService) {
 		this.modelMapper = modelMapper;
 		this.carroRepository = carroRepository;
 		this.usuarioService = usuarioService;
@@ -85,9 +86,7 @@ public class CarroService {
 	
 	public CarroDTO toCarroDto(CarroMinDTO carroInputDTO) {
 		
-		if(carroInputDTO == null) {
-			return null;
-		}
+		if(carroInputDTO == null) return null;
 		
 		Long motoristaId = carroInputDTO.getMotoristaId();
 		

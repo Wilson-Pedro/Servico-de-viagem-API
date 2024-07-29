@@ -18,7 +18,7 @@ import com.wamk.uber.dtos.CarroDTO;
 import com.wamk.uber.dtos.input.CarroMinDTO;
 import com.wamk.uber.dtos.mapper.MyObjectMapper;
 import com.wamk.uber.entities.Carro;
-import com.wamk.uber.services.CarroService;
+import com.wamk.uber.services.interfaces.CarroService;
 import com.wamk.uber.web.apis.CarroAPI;
 
 import jakarta.validation.Valid;

@@ -26,7 +26,7 @@ import com.wamk.uber.enums.UsuarioStatus;
 import com.wamk.uber.repositories.CarroRepository;
 import com.wamk.uber.repositories.UsuarioRepository;
 import com.wamk.uber.repositories.ViagemRepository;
-import com.wamk.uber.services.CarroService;
+import com.wamk.uber.services.interfaces.CarroService;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
